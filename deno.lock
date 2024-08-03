@@ -1,0 +1,47 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@hono/hono@^4.5.3": "jsr:@hono/hono@4.5.3",
+      "jsr:@std/dotenv@^0.225.0": "jsr:@std/dotenv@0.225.0",
+      "npm:drizzle-orm@^0.32.1": "npm:drizzle-orm@0.32.1_postgres@3.4.4",
+      "npm:postgres@^3.4.4": "npm:postgres@3.4.4",
+      "npm:zod@^3.23.8": "npm:zod@3.23.8"
+    },
+    "jsr": {
+      "@hono/hono@4.5.3": {
+        "integrity": "429923b2b3c6586a1450862328d61a1346fee5841e8ae86c494250475057213c"
+      },
+      "@std/dotenv@0.225.0": {
+        "integrity": "44db32932c67df82790a3e6847d7007befb6cc22d71f2f3ee7b7d00e1f0d6c94"
+      }
+    },
+    "npm": {
+      "drizzle-orm@0.32.1_postgres@3.4.4": {
+        "integrity": "sha512-Wq1J+lL8PzwR5K3a1FfoWsbs8powjr3pGA4+5+2ueN1VTLDNFYEolUyUWFtqy8DVRvYbL2n7sXZkgVmK9dQkng==",
+        "dependencies": {
+          "postgres": "postgres@3.4.4"
+        }
+      },
+      "postgres@3.4.4": {
+        "integrity": "sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==",
+        "dependencies": {}
+      },
+      "zod@3.23.8": {
+        "integrity": "sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==",
+        "dependencies": {}
+      }
+    }
+  },
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@hono/hono@^4.5.3",
+      "jsr:@std/dotenv@^0.225.0",
+      "npm:drizzle-kit@^0.23.1",
+      "npm:drizzle-orm@^0.32.1",
+      "npm:postgres@^3.4.4",
+      "npm:zod@^3.23.8"
+    ]
+  }
+}

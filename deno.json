@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "start": "deno run --allow-env --allow-net src/main.ts",
+    "dev": "deno run --allow-env --allow-read=.env --allow-net --watch src/dev.ts",
+    "db:setup": "deno cache -r --node-modules-dir npm:drizzle-kit npm:postgres",
+    "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
+    "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate"
+  },
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4.5.3",
+    "drizzle-orm": "npm:drizzle-orm@^0.32.1",
+    "drizzle-kit": "npm:drizzle-kit@^0.23.1",
+    "postgres": "npm:postgres@^3.4.4",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
+    "zod": "npm:zod@^3.23.8"
+  }
+}

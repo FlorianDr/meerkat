@@ -1,0 +1,4 @@
+fly.toml
+docker-compose.yaml
+drizzle.config.ts
+README.md
