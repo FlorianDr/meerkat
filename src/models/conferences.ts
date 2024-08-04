@@ -10,7 +10,7 @@ const conferenceById = db.select().from(conferences).where(
 
 export async function getConferenceById(id: number) {
   const conferences = await conferenceById.execute({ id });
-  return conferences[0] ?? null;
+  return conferences.length === 1 ? conferences[0] : null;
 }
 
 export function getConferences() {
@@ -41,3 +41,4 @@ export function getEvents(conferenceId: number) {
 }
 
 export type Event = typeof events.$inferSelect;
+export type Conference = typeof conferences.$inferSelect;

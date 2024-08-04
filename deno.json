@@ -8,7 +8,11 @@
   },
   "imports": {
     "@hono/hono": "jsr:@hono/hono@^4.5.3",
+    "@libs/qrcode": "jsr:@libs/qrcode@^1.2.5",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
+    "@pcd/passport-interface": "npm:@pcd/passport-interface@^0.11.3",
+    "@pcd/pod": "npm:@pcd/pod@^0.2.0",
+    "@pcd/pod-pcd": "npm:@pcd/pod-pcd@^0.2.0",
     "drizzle-orm": "npm:drizzle-orm@^0.32.1",
     "postgres": "npm:postgres@^3.4.4",
     "typeid-js": "npm:typeid-js@^1.0.0",
