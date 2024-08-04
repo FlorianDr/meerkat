@@ -33,3 +33,11 @@ export function createEvents(
     newEvents.map((event) => ({ ...event, uid: uid.toString(), conferenceId })),
   ).returning().execute();
 }
+
+export function getEvents(conferenceId: number) {
+  return db.select().from(events).where(
+    eq(events.conferenceId, conferenceId),
+  ).orderBy(events.start).execute();
+}
+
+export type Event = typeof events.$inferSelect;

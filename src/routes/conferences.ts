@@ -1,12 +1,15 @@
-import { Hono } from "@hono/hono";
+import { Context, Hono, Next } from "@hono/hono";
 import zod from "zod";
+import { fromString, getSuffix } from "typeid-js";
 import env from "../env.ts";
 import {
   createConference,
   createEvents,
+  Event,
   getConferenceById,
   getConferences,
 } from "../models/conferences.ts";
+import { getEvents } from "../models/conferences.ts";
 
 const app = new Hono();
 
@@ -19,11 +22,15 @@ const conferenceCreateSchema = zod.object({
   name: zod.string(),
 });
 
-app.post("/", async (c) => {
+const authMiddleware = (c: Context, next: Next) => {
   if (c.req.header("Authorization") !== `Bearer ${env.adminToken}`) {
     c.status(401);
     return c.json({ error: "Unauthorized" });
   }
+  return next();
+};
+
+app.post("/", authMiddleware, async (c) => {
   const rawJson = await c.req.json();
   const parseResult = conferenceCreateSchema.safeParse(rawJson);
 
@@ -36,6 +43,46 @@ app.post("/", async (c) => {
 
   c.status(201);
   return c.json({ data: conference });
+});
+
+app.get("/:id/events", authMiddleware, async (c) => {
+  const conferenceId = parseInt(c.req.param("id"));
+  const conference = await getConferenceById(conferenceId);
+
+  if (!conference) {
+    c.status(404);
+    return c.json({ error: `Conference with id ${conferenceId} not found` });
+  }
+
+  const format = c.req.query("format");
+
+  if (format && format !== "csv") {
+    c.status(400);
+    return c.json({ error: `Supported formats: csv` });
+  }
+
+  const events = await getEvents(conferenceId);
+
+  if (format === "csv") {
+    c.header("Content-Type", "text/csv");
+    c.header(
+      "Content-Disposition",
+      `attachment; filename="${conference.name}.csv"`,
+    );
+    c.status(200);
+    let responseText = `code,title,start,end,url\n`;
+
+    const origin = c.req.header("Origin");
+    events.forEach((event) => {
+      responseText +=
+        `${event.code},"${event.title}",${event.start.toISOString()},${event.end.toISOString()},${
+          getEventUrl(event, origin)
+        }\n`;
+    });
+
+    return c.text(responseText);
+  }
+  return c.json({ data: events });
 });
 
 const eventCreateSchema = zod.object({
@@ -56,12 +103,7 @@ const eventsCreateSchema = zod.array(eventCreateSchema);
 
 const CREATION_LIMIT = 50;
 
-app.post("/:id/events", async (c) => {
-  if (c.req.header("Authorization") !== `Bearer ${env.adminToken}`) {
-    c.status(401);
-    return c.json({ error: "Unauthorized" });
-  }
-
+app.post("/:id/events", authMiddleware, async (c) => {
   const conferenceId = parseInt(c.req.param("id"));
   const conference = await getConferenceById(conferenceId);
 
@@ -90,5 +132,10 @@ app.post("/:id/events", async (c) => {
   c.status(201);
   return c.json({ data: response });
 });
+
+function getEventUrl(event: Event, base = env.base) {
+  const typeId = fromString(event.uid, "event");
+  return `${base}/events/${getSuffix(typeId)}`;
+}
 
 export default app;
