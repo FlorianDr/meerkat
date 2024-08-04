@@ -12,6 +12,7 @@
     "drizzle-kit": "npm:drizzle-kit@^0.23.1",
     "postgres": "npm:postgres@^3.4.4",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
-    "zod": "npm:zod@^3.23.8"
+    "zod": "npm:zod@^3.23.8",
+    "typeid-js": "npm:typeid-js@^1.0.0"
   }
 }
