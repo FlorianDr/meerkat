@@ -1,4 +1,5 @@
-import { Context, Hono, Next } from "@hono/hono";
+import { Hono } from "@hono/hono";
+import { bearerAuth } from "@hono/hono/bearer-auth";
 import zod from "zod";
 import { fromString, getSuffix } from "typeid-js";
 import env from "../env.ts";
@@ -22,15 +23,7 @@ const conferenceCreateSchema = zod.object({
   name: zod.string(),
 });
 
-const authMiddleware = (c: Context, next: Next) => {
-  if (c.req.header("Authorization") !== `Bearer ${env.adminToken}`) {
-    c.status(401);
-    return c.json({ error: "Unauthorized" });
-  }
-  return next();
-};
-
-app.post("/", authMiddleware, async (c) => {
+app.post("/", bearerAuth({ token: env.adminToken }), async (c) => {
   const rawJson = await c.req.json();
   const parseResult = conferenceCreateSchema.safeParse(rawJson);
 
@@ -45,7 +38,7 @@ app.post("/", authMiddleware, async (c) => {
   return c.json({ data: conference });
 });
 
-app.get("/:id/events", authMiddleware, async (c) => {
+app.get("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
   const conferenceId = parseInt(c.req.param("id"));
   const conference = await getConferenceById(conferenceId);
 
@@ -103,7 +96,7 @@ const eventsCreateSchema = zod.array(eventCreateSchema);
 
 const CREATION_LIMIT = 50;
 
-app.post("/:id/events", authMiddleware, async (c) => {
+app.post("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
   const conferenceId = parseInt(c.req.param("id"));
   const conference = await getConferenceById(conferenceId);
 
