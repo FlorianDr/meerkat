@@ -11,10 +11,17 @@ if (!connectionString) {
   throw new Error("DATABASE_POOLER_URL or DATABASE_URL must be set");
 }
 
+const privateKey = Deno.env.get("PRIVATE_KEY");
+
+if (!privateKey) {
+  throw new Error("PRIVATE_KEY is required");
+}
+
 const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 
 export default {
   adminToken,
   connectionString,
   base,
+  privateKey,
 };

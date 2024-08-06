@@ -1,6 +1,5 @@
 import { eq, sql } from "drizzle-orm";
-import { typeid } from "typeid-js";
-import { conferences, events } from "../schema.ts";
+import { conferences } from "../schema.ts";
 
 import db from "../db.ts";
 
@@ -24,21 +23,4 @@ export function createConference(
     .returning().execute();
 }
 
-export function createEvents(
-  conferenceId: number,
-  newEvents: Omit<(typeof events.$inferInsert), "conferenceId" | "uid">[],
-) {
-  const uid = typeid("event");
-  return db.insert(events).values(
-    newEvents.map((event) => ({ ...event, uid: uid.toString(), conferenceId })),
-  ).returning().execute();
-}
-
-export function getEvents(conferenceId: number) {
-  return db.select().from(events).where(
-    eq(events.conferenceId, conferenceId),
-  ).orderBy(events.start).execute();
-}
-
-export type Event = typeof events.$inferSelect;
 export type Conference = typeof conferences.$inferSelect;

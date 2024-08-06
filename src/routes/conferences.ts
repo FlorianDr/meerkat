@@ -1,16 +1,14 @@
 import { Hono } from "@hono/hono";
 import { bearerAuth } from "@hono/hono/bearer-auth";
 import zod from "zod";
-import { fromString, getSuffix } from "typeid-js";
 import env from "../env.ts";
 import {
   createConference,
-  createEvents,
-  Event,
   getConferenceById,
   getConferences,
 } from "../models/conferences.ts";
-import { getEvents } from "../models/conferences.ts";
+import { createEvents, Event, getEvents } from "../models/events.ts";
+import { getSuffix } from "typeid-js";
 
 const app = new Hono();
 
@@ -127,8 +125,7 @@ app.post("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
 });
 
 function getEventUrl(event: Event, base = env.base) {
-  const typeId = fromString(event.uid, "event");
-  return `${base}/events/${getSuffix(typeId)}`;
+  return `${base}/events/${getSuffix(event.uid)}`;
 }
 
 export default app;

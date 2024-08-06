@@ -4,7 +4,6 @@ import { getEventByUID } from "../models/events.ts";
 import Layout from "./components/Layout.tsx";
 import QR from "./components/QR.tsx";
 import { typeid } from "typeid-js";
-import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { getZupassAddPCDURL } from "../zupass.ts";
 
@@ -27,11 +26,10 @@ app.get("/:suffix", async (c) => {
     return c.json({ error: `Conference ${event.conferenceId} not found` });
   }
 
-  const base = c.req.header("origin") ?? env.base;
   const url = await getZupassAddPCDURL({
     conference,
     event,
-    redirectURL: base + "/thank-you",
+    redirectURL: `https://zupass.org`,
   });
 
   return c.html(
