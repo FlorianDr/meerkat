@@ -16,9 +16,9 @@ export async function getZupassAddPCDURL(
   // For examples, check: https://github.com/proofcarryingdata/zupass/blob/4dc89f0f65ad719edd22478bcc9f4887b5c1ac3a/apps/consumer-client/src/podExampleConstants.ts#L9
   const pod = {
     "zupass_display": "collectable",
-    "zupass_image_url": event.cover,
+    "zupass_image_url": event.cover ?? "",
     "zupass_title": event.title,
-    "zupass_description": event.description,
+    "zupass_description": event.description ?? "",
   };
   const podContent = JSON.stringify(pod);
   const podFolder = conference?.name ?? "Conference";
