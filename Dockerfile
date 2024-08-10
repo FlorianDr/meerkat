@@ -15,4 +15,4 @@ RUN deno cache ./src/main.ts
 
 RUN ./scripts/patch-dependencies-linux.sh
 
-CMD ["run", "--allow-env", "--allow-net", "./src/main.ts"]
+CMD ["task", "start"]
