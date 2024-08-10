@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "deno run --allow-env --allow-net ./src/main.ts",
+    "start": "deno run --allow-read --allow-env --allow-net ./src/main.ts",
     "dev": "deno run --allow-env --allow-read --allow-net --watch src/dev.ts",
     "db:setup": "deno cache -r --node-modules-dir npm:drizzle-kit npm:postgres",
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
