@@ -1,5 +1,6 @@
 import {
   integer,
+  jsonb,
   pgTable,
   serial,
   text,
@@ -10,6 +11,7 @@ import {
 export const conferences = pgTable("conferences", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  zuAuthConfig: jsonb("zu_auth_config"),
 });
 
 export const events = pgTable("events", {

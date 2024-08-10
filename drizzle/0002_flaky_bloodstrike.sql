@@ -1,0 +1,1 @@
+ALTER TABLE "conferences" ADD COLUMN "zu_auth_config" jsonb;
