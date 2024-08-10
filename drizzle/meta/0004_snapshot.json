@@ -1,6 +1,6 @@
 {
-  "id": "5a58b728-61bf-4b06-aa76-e06bd2655902",
-  "prevId": "3a3bc663-dc98-49db-acf1-a69233a67b6e",
+  "id": "60f1a2d8-325e-4c0e-8eb3-be1579c75d0b",
+  "prevId": "5a58b728-61bf-4b06-aa76-e06bd2655902",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -139,6 +139,69 @@
           "nullsNotDistinct": false,
           "columns": [
             "code"
+          ]
+        }
+      }
+    },
+    "public.questions": {
+      "name": "questions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "question": {
+          "name": "question",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "questions_event_id_events_id_fk": {
+          "name": "questions_event_id_events_id_fk",
+          "tableFrom": "questions",
+          "tableTo": "events",
+          "columnsFrom": [
+            "event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "questions_uid_unique": {
+          "name": "questions_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
           ]
         }
       }

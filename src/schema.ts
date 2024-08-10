@@ -30,3 +30,14 @@ export const events = pgTable("events", {
   track: text("track"),
   cover: text("cover"),
 });
+
+export const questions = pgTable("questions", {
+  id: serial("id").primaryKey(),
+  uid: text("uid").notNull().unique(),
+  eventId: integer("event_id").notNull().references(
+    () => events.id,
+    { onDelete: "cascade" },
+  ),
+  question: text("question").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
