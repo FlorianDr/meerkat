@@ -1,7 +1,6 @@
 {
   "tasks": {
-    "start": "deno run --allow-env --allow-net src/main.ts",
-    "dev": "deno run --allow-env --allow-read=.env --allow-net --watch src/dev.ts",
+    "dev": "deno run --allow-env --allow-read --allow-net --watch src/dev.ts",
     "db:setup": "deno cache -r --node-modules-dir npm:drizzle-kit npm:postgres",
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
     "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate"
@@ -10,9 +9,9 @@
     "@hono/hono": "jsr:@hono/hono@^4.5.3",
     "@libs/qrcode": "jsr:@libs/qrcode@^1.2.5",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
-    "@pcd/passport-interface": "npm:@pcd/passport-interface@^0.11.3",
-    "@pcd/pod": "npm:@pcd/pod@^0.2.0",
-    "@pcd/pod-pcd": "npm:@pcd/pod-pcd@^0.2.0",
+    "@pcd/passport-interface": "npm:@pcd/passport-interface@^0.11.4",
+    "@pcd/pod": "npm:@pcd/pod@^0.1.3",
+    "@pcd/pod-pcd": "npm:@pcd/pod-pcd@^0.1.3",
     "drizzle-orm": "npm:drizzle-orm@^0.32.1",
     "postgres": "npm:postgres@^3.4.4",
     "typeid-js": "npm:typeid-js@^1.0.0",
