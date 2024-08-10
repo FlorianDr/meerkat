@@ -5,7 +5,6 @@ import {
   serial,
   text,
   timestamp,
-  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const conferences = pgTable("conferences", {
@@ -30,9 +29,4 @@ export const events = pgTable("events", {
   description: text("description"),
   track: text("track"),
   cover: text("cover"),
-}, (table) => {
-  return {
-    uidIdx: uniqueIndex("uid_idx").on(table.uid),
-    codeIdx: uniqueIndex("code_idx").on(table.code),
-  };
 });
