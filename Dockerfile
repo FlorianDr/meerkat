@@ -11,7 +11,7 @@ WORKDIR /app
 ENV DENO_DIR=/app/.cache
 
 COPY . .
-RUN deno cache ./src/main.ts
+RUN deno cache ./main.ts
 
 RUN ./scripts/patch-dependencies-linux.sh
 

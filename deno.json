@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "start": "deno run --allow-read --allow-env --allow-net ./src/main.ts",
-    "cache": "DENO_DIR=.cache deno cache src/dev.ts",
-    "dev": "DENO_DIR=.cache deno run --allow-env --allow-read --allow-net --watch src/dev.ts",
+    "start": "deno run --allow-read --allow-env --allow-net ./main.ts",
+    "cache": "DENO_DIR=.cache deno cache ./dev.ts",
+    "dev": "DENO_DIR=.cache deno run --allow-env --allow-read --allow-net --watch ./dev.ts",
     "db:setup": "deno cache -r --node-modules-dir npm:drizzle-kit npm:postgres",
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
     "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate"
@@ -14,6 +14,7 @@
     "@pcd/passport-interface": "npm:@pcd/passport-interface@^0.11.4",
     "@pcd/pod": "npm:@pcd/pod@^0.1.3",
     "@pcd/pod-pcd": "npm:@pcd/pod-pcd@^0.1.3",
+    "@pcd/zuauth": "npm:@pcd/zuauth@^1.4.4",
     "drizzle-orm": "npm:drizzle-orm@^0.32.1",
     "postgres": "npm:postgres@^3.4.4",
     "typeid-js": "npm:typeid-js@^1.0.0",

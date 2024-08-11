@@ -1,8 +1,8 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
 import { getEventByUID } from "../models/events.ts";
-import Layout from "./components/Layout.tsx";
-import QR from "./components/QR.tsx";
+import Layout from "../components/Layout.tsx";
+import QR from "../components/QR.tsx";
 import { typeid } from "typeid-js";
 import { getConferenceById } from "../models/conferences.ts";
 import { getZupassAddPCDURL } from "../zupass.ts";
