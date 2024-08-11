@@ -1,20 +1,22 @@
 {
   "tasks": {
-    "start": "deno run --allow-read --allow-env --allow-net ./main.ts",
+    "start": "deno run --allow-read --allow-env --allow-sys --allow-net ./main.ts",
     "cache": "DENO_DIR=.cache deno cache ./dev.ts",
-    "dev": "DENO_DIR=.cache deno run --allow-env --allow-read --allow-net --watch ./dev.ts",
+    "dev": "DENO_DIR=.cache deno run --allow-env --allow-sys --allow-read --allow-net --watch ./dev.ts",
     "db:setup": "deno cache -r --node-modules-dir npm:drizzle-kit npm:postgres",
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
     "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate"
   },
   "imports": {
-    "@hono/hono": "jsr:@hono/hono@^4.5.3",
+    "@hono/hono": "npm:hono@^4.5.3",
+    "@hono/zod-validator": "npm:@hono/zod-validator@^0.2.2",
     "@libs/qrcode": "jsr:@libs/qrcode@^1.2.5",
-    "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
     "@pcd/passport-interface": "npm:@pcd/passport-interface@^0.11.4",
     "@pcd/pod": "npm:@pcd/pod@^0.1.3",
     "@pcd/pod-pcd": "npm:@pcd/pod-pcd@^0.1.3",
+    "@pcd/zk-eddsa-event-ticket-pcd": "npm:@pcd/zk-eddsa-event-ticket-pcd@^0.6.3",
     "@pcd/zuauth": "npm:@pcd/zuauth@^1.4.4",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
     "drizzle-orm": "npm:drizzle-orm@^0.32.1",
     "postgres": "npm:postgres@^3.4.4",
     "typeid-js": "npm:typeid-js@^1.0.0",

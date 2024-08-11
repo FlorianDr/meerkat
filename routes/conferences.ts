@@ -8,7 +8,8 @@ import {
   getConferences,
 } from "../models/conferences.ts";
 import { createEvents, Event, getEvents } from "../models/events.ts";
-import { getSuffix } from "typeid-js";
+import { zValidator } from "@hono/zod-validator";
+import { HTTPException } from "@hono/hono/http-exception";
 
 const app = new Hono();
 
@@ -21,35 +22,38 @@ const conferenceCreateSchema = zod.object({
   name: zod.string(),
 });
 
-app.post("/", bearerAuth({ token: env.adminToken }), async (c) => {
-  const rawJson = await c.req.json();
-  const parseResult = conferenceCreateSchema.safeParse(rawJson);
+app.post(
+  "/",
+  bearerAuth({ token: env.adminToken }),
+  zValidator("json", conferenceCreateSchema),
+  async (c) => {
+    const conferenceCreate = c.req.valid("json");
+    const conference = await createConference(conferenceCreate);
 
-  if (!parseResult.success) {
-    c.status(400);
-    return c.json({ error: parseResult.error });
-  }
-
-  const conference = await createConference(parseResult.data);
-
-  c.status(201);
-  return c.json({ data: conference });
-});
+    return c.json({ data: conference }, 201);
+  },
+);
 
 app.get("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
   const conferenceId = parseInt(c.req.param("id"));
+  if (Number.isInteger(conferenceId) === false) {
+    throw new HTTPException(400, {
+      message: `Invalid conference id ${conferenceId}`,
+    });
+  }
+
   const conference = await getConferenceById(conferenceId);
 
   if (!conference) {
-    c.status(404);
-    return c.json({ error: `Conference with id ${conferenceId} not found` });
+    throw new HTTPException(404, {
+      message: `Conference with id ${conferenceId} not found`,
+    });
   }
 
   const format = c.req.query("format");
 
   if (format && format !== "csv") {
-    c.status(400);
-    return c.json({ error: `Supported formats: csv` });
+    throw new HTTPException(400, { message: `Supported formats: csv` });
   }
 
   const events = await getEvents(conferenceId);
@@ -60,17 +64,8 @@ app.get("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
       "Content-Disposition",
       `attachment; filename="${conference.name}.csv"`,
     );
-    c.status(200);
-    let responseText = `code,title,start,end,url\n`;
-
-    const origin = c.req.header("Origin");
-    events.forEach((event) => {
-      responseText +=
-        `${event.code},"${event.title}",${event.start.toISOString()},${event.end.toISOString()},${
-          getEventUrl(event, origin)
-        }\n`;
-    });
-
+    const origin = c.req.header("origin");
+    const responseText = createCsvResponse(origin ?? env.base, events);
     return c.text(responseText);
   }
   return c.json({ data: events });
@@ -90,42 +85,60 @@ const eventCreateSchema = zod.object({
   cover: zod.string().optional(),
 });
 
-const eventsCreateSchema = zod.array(eventCreateSchema);
+const eventsCreateSchema = zod.array(eventCreateSchema).max(50);
 
-const CREATION_LIMIT = 50;
+app.post(
+  "/:id/events",
+  bearerAuth({ token: env.adminToken }),
+  zValidator("json", eventsCreateSchema),
+  async (c) => {
+    const conferenceId = parseInt(c.req.param("id"));
+    if (Number.isInteger(conferenceId) === false) {
+      throw new HTTPException(400, {
+        message: `Invalid conference id ${conferenceId}`,
+      });
+    }
 
-app.post("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
-  const conferenceId = parseInt(c.req.param("id"));
-  const conference = await getConferenceById(conferenceId);
+    const conference = await getConferenceById(conferenceId);
 
-  if (!conference) {
-    c.status(404);
-    return c.json({ error: `Conference with id ${conferenceId} not found` });
-  }
+    if (!conference) {
+      throw new HTTPException(404, {
+        message: `Conference with id ${conferenceId} not found`,
+      });
+    }
 
-  const rawJson = await c.req.json();
-  const parseResult = eventsCreateSchema.safeParse(rawJson);
-
-  if (!parseResult.success) {
-    c.status(400);
-    return c.json({ error: parseResult.error });
-  }
-
-  if (parseResult.data.length > CREATION_LIMIT) {
-    c.status(400);
-    return c.json({
-      error: `Too many events, try ${CREATION_LIMIT} or less`,
+    const parsedJSON = c.req.valid("json");
+    const events = parsedJSON.map((event) => {
+      return {
+        ...event,
+        description: event.description ?? null,
+        abstract: event.abstract ?? null,
+        track: event.track ?? null,
+        cover: event.cover ?? null,
+      };
     });
-  }
 
-  const response = await createEvents(conferenceId, parseResult.data);
+    const response = await createEvents(conferenceId, events);
 
-  c.status(201);
-  return c.json({ data: response });
-});
+    return c.json({ data: response }, 201);
+  },
+);
+
+function createCsvResponse(origin: string, events: Event[]) {
+  let responseText = `code,title,start,end,url\n`;
+
+  events.forEach((event) => {
+    responseText +=
+      `${event.code},"${event.title}",${event.start.toISOString()},${event.end.toISOString()},${
+        getEventUrl(event, origin)
+      }\n`;
+  });
+
+  return responseText;
+}
 
 function getEventUrl(event: Event, base = env.base) {
-  return `${base}/events/${getSuffix(event.uid)}`;
+  return `${base}/events/${event.uid}`;
 }
 
 export default app;

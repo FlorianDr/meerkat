@@ -20,7 +20,7 @@ INSERT INTO events (
 	)
 VALUES (
 		1,
-		'event_01j4yc358mf4xrd5aqj8kvj75t',
+		'01j4yc358mf4xrd5aqj8kvj75t',
 		'EVT001',
 		'Event 1',
 		'Workshop',
@@ -33,7 +33,7 @@ VALUES (
 	),
 	(
 		1,
-		'event_01j4yc3mdzfz396p4e67f3731m',
+		'01j4yc3mdzfz396p4e67f3731m',
 		'EVT002',
 		'Event 2',
 		'Talk',
@@ -44,14 +44,18 @@ VALUES (
 		'Track 2',
 		'Cover 2'
 	);
-INSERT INTO questions (uid, event_id, question)
+INSERT INTO users (uid)
+VALUES ('01j513yxhnf66t1m7awr087d9m');
+INSERT INTO questions (uid, event_id, question, user_id)
 VALUES (
-		'question_01j4yc358mf4xrd5aqj8kvj75t',
+		'01j4yc358mf4xrd5aqj8kvj75t',
 		1,
-		'What is the purpose of this event?'
+		'What is the purpose of this event?',
+		1
 	),
 	(
-		'question_01j4yc3mdzfz396p4e67f3731m',
+		'01j4yc3mdzfz396p4e67f3731m',
 		1,
-		'Can you provide more details about the schedule?'
+		'Can you provide more details about the schedule?',
+		1
 	);

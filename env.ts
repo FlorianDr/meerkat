@@ -17,11 +17,18 @@ if (!privateKey) {
   throw new Error("PRIVATE_KEY is required");
 }
 
+const secret = Deno.env.get("SECRET");
+
+if (!secret) {
+  throw new Error("SECRET is required");
+}
+
 const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 
 export default {
   adminToken,
   connectionString,
   base,
+  secret,
   privateKey,
 };

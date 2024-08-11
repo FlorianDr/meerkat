@@ -39,5 +39,29 @@ export const questions = pgTable("questions", {
     { onDelete: "cascade" },
   ),
   question: text("question").notNull(),
+  userId: integer("user_id").notNull().references(
+    () => users.id,
+    { onDelete: "cascade" },
+  ),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  uid: text("uid").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const tickets = pgTable("tickets", {
+  id: serial("id").primaryKey(),
+  zuTicketId: text("zu_ticket_id").notNull().unique(),
+  userId: integer("user_id").notNull().references(
+    () => users.id,
+    { onDelete: "cascade" },
+  ),
+  conferenceId: integer("conference_id").notNull().references(
+    () => conferences.id,
+    { onDelete: "cascade" },
+  ),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
