@@ -5,15 +5,13 @@
       "jsr:@libs/qrcode@^1.2.5": "jsr:@libs/qrcode@1.2.5",
       "jsr:@std/dotenv@^0.225.0": "jsr:@std/dotenv@0.225.0",
       "npm:@hono/zod-validator@^0.2.2": "npm:@hono/zod-validator@0.2.2_hono@4.5.5_zod@3.23.8",
-      "npm:@pcd/eddsa-ticket-pcd@^0.6.3": "npm:@pcd/eddsa-ticket-pcd@0.6.3",
-      "npm:@pcd/passport-interface@^0.11.4": "npm:@pcd/passport-interface@0.11.4_react@18.3.1_react-dom@18.3.1__react@18.3.1",
-      "npm:@pcd/pod-pcd@^0.1.3": "npm:@pcd/pod-pcd@0.1.3",
-      "npm:@pcd/pod@^0.1.3": "npm:@pcd/pod@0.1.3",
-      "npm:@pcd/zk-eddsa-event-ticket-pcd@^0.6.3": "npm:@pcd/zk-eddsa-event-ticket-pcd@0.6.3",
-      "npm:@pcd/zuauth@^1.4.4": "npm:@pcd/zuauth@1.4.4_react@18.3.1_react-dom@18.3.1__react@18.3.1",
-      "npm:@types/node": "npm:@types/node@18.16.19",
-      "npm:drizzle-kit": "npm:drizzle-kit@0.23.1_esbuild@0.19.12",
-      "npm:drizzle-orm@^0.32.1": "npm:drizzle-orm@0.32.1_postgres@3.4.4",
+      "npm:@pcd/passport-interface@^0.11.4": "npm:@pcd/passport-interface@0.11.6_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+      "npm:@pcd/pod-pcd@^0.1.3": "npm:@pcd/pod-pcd@0.1.5",
+      "npm:@pcd/pod@^0.1.3": "npm:@pcd/pod@0.1.5",
+      "npm:@pcd/zk-eddsa-event-ticket-pcd@^0.6.3": "npm:@pcd/zk-eddsa-event-ticket-pcd@0.6.4",
+      "npm:@pcd/zuauth@^1.4.4": "npm:@pcd/zuauth@1.4.5_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+      "npm:drizzle-kit": "npm:drizzle-kit@0.24.0_esbuild@0.19.12",
+      "npm:drizzle-orm@^0.32.1": "npm:drizzle-orm@0.32.2_postgres@3.4.4",
       "npm:hono@^4.5.3": "npm:hono@4.5.5",
       "npm:postgres@^3.4.4": "npm:postgres@3.4.4",
       "npm:typeid-js@^1.0.0": "npm:typeid-js@1.0.0",
@@ -556,39 +554,39 @@
           "ffjavascript": "ffjavascript@0.3.0"
         }
       },
-      "@pcd/circom_runtime@0.1.27": {
-        "integrity": "sha512-vAjmZCwmwRukoLNwQU4twlZwJUxcQMbT/vrpAteNxCwd358ycGYbE3o3DKsxK3hJ5l8/fl0fuqT+dAqnLY801w==",
+      "@pcd/circom_runtime@0.1.28": {
+        "integrity": "sha512-TRWFEZoFngWW6xvEGdiem9llmK47ZhPXN+gfVETpVZw29tVYVkDMEBrPiUycK6vvHp0IINZkceK426GrO28nfg==",
         "dependencies": {
           "ffjavascript": "ffjavascript@0.3.0"
         }
       },
-      "@pcd/eddsa-frog-pcd@0.3.3": {
-        "integrity": "sha512-vPrPk8Rv2YGR8sX1A2ZHGRGplnl/nvnVUeea5g1QR630N6n9CW6L2ZPBxkfh95Ryh6uYgWfq6ZSMejjfjPaYwQ==",
+      "@pcd/eddsa-frog-pcd@0.3.4": {
+        "integrity": "sha512-uRYqEpaUuMub96o2SePsYhdcZzA3DRu9zYcLZ+6Jm0TPNmiZ7YVgxHv6rOFyFeaZtdlM+Un8Uz0D3K4L5FgiVg==",
         "dependencies": {
-          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.3",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.4",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "chai": "chai@4.5.0",
           "json-bigint": "json-bigint@1.0.0",
           "lodash": "lodash@4.17.21",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/eddsa-pcd@0.6.3": {
-        "integrity": "sha512-5kIWgCYc500BFFNRjclVlqBpVyNmCMWXQLbxeg1gUTWt1BynqTX7Ebb+H3MiplPB2rQi4NuK5HHio/ig19J3Jw==",
+      "@pcd/eddsa-pcd@0.6.4": {
+        "integrity": "sha512-8NL1vRXlehIRmzCF0etDd3PHiooWJ9h2NMQKywktX0MyANfw8VgwYOG/ftQuG54v14V37WiBRqlda/7Rya8mUw==",
         "dependencies": {
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "circomlibjs": "circomlibjs@0.1.7",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/eddsa-ticket-pcd@0.6.3": {
-        "integrity": "sha512-ohUwtcCnki27dOye56cGummvwogiOdgDPhiYqbP1G/dLk7AMRwfRBAT9YZ/JrohVbk1PUWjywjRLwhmwtPtanw==",
+      "@pcd/eddsa-ticket-pcd@0.6.4": {
+        "integrity": "sha512-q6aHDkAL+AHKLhNFnncSw7fSybFt9qt8nm97Fxh9RHckJaXDZ19jLC18NKWYc4UfXgTAIHUMJU6/Mi9iGvFj9g==",
         "dependencies": {
-          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.3",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.4",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "chai": "chai@4.5.0",
           "json-bigint": "json-bigint@1.0.0",
           "lodash": "lodash@4.17.21",
@@ -596,57 +594,56 @@
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/email-pcd@0.6.3": {
-        "integrity": "sha512-MXELLylhzOzBKG7YOzyKI7xg/xi/Pr3JtAyIVLTVS+fzKQ4JI7dGADs9MrzJ/tvvcoV/ILER2N2EO0via8iIoQ==",
+      "@pcd/email-pcd@0.6.4": {
+        "integrity": "sha512-QtQfYWinaXx6+/fKBEvBzRWdK9l/SA9WRGFgN19EZImtCdWLSwc0/hOib5+Dg1GDwq35Mtb9ET0zyAgVJiIx5A==",
         "dependencies": {
-          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.3",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.4",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "chai": "chai@4.5.0",
           "json-bigint": "json-bigint@1.0.0",
           "lodash": "lodash@4.17.21",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/emitter@0.5.3": {
-        "integrity": "sha512-Db0XOFRGbUpEh8aO8in8KyEYqJTCsWOYi+JxnSrJxGiunzxIIFF3yRyswhNeo1H/Co09p5a8UN/RqU4hhGpUdw==",
+      "@pcd/emitter@0.5.4": {
+        "integrity": "sha512-bxfJcSzcCI0kGmxaiVT/vtEo2YDmQsg0JEn3zvPeSCYBckvvT3D9ozaISPhp/5+P5jTeSruTNw0YTP4DwQkxxA==",
         "dependencies": {
           "chai": "chai@4.5.0"
         }
       },
-      "@pcd/obj-pcd@0.0.4": {
-        "integrity": "sha512-CyfLggWDrRmCDqaZqC4zxRWvtMLIzv/JEDagExs6gocpYBQgp4ZGp4KxjmqPN+0ChrG6doLqGaty/LEigEk1UA==",
+      "@pcd/obj-pcd@0.0.5": {
+        "integrity": "sha512-C8bdVeI+8NehzWUBvtsrPIlaAKF/u3ASsEXMleMJK6TsP0LiHOmNHhxigtU2JMv7PdKoHoq7kDp4P4W967rYTg==",
         "dependencies": {
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/passport-crypto@0.11.3": {
-        "integrity": "sha512-mgKkK9ylIg1HGRKEQv/0iFFTL51crysXNu8Wk8brO2T2S3oMX3rLkiWK5fVTeVmuEqg5sLYgKcxMuq3UjGhXWA==",
+      "@pcd/passport-crypto@0.11.4": {
+        "integrity": "sha512-7nPrBldG4713CSA63NFAR6Ti8BBMwn26IuoHkiTyExFmFy5a0PCMssd3eg1amLMqG5o3KIMgxOfXSf9DJYB04g==",
         "dependencies": {
           "buffer": "buffer@6.0.3",
           "libsodium-wrappers-sumo": "libsodium-wrappers-sumo@0.7.14"
         }
       },
-      "@pcd/passport-interface@0.11.4_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
-        "integrity": "sha512-4UR6vAEZ2aUGlnPUNKXjxjiUYTGC/FrAWyNbxE+evM7z1lETR4trQSKyp7SUknq8BfVOPdXSiXz4auePfqh2HA==",
+      "@pcd/passport-interface@0.11.6_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+        "integrity": "sha512-6vd1nsOK/W42YBtIiqOecTM8qPnSBXrMG89HKTvoDGgxs3fP/Mv7XKj46JJMgAcLHRbWBKo+FkjIkBPJvsiihw==",
         "dependencies": {
-          "@pcd/eddsa-frog-pcd": "@pcd/eddsa-frog-pcd@0.3.3",
-          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.3",
-          "@pcd/eddsa-ticket-pcd": "@pcd/eddsa-ticket-pcd@0.6.3",
-          "@pcd/email-pcd": "@pcd/email-pcd@0.6.3",
-          "@pcd/emitter": "@pcd/emitter@0.5.3",
-          "@pcd/obj-pcd": "@pcd/obj-pcd@0.0.4",
-          "@pcd/passport-crypto": "@pcd/passport-crypto@0.11.3",
-          "@pcd/pcd-collection": "@pcd/pcd-collection@0.11.3",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/pod": "@pcd/pod@0.1.3",
-          "@pcd/pod-pcd": "@pcd/pod-pcd@0.1.3",
-          "@pcd/semaphore-group-pcd": "@pcd/semaphore-group-pcd@0.11.3_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
-          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.3",
-          "@pcd/semaphore-signature-pcd": "@pcd/semaphore-signature-pcd@0.11.3_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/eddsa-frog-pcd": "@pcd/eddsa-frog-pcd@0.3.4",
+          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.4",
+          "@pcd/eddsa-ticket-pcd": "@pcd/eddsa-ticket-pcd@0.6.4",
+          "@pcd/email-pcd": "@pcd/email-pcd@0.6.4",
+          "@pcd/emitter": "@pcd/emitter@0.5.4",
+          "@pcd/obj-pcd": "@pcd/obj-pcd@0.0.5",
+          "@pcd/passport-crypto": "@pcd/passport-crypto@0.11.4",
+          "@pcd/pcd-collection": "@pcd/pcd-collection@0.11.4",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/pod": "@pcd/pod@0.1.5",
+          "@pcd/semaphore-group-pcd": "@pcd/semaphore-group-pcd@0.11.4_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
+          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.4",
+          "@pcd/semaphore-signature-pcd": "@pcd/semaphore-signature-pcd@0.11.4_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
+          "@pcd/util": "@pcd/util@0.5.3",
           "@semaphore-protocol/identity": "@semaphore-protocol/identity@3.15.2",
           "fast-json-stable-stringify": "fast-json-stable-stringify@2.1.0",
           "js-sha256": "js-sha256@0.10.1",
@@ -658,53 +655,53 @@
           "zod": "zod@3.23.8"
         }
       },
-      "@pcd/pcd-collection@0.11.3": {
-        "integrity": "sha512-8PMk/8WrGsPrlU57SMEUeqSoRi4jF4fsf2ON7DC1GTQU02SxQRTu94FCbnNYQreqHcVIccX1RZJ+JyWY+KDhpw==",
+      "@pcd/pcd-collection@0.11.4": {
+        "integrity": "sha512-KoIDZIz9QdyeIdBR7D84ZkS694FlghLZUaDDODK1w5x5ZJwqunNEnZZRft7deTBr7/2uKDSnMTd9Nk1TLOHbkg==",
         "dependencies": {
-          "@pcd/emitter": "@pcd/emitter@0.5.3",
-          "@pcd/passport-crypto": "@pcd/passport-crypto@0.11.3",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.3",
+          "@pcd/emitter": "@pcd/emitter@0.5.4",
+          "@pcd/passport-crypto": "@pcd/passport-crypto@0.11.4",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.4",
           "chai": "chai@4.5.0",
           "fast-json-stable-stringify": "fast-json-stable-stringify@2.1.0",
           "lodash": "lodash@4.17.21",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/pcd-types@0.11.3": {
-        "integrity": "sha512-cjtiJK1phEt6LgXEBc01dX8hFONjW7qeQKeNLu39onAzIAUH99z9CssVRI/O/UMwwmCd8bwejxp3KORGqHA4UA==",
+      "@pcd/pcd-types@0.11.4": {
+        "integrity": "sha512-IxPzs5dFc9O7mtcusbEMNln3lWtoyMkxPLbcJTbmlR+HGURNxDR5ZumXlXTOv8LL1OwkY1TaU1EkrhXVnVWdNA==",
         "dependencies": {}
       },
-      "@pcd/pod-pcd@0.1.3": {
-        "integrity": "sha512-RIvCFYyLqHZuXPAXTaVgOSjE2va725u7xx1UBNK7UTfxY3lNR15xdnwklvFtukViHF4wtMY0hlp4zeBsVEhBzA==",
+      "@pcd/pod-pcd@0.1.5": {
+        "integrity": "sha512-vIfqEDDUEtae1swMwAvLFjTzrJw3TS4fGz6NZV8U0t60BPscPx9wEV9phzG2op2MWzaLdT1OVCH7wG/uZMQ+cg==",
         "dependencies": {
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/pod": "@pcd/pod@0.1.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/pod": "@pcd/pod@0.1.5",
+          "@pcd/util": "@pcd/util@0.5.3",
           "json-bigint": "json-bigint@1.0.0",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/pod@0.1.3": {
-        "integrity": "sha512-2k62GnGmGdlaSc9NHnhFXIFXAF8XTJJgnfh1JW3cxD+iKyPFjupCK2UmvrdTvADQtmOyIgpw32kToEdLiGjVqA==",
+      "@pcd/pod@0.1.5": {
+        "integrity": "sha512-3xdpPlyABFJn9/iag4jBBvTNU1kdXD2d1EQWz3lOvqcxpWK+ov/0eU1qPcsHk2yKAbftZ33lrP+4CA6k3M4BdA==",
         "dependencies": {
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/util": "@pcd/util@0.5.3",
           "@zk-kit/baby-jubjub": "@zk-kit/baby-jubjub@1.0.1",
           "@zk-kit/eddsa-poseidon": "@zk-kit/eddsa-poseidon@1.0.2",
           "@zk-kit/lean-imt": "@zk-kit/lean-imt@2.0.1",
           "@zk-kit/utils": "@zk-kit/utils@1.2.0",
           "js-sha256": "js-sha256@0.10.1",
           "json-bigint": "json-bigint@1.0.0",
-          "poseidon-lite": "poseidon-lite@0.2.0"
+          "poseidon-lite": "poseidon-lite@0.2.1"
         }
       },
-      "@pcd/semaphore-group-pcd@0.11.3_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2": {
-        "integrity": "sha512-omZFGShMPf9o993isF+ppGclJ1b9xFPVYv29uWe4acHaE9k+QssYMvW43VOg2F6D9YTbN0izV53gBL5opJUiDA==",
+      "@pcd/semaphore-group-pcd@0.11.4_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2": {
+        "integrity": "sha512-vGasJDMQusFzJleSSp4c8x/W3mnJwZKLVGgAPwj26cdMjiNQ0bgBW3HZ427Cgt8JuQ3wG30iOAEsCNZpDYuF5w==",
         "dependencies": {
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.3",
-          "@pcd/semaphore-signature-pcd": "@pcd/semaphore-signature-pcd@0.11.3_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.4",
+          "@pcd/semaphore-signature-pcd": "@pcd/semaphore-signature-pcd@0.11.4_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
+          "@pcd/util": "@pcd/util@0.5.3",
           "@semaphore-protocol/group": "@semaphore-protocol/group@3.15.2",
           "@semaphore-protocol/identity": "@semaphore-protocol/identity@3.15.2",
           "@semaphore-protocol/proof": "@semaphore-protocol/proof@3.15.2_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
@@ -713,22 +710,22 @@
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/semaphore-identity-pcd@0.11.3": {
-        "integrity": "sha512-c+8kMcbFdg/hiVMV6ZA0s2rVFQDcBLJ9bAU8c3kYPLdaTtaZGGz7U2shZlcGHMT1gFoRVPu6dhUOij+2ItHJbg==",
+      "@pcd/semaphore-identity-pcd@0.11.4": {
+        "integrity": "sha512-/N6oEGE7cSRyW6EPgNYmt0G+EaGpXn6mdDmJBtGFRCgnqhcOVdvn/ukHniXkcmQBN18pnP4CqD/cVH0dt7bi2Q==",
         "dependencies": {
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "@semaphore-protocol/identity": "@semaphore-protocol/identity@3.15.2",
           "json-bigint": "json-bigint@1.0.0",
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/semaphore-signature-pcd@0.11.3_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2": {
-        "integrity": "sha512-6Rrx0WHcxzV2Jxprd7m/RfbPb5hm7f227DRkYK0Pg5MIFixDEtXzSap9YiMGhyX8ZnQmxetEaSYSsPU/mIKiYQ==",
+      "@pcd/semaphore-signature-pcd@0.11.4_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2": {
+        "integrity": "sha512-8MEOhiRP4timkQRncRECVgDBlZrIQoHnEHBHKeGI6OShV78c/kKCYQOuxA786nYc6AHT/kSj97BZK8+ObSXkgA==",
         "dependencies": {
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.3",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.4",
+          "@pcd/util": "@pcd/util@0.5.3",
           "@semaphore-protocol/group": "@semaphore-protocol/group@3.15.2",
           "@semaphore-protocol/identity": "@semaphore-protocol/identity@3.15.2",
           "@semaphore-protocol/proof": "@semaphore-protocol/proof@3.15.2_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
@@ -736,11 +733,11 @@
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/snarkjs@0.7.6": {
-        "integrity": "sha512-/QoK0zwgw2KMOAVSwynIhET3EXaTQqJtvR2+6noLTmBZQNRq0/7ZoE90wPoSTrjHouQXowzq1qwd18BzvoMPuQ==",
+      "@pcd/snarkjs@0.7.7": {
+        "integrity": "sha512-rgopRGA29cyvNFAkxwtEpo8sOQPFTsckl2kR74CKvlVgKHveZVArmA0vnSrb3jiyrCVQ98lAroTUQB6dpnuYKQ==",
         "dependencies": {
           "@iden3/binfileutils": "@iden3/binfileutils@0.0.12",
-          "@pcd/circom_runtime": "@pcd/circom_runtime@0.1.27",
+          "@pcd/circom_runtime": "@pcd/circom_runtime@0.1.28",
           "bfj": "bfj@7.1.0",
           "blake2b-wasm": "blake2b-wasm@2.4.0",
           "ejs": "ejs@3.1.10",
@@ -751,8 +748,8 @@
           "r1csfile": "r1csfile@0.0.48"
         }
       },
-      "@pcd/util@0.5.2": {
-        "integrity": "sha512-pdrlAZ8Za0BfBrVeXhCTunulvIIoJE/CgCyYFmJ5Lx1z/Pr/hl+ncnrtTIiqO5dzyoNYCx15+uPOCJ/ipIX8uw==",
+      "@pcd/util@0.5.3": {
+        "integrity": "sha512-mAfbpQrl2CYJJwNDHJKwkUD0JYuEAtD3Tli87hb7jZ3vvHmtT/mXlivbpnNZ5uyoowiArnhPMwng/2JmyuU3Cw==",
         "dependencies": {
           "buffer": "buffer@6.0.3",
           "email-validator": "email-validator@2.0.4",
@@ -761,16 +758,16 @@
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/zk-eddsa-event-ticket-pcd@0.6.3": {
-        "integrity": "sha512-Wth3AuUuC+EgHBkpbRXFicuU4hP9c398W4A23kpsQysZVde4CUte5xJAnV8Y661K7d3E2Rb+EozjkpFji1pe2g==",
+      "@pcd/zk-eddsa-event-ticket-pcd@0.6.4": {
+        "integrity": "sha512-eKkiHwa9zLbXpiTtr0DaXpA/jMptJe6GVerrxrBZYCgwgScx9T17NtsuYNXyF4V8XUP6zoHnSnUo2qa1TwzjYQ==",
         "dependencies": {
-          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.3",
-          "@pcd/eddsa-ticket-pcd": "@pcd/eddsa-ticket-pcd@0.6.3",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.3",
-          "@pcd/semaphore-signature-pcd": "@pcd/semaphore-signature-pcd@0.11.3_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
-          "@pcd/snarkjs": "@pcd/snarkjs@0.7.6",
-          "@pcd/util": "@pcd/util@0.5.2",
+          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.4",
+          "@pcd/eddsa-ticket-pcd": "@pcd/eddsa-ticket-pcd@0.6.4",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.4",
+          "@pcd/semaphore-signature-pcd": "@pcd/semaphore-signature-pcd@0.11.4_@semaphore-protocol+group@3.15.2_@semaphore-protocol+identity@3.15.2",
+          "@pcd/snarkjs": "@pcd/snarkjs@0.7.7",
+          "@pcd/util": "@pcd/util@0.5.3",
           "@semaphore-protocol/identity": "@semaphore-protocol/identity@3.15.2",
           "circomlibjs": "circomlibjs@0.1.7",
           "json-bigint": "json-bigint@1.0.0",
@@ -778,15 +775,15 @@
           "uuid": "uuid@9.0.1"
         }
       },
-      "@pcd/zuauth@1.4.4_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
-        "integrity": "sha512-5n8FPkyEQl44vmnXRmI/zRVDtrG2pNGRUjfW+FjhN2SlfjgW5741eICW9dfOat4Wwwz7jO7kls3Gp2uT1W0Chg==",
+      "@pcd/zuauth@1.4.5_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+        "integrity": "sha512-KgT69HOyD86KD5UR0z885BM73f/4bkmeHU61gfnI8mdkYhVPg1rUtZ5Yppo90avl3S8yO/W3WNvP+jXJCPlzqQ==",
         "dependencies": {
-          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.3",
-          "@pcd/eddsa-ticket-pcd": "@pcd/eddsa-ticket-pcd@0.6.3",
-          "@pcd/passport-interface": "@pcd/passport-interface@0.11.4_react@18.3.1_react-dom@18.3.1__react@18.3.1",
-          "@pcd/pcd-types": "@pcd/pcd-types@0.11.3",
-          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.3",
-          "@pcd/zk-eddsa-event-ticket-pcd": "@pcd/zk-eddsa-event-ticket-pcd@0.6.3",
+          "@pcd/eddsa-pcd": "@pcd/eddsa-pcd@0.6.4",
+          "@pcd/eddsa-ticket-pcd": "@pcd/eddsa-ticket-pcd@0.6.4",
+          "@pcd/passport-interface": "@pcd/passport-interface@0.11.6_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+          "@pcd/pcd-types": "@pcd/pcd-types@0.11.4",
+          "@pcd/semaphore-identity-pcd": "@pcd/semaphore-identity-pcd@0.11.4",
+          "@pcd/zk-eddsa-event-ticket-pcd": "@pcd/zk-eddsa-event-ticket-pcd@0.6.4",
           "react": "react@18.3.1",
           "react-dom": "react-dom@18.3.1_react@18.3.1"
         }
@@ -822,10 +819,6 @@
           "@zk-kit/groth16": "@zk-kit/groth16@0.3.0",
           "@zk-kit/incremental-merkle-tree": "@zk-kit/incremental-merkle-tree@0.4.3"
         }
-      },
-      "@types/node@18.16.19": {
-        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
-        "dependencies": {}
       },
       "@zk-kit/baby-jubjub@1.0.1": {
         "integrity": "sha512-ADQd4nI71uZLd9mMLHm5u97QS9zwUBOIxK8776Og1gHHrIdsku8q8X1Xi54QAsbidvRBC5FDIQnP7QMUWJK/hQ==",
@@ -1064,8 +1057,8 @@
         "integrity": "sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==",
         "dependencies": {}
       },
-      "drizzle-kit@0.23.1_esbuild@0.19.12": {
-        "integrity": "sha512-posGQhj8/K4S4CPhk7BO9+IcpNdIh96t0DvcAr/NvMKhPhe5D0MELzmpq9R2MpmSP3fd+Z3upwidtetrw7xnjg==",
+      "drizzle-kit@0.24.0_esbuild@0.19.12": {
+        "integrity": "sha512-rUl5Rf5HLOVkAwHEVEi8xgulIRWzoys0q77RHGCxv5e9v8AI3JGFg7Ug5K1kn513RwNZbuNJMUKOXo0j8kPRgg==",
         "dependencies": {
           "@drizzle-team/brocli": "@drizzle-team/brocli@0.8.2",
           "@esbuild-kit/esm-loader": "@esbuild-kit/esm-loader@2.6.5",
@@ -1073,8 +1066,8 @@
           "esbuild-register": "esbuild-register@3.6.0_esbuild@0.19.12"
         }
       },
-      "drizzle-orm@0.32.1_postgres@3.4.4": {
-        "integrity": "sha512-Wq1J+lL8PzwR5K3a1FfoWsbs8powjr3pGA4+5+2ueN1VTLDNFYEolUyUWFtqy8DVRvYbL2n7sXZkgVmK9dQkng==",
+      "drizzle-orm@0.32.2_postgres@3.4.4": {
+        "integrity": "sha512-3fXKzPzrgZIcnWCSLiERKN5Opf9Iagrag75snfFlKeKSYB1nlgPBshzW3Zn6dQymkyiib+xc4nIz0t8U+Xdpuw==",
         "dependencies": {
           "postgres": "postgres@3.4.4"
         }
@@ -1438,8 +1431,8 @@
         "integrity": "sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==",
         "dependencies": {}
       },
-      "poseidon-lite@0.2.0": {
-        "integrity": "sha512-vivDZnGmz8W4G/GzVA72PXkfYStjilu83rjjUfpL4PueKcC8nfX6hCPh2XhoC5FBgC6y0TA3YuUeUo5YCcNoig==",
+      "poseidon-lite@0.2.1": {
+        "integrity": "sha512-xIr+G6HeYfOhCuswdqcFpSX47SPhm0EpisWJ6h7fHlWwaVIvH3dLnejpatrtw6Xc6HaLrpq05y7VRfvDmDGIog==",
         "dependencies": {}
       },
       "postgres@3.4.4": {
@@ -1619,101 +1612,7 @@
       }
     }
   },
-  "redirects": {
-    "https://esm.sh/@pcd/zuauth": "https://esm.sh/@pcd/zuauth@1.4.4",
-    "https://esm.sh/v135/@types/snarkjs@0.7.8/index.cjs": "https://esm.sh/v135/@types/snarkjs@0.7.8/index.cjs~.d.ts"
-  },
-  "remote": {
-    "https://esm.sh/@pcd/zuauth@1.4.4": "d66b3ba259e65ff552a2cace94ae3770448ed4a7535cbf2cf6f6cb632e1110e1",
-    "https://esm.sh/v135/@ethersproject/abi@5.7.0/denonext/abi.mjs": "684969ef8c22586924279eb843fdf1489dcc6b9aac670c5ffe0184084d06b237",
-    "https://esm.sh/v135/@ethersproject/abstract-provider@5.7.0/denonext/abstract-provider.mjs": "6e78ef283036145cd0acd07fed256b1f8a30219a81d3008eccf4c696232ff74d",
-    "https://esm.sh/v135/@ethersproject/abstract-signer@5.7.0/denonext/abstract-signer.mjs": "d1c944cb14f6afff7a3385158e16d52d08e62c41607ba084bae267e793135563",
-    "https://esm.sh/v135/@ethersproject/address@5.7.0/denonext/address.mjs": "c14e5eda15b2270d5b5e042b69a51c11dcb8009c4fa95b4895bbdc8e2a902144",
-    "https://esm.sh/v135/@ethersproject/base64@5.7.0/denonext/base64.mjs": "6175ff43578d1d144cbe72355f0980780067d0b9429aa196278641216bfb273a",
-    "https://esm.sh/v135/@ethersproject/basex@5.7.0/denonext/basex.mjs": "bc04d8c75e1033d11d8a8a46d4eecb44ad3dc91527dd0bb889dc7cc574697641",
-    "https://esm.sh/v135/@ethersproject/bignumber@5.7.0/denonext/bignumber.mjs": "ab9d4a50d6de68f32fa88daf283614688e703f87412cd67b55a2cce9847199ac",
-    "https://esm.sh/v135/@ethersproject/bytes@5.7.0/denonext/bytes.mjs": "c336d6ee5f8275116eb819327c743bd64e9f8d1080d7c62ab61dd5dc24fbd817",
-    "https://esm.sh/v135/@ethersproject/constants@5.7.0/denonext/constants.mjs": "4e609aa506031c9b4dae5f7a7db04568b8cb5adc019df34b7aeae4121f3e25a3",
-    "https://esm.sh/v135/@ethersproject/contracts@5.7.0/denonext/contracts.mjs": "bf59385b1fcfb9c77c89db1f718e7b2498254a1fb15ff57d121ffe70a6bdcd5e",
-    "https://esm.sh/v135/@ethersproject/hash@5.7.0/denonext/hash.mjs": "4c45cac94f81d081516ce2debda547d6d5e6f4de92f9809691972f2a0a0df3dd",
-    "https://esm.sh/v135/@ethersproject/hdnode@5.7.0/denonext/hdnode.mjs": "6ba7fd4c2ebe599e976bd2ce6ba88f8fda4c634c4145246c6cd41985bf8b152d",
-    "https://esm.sh/v135/@ethersproject/json-wallets@5.7.0/denonext/json-wallets.mjs": "937bc37957765b08ed9c5f643ab42bed2dab9c24877598ab7bd591e7da84c1c6",
-    "https://esm.sh/v135/@ethersproject/keccak256@5.7.0/denonext/keccak256.mjs": "49da13ff4b100077aee940e94029fb180e44d81b886577853c035c9cc9d4aab2",
-    "https://esm.sh/v135/@ethersproject/logger@5.7.0/denonext/logger.mjs": "81c8190723fbf446c14996b9b5e58b322cb535b2d652127b4f95b431a55086ed",
-    "https://esm.sh/v135/@ethersproject/networks@5.7.1/denonext/networks.mjs": "ac4a9d6d035b8a2bb1487bdf7ee7c6fe6bc56a9f4d674ce9d86b015610913211",
-    "https://esm.sh/v135/@ethersproject/pbkdf2@5.7.0/denonext/pbkdf2.mjs": "91165564e87703b0b9cce00bdad4c3b99332c31936040ddb52437e33b8b243e1",
-    "https://esm.sh/v135/@ethersproject/properties@5.7.0/denonext/properties.mjs": "b54d08c5e8a7f2846f45459ce175873f59670a27ffb7a08df1321be7687cc500",
-    "https://esm.sh/v135/@ethersproject/providers@5.7.2/denonext/providers.mjs": "a0fb0c8414999dbcbeb63ab9770936b1e694091f7b9de452a69b6371c0edda28",
-    "https://esm.sh/v135/@ethersproject/random@5.7.0/denonext/random.mjs": "c9079438a2541137937354ce58868f2bcae3e45550d30ef095c9f6cd89f5cfdf",
-    "https://esm.sh/v135/@ethersproject/rlp@5.7.0/denonext/rlp.mjs": "659402000e8c7aa001b6fc015cdc37df80a8547bb126506c19198d0c7d6ec335",
-    "https://esm.sh/v135/@ethersproject/sha2@5.7.0/denonext/sha2.mjs": "0de3f820d56e8c7bfee21f6b9102b60bd56ff713216a6e9a0481f256b161d727",
-    "https://esm.sh/v135/@ethersproject/signing-key@5.7.0/denonext/signing-key.mjs": "500f1486c267a74e0db48ced3b82c211478ba83e3173119336621cd22cf1128c",
-    "https://esm.sh/v135/@ethersproject/solidity@5.7.0/denonext/solidity.mjs": "95f4db6e4d4d503a13a3a3c5cf0b8ac3587d4656d0f7358c1aa6b096da8d87c7",
-    "https://esm.sh/v135/@ethersproject/strings@5.7.0/denonext/strings.mjs": "904fedbeb61dbe8fcf7f309d9ccd2a1e91a68c580038d79d9ab981bf993bdc2e",
-    "https://esm.sh/v135/@ethersproject/transactions@5.7.0/denonext/transactions.mjs": "28003e3150af30a24dc23345e9ddb1d313da833a2399c6ff07268a2969ba6942",
-    "https://esm.sh/v135/@ethersproject/units@5.7.0/denonext/units.mjs": "ba72a906cb64f0cbd2e706434d5bdd1a937315746f3bfca8a725f529b2264bb4",
-    "https://esm.sh/v135/@ethersproject/wallet@5.7.0/denonext/wallet.mjs": "5cd74724d896a974546f34167b1dfc5f9380119193929d9396135a0252580d48",
-    "https://esm.sh/v135/@ethersproject/web@5.7.1/denonext/web.mjs": "303884e26c4b504d0ad8deba21d2ce54d2c2920e691013b4f40af69972550875",
-    "https://esm.sh/v135/@ethersproject/wordlists@5.7.0/denonext/wordlists.mjs": "fbf0aa022b6603cc947c2ba8fcad40964c810f8d57e4426192b281b5e5713e87",
-    "https://esm.sh/v135/@pcd/eddsa-pcd@0.6.3/denonext/EdDSAPCD.js": "2205c4edf657980b660f367866feab207bdaa61e3d4ac87ed685cc92326f2652",
-    "https://esm.sh/v135/@pcd/eddsa-pcd@0.6.3/denonext/eddsa-pcd.mjs": "bea62abf0be0cc39fdcb3a92a3f776a7469e780accfd3a3e96a7b3029df6544b",
-    "https://esm.sh/v135/@pcd/eddsa-ticket-pcd@0.6.3/denonext/EdDSATicketPCD.js": "7deea4b96d59aece46521a8a432302079ea7179eaa44359233bc67d7233a8b17",
-    "https://esm.sh/v135/@pcd/eddsa-ticket-pcd@0.6.3/denonext/eddsa-ticket-pcd.mjs": "7c3ac696c056f782d6251c77a775b5d8682f119f32e55b3127aa948f164b00eb",
-    "https://esm.sh/v135/@pcd/passport-interface@0.11.4/denonext/PassportInterface.js": "2307b2ad47fce8bf7f8452943ec49e33bb806f889cc7bd3f7323b4299802dbb2",
-    "https://esm.sh/v135/@pcd/passport-interface@0.11.4/denonext/PassportPopup/core.js": "359f3554d2523508114ef55990d3554c0fd673dffc746b3680f540f2f973f86c",
-    "https://esm.sh/v135/@pcd/pcd-types@0.11.3/denonext/pcd-types.mjs": "4d66e49a5220674bb51c9ccd25332a0f26d4ed4929f5bb3e1a5c3a77bc713a32",
-    "https://esm.sh/v135/@pcd/semaphore-identity-pcd@0.11.3/denonext/SemaphoreIdentityPCD.js": "a2601ff6b86be2b2a708181962f15974daa73785817f1b9e9b7d27c5d2d7ec61",
-    "https://esm.sh/v135/@pcd/semaphore-identity-pcd@0.11.3/denonext/semaphore-identity-pcd.mjs": "2dad052061d4538d7e9ea6add13ed5d6304c929fa519e1bd425d3200b9b8f83b",
-    "https://esm.sh/v135/@pcd/semaphore-signature-pcd@0.11.3/denonext/SemaphoreSignaturePCD.js": "9847eac8226c80949be7be4c600127d55098d5ca5be5a5566a5f629f3216f3db",
-    "https://esm.sh/v135/@pcd/semaphore-signature-pcd@0.11.3/denonext/semaphore-signature-pcd.mjs": "d4e8c59a92adc3e343393eb097c23f4f6c3e5ba3ea262706d700ef80404dee67",
-    "https://esm.sh/v135/@pcd/snarkjs@0.7.6/denonext/snarkjs.mjs": "d150bc69212a3eb48c39d8047c8763163977d758eb974ae3f49509c72e7898b7",
-    "https://esm.sh/v135/@pcd/util@0.5.2/denonext/util.mjs": "053180517fc58eadcca26f9abd75b7ef9d12173d715d823f99e7e6e3224c06be",
-    "https://esm.sh/v135/@pcd/zk-eddsa-event-ticket-pcd@0.6.3/denonext/ZKEdDSAEventTicketPCD.js": "5a0f5ec30629687d9c7605064b5cecf3161cc6b8f0e5495c6c702350552022d0",
-    "https://esm.sh/v135/@pcd/zk-eddsa-event-ticket-pcd@0.6.3/denonext/zk-eddsa-event-ticket-pcd.mjs": "c6078bb2cfcaf8aa60aeb1028140ac7657b466d4f3fbd5d15ea5b67f599412c1",
-    "https://esm.sh/v135/@pcd/zuauth@1.4.4/denonext/client.js": "16c4ff41bba27cd7a4b4789162c407aed92845d6c685a56ea36a379658a6332f",
-    "https://esm.sh/v135/@pcd/zuauth@1.4.4/denonext/configs/esmeralda.js": "aae7eac6769f8e5931100e12d600de81f2bbe05cef76c4c917c7fed2b65d3915",
-    "https://esm.sh/v135/@pcd/zuauth@1.4.4/denonext/configs/ethberlin.js": "9179a35c2b24c47382cc86653c5595f5c3a8573b8eb5d7558af972955a79f5a7",
-    "https://esm.sh/v135/@pcd/zuauth@1.4.4/denonext/configs/ethprague.js": "9112c85098c264c739d17948b7f4c195a064b52e1840564022f7221ab924e110",
-    "https://esm.sh/v135/@pcd/zuauth@1.4.4/denonext/server.js": "04fb77c7221bd4857693c5bb6fb68466d2597fbc69d50f12bb34683fbee226a7",
-    "https://esm.sh/v135/@pcd/zuauth@1.4.4/denonext/zuauth.mjs": "0b70192420afc3af2b56d38d14b6fb210408e178eee2d86d206da134a9133b4e",
-    "https://esm.sh/v135/@semaphore-protocol/group@3.15.2/denonext/group.mjs": "cb4a06807150a510d9e3c4fcfe85251e3897e52dd96c7a766b26a735d38def9a",
-    "https://esm.sh/v135/@semaphore-protocol/identity@3.15.2/denonext/identity.mjs": "34929a41e0651eb022ca195563826ce7f9adac653cafaca1291b8a5c12c61afe",
-    "https://esm.sh/v135/@semaphore-protocol/proof@3.15.2/denonext/proof.mjs": "ff88e957eae8f4ab780ef1590148c04b36fbaadc1abe4d2b328ef3571bb6f326",
-    "https://esm.sh/v135/@zk-kit/groth16@0.3.0/denonext/groth16.mjs": "4de69c2f31b9e32d5c437e00cff00ef440058fb9cad71685ade7b6d1223a0473",
-    "https://esm.sh/v135/@zk-kit/incremental-merkle-tree@1.1.0/denonext/incremental-merkle-tree.mjs": "4aa8b66a57bec38dd2edd4d32224292a1d2814a157690a597c6db06f94b7979f",
-    "https://esm.sh/v135/aes-js@3.0.0/denonext/aes-js.mjs": "08cf0c3ee3a23961e1ed418c2ffb6ce083b067b9bbdd3f6e9c672cc2eec5ab1c",
-    "https://esm.sh/v135/b4a@1.6.6/denonext/b4a.mjs": "b2b3f637f288ab01b8681427cbf32dd64ba31c2f47b6063ec095d68c548983ec",
-    "https://esm.sh/v135/bech32@1.1.4/denonext/bech32.mjs": "e1a9ce8cd09783f8a18a645e6217d686c7e596621984ba3e841f64604f4e3526",
-    "https://esm.sh/v135/bignumber.js@9.1.2/denonext/bignumber.mjs": "881ca4ea8416ac1357be523dd209ad771bc9fa3c41b881ddae76592491a7007f",
-    "https://esm.sh/v135/blake-hash@2.0.0/denonext/blake-hash.mjs": "66ddaa967247374e7da271fd8d5731bbd96b2eee18cb68068c08fb3663d63501",
-    "https://esm.sh/v135/blake2b-wasm@2.4.0/denonext/blake2b-wasm.mjs": "cc2a17d0bccc9507d27db93c03016ed979a3fed8b4f4efd77f8a925095306077",
-    "https://esm.sh/v135/blake2b@2.1.4/denonext/blake2b.mjs": "a97f645facfee74c67b6d68e8c2b523ab5d0ecf879fff283ff3ed26967cec2bc",
-    "https://esm.sh/v135/bn.js@5.2.1/denonext/bn.mjs": "7b05196c10ac134bef7c46d544930542f89584d4a6129ed84f7d77c3c2ef4086",
-    "https://esm.sh/v135/circom_runtime@0.1.24/denonext/circom_runtime.mjs": "cf069057c8d458f9bbdc750b13a4695ec05aff770c11b556fd9bd5d72cfe1086",
-    "https://esm.sh/v135/circomlibjs@0.1.7/denonext/circomlibjs.mjs": "33f9fd6925b5ad9ac9028019dd107a6cf452fa14a8011743c5a22fb1b2c28c93",
-    "https://esm.sh/v135/email-validator@2.0.4/denonext/email-validator.mjs": "70cdb0567678888647e7b779ded045801d716b7b699a3f7f56b1ef91cfd8d68c",
-    "https://esm.sh/v135/ethers@5.7.2/denonext/ethers.mjs": "522fa5828426aecd893cf2ff01eb99b441f52462be68fbd2ae041affd9364337",
-    "https://esm.sh/v135/ffjavascript@0.2.60/denonext/ffjavascript.mjs": "a12816ebb981f7f1b51bdb96fb1e068906027eb345c18ac4d64ab3316d48f56d",
-    "https://esm.sh/v135/ffjavascript@0.2.63/denonext/ffjavascript.mjs": "d5d91a103ba4b8d8297d5e5aae4ab1c5c2d1874f1775bb5098c6e6cb74bff007",
-    "https://esm.sh/v135/ffjavascript@0.3.0/denonext/ffjavascript.mjs": "0048f7379a43469340db89fee5f1d111b9106c3d6c1f94ed0a21825db8ef0fc0",
-    "https://esm.sh/v135/hash.js@1.1.7/denonext/hash.mjs": "3a16d1e7c3d7a0ce6da43f1a56bbe6d5b064e55b223469315c9850d90d7b90b7",
-    "https://esm.sh/v135/inherits@2.0.4/denonext/inherits.mjs": "8095f3d6aea060c904fb24ae50f2882779c0acbe5d56814514c8b5153f3b4b3b",
-    "https://esm.sh/v135/js-sha256@0.10.1/denonext/js-sha256.mjs": "3f19a73d794442e49bd351e975b3543665b0170866d4ce70d2e95fbb8ecd070f",
-    "https://esm.sh/v135/js-sha3@0.8.0/denonext/js-sha3.mjs": "cc8e0321b5ba16ea5d69b61be03c69b52b931fa529f7677b7045e0e8598ff8fc",
-    "https://esm.sh/v135/js-sha512@0.8.0/denonext/js-sha512.mjs": "f0419b4de5bece2fa4fcc64d6ccd702fd884adf49181db7a653c0fb7c5e91e15",
-    "https://esm.sh/v135/json-bigint@1.0.0/denonext/json-bigint.mjs": "51b2f93368973009d3ece79e6c9fb8d9527656ff32f492360d08c9255fbd967a",
-    "https://esm.sh/v135/lodash@4.17.21/denonext/lodash.mjs": "f04a5db09228738fd8cd06b6d1eaf3463b1b639d1529cf11673c3ac7bda1b1a8",
-    "https://esm.sh/v135/minimalistic-assert@1.0.1/denonext/minimalistic-assert.mjs": "9f5052e2c0ca7967ae65aee90db64a4f2014eebe14d6b774933e05d349c79c83",
-    "https://esm.sh/v135/nanoassert@2.0.0/denonext/nanoassert.mjs": "a39c6f75aeaa1cfbf6bf08f167cf3a02505e164a23e6e5bd57c6f4034ff853f5",
-    "https://esm.sh/v135/readable-stream@3.6.2/denonext/readable-stream.mjs": "35fc04c3200b796d676d0e83607fcfc150048bdcc5bdb7d5d836b5921049788f",
-    "https://esm.sh/v135/scrypt-js@3.0.1/denonext/scrypt-js.mjs": "b120b3e2119e193ae105c4a6c8c60d96db3ecfbaa26c701267a6d549fc1c346d",
-    "https://esm.sh/v135/url-join@4.0.1/denonext/url-join.mjs": "1d2b840f03b6a3aaaaaa56380ea7879740d376a1dd83511b5bcf8af6c4617e1e",
-    "https://esm.sh/v135/util-deprecate@1.0.2/denonext/util-deprecate.mjs": "f69f67cf655c38428b0934e0f7c865c055834a87cc3866b629d6b2beb21005e9",
-    "https://esm.sh/v135/uuid@9.0.1/denonext/uuid.mjs": "7d7d3aa57fa136e2540886654c416d9da10d8cfebe408bae47fd47070f0bfb2a",
-    "https://esm.sh/v135/wasmbuilder@0.0.16/denonext/wasmbuilder.mjs": "8c9e14c61a5588c75505e26b9cbcfdb47f51a092a4f20b4c73faa37a8aae3d27",
-    "https://esm.sh/v135/wasmcurves@0.2.2/denonext/wasmcurves.mjs": "703e4d623ecd3b250f4b1a04fd2d27b7ce0b33834bf3365b11f6dd5f807397c6",
-    "https://esm.sh/v135/web-worker@1.3.0/denonext/web-worker.mjs": "d6bd6ff0794395a9deb2035204e493a95da7bc64c03ec47a350e3fd774a3d941"
-  },
+  "remote": {},
   "workspace": {
     "dependencies": [
       "jsr:@libs/qrcode@^1.2.5",
