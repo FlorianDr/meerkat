@@ -8,7 +8,6 @@ import { constructZkTicketProofUrl } from "@pcd/zuauth/client";
 import env from "./env.ts";
 import type { Conference } from "./models/conferences.ts";
 import type { Event } from "./models/events.ts";
-import { randomBigInt } from "./utils/random-bigint.ts";
 
 export async function getZupassAddPCDURL(
   { conference, event, origin }: {
@@ -46,14 +45,12 @@ export async function getZupassAddPCDURL(
 }
 
 export function generateProofURL(
-  uid: string,
-  origin: string,
+  watermark: bigint,
+  returnUrl: string,
   config: PipelineEdDSATicketZuAuthConfig[],
 ) {
-  const watermark = randomBigInt();
-  const returnURL = new URL(`/events/${uid}/proof/${watermark}`, origin);
   const proofURL = constructZkTicketProofUrl({
-    returnUrl: returnURL.toString(),
+    returnUrl,
     fieldsToReveal: {
       revealTicketId: true,
       revealEventId: true,

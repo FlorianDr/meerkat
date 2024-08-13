@@ -20,6 +20,7 @@ import {
 import { createQuestion, getQuestionsByEventId } from "../models/questions.ts";
 import { generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
+import { randomBigInt } from "../utils/random-bigint.ts";
 
 const app = new Hono();
 
@@ -86,7 +87,13 @@ app.get("/events/:uid/qa", async (c) => {
     origin,
   });
 
-  const proofURL = generateProofURL(uid, origin, conference.zuAuthConfig);
+  const watermark = randomBigInt();
+  const returnUrl = new URL(`/events/${uid}/proof/${watermark}`, origin);
+  const proofURL = generateProofURL(
+    watermark,
+    returnUrl.toString(),
+    conference.zuAuthConfig,
+  );
 
   return c.html(
     <Layout>
