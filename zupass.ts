@@ -5,6 +5,7 @@ import {
 import { POD, podEntriesFromSimplifiedJSON } from "@pcd/pod";
 import { PODPCD, PODPCDPackage } from "@pcd/pod-pcd";
 import { constructZkTicketProofUrl } from "@pcd/zuauth/client";
+import { authenticate } from "@pcd/zuauth/server";
 import env from "./env.ts";
 import type { Conference } from "./models/conferences.ts";
 import type { Event } from "./models/events.ts";
@@ -60,4 +61,22 @@ export function generateProofURL(
     config,
   });
   return proofURL;
+}
+
+export async function checkProof(
+  proof: string,
+  watermark: bigint,
+  conference: Conference,
+) {
+  const ticketPCD = await authenticate(proof, {
+    watermark,
+    // For now, we have to use the watermark as the external nullifier
+    externalNullifier: watermark,
+    config: conference.zuAuthConfig,
+    fieldsToReveal: {
+      revealTicketId: true,
+      revealEventId: true,
+    },
+  });
+  return ticketPCD;
 }

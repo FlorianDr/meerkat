@@ -5,7 +5,6 @@ import { HTTPException } from "@hono/hono/http-exception";
 import { jwt, sign, verify } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
 import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
-import { authenticate } from "@pcd/zuauth/server";
 import { fromString, getSuffix } from "typeid-js";
 import Layout from "../components/Layout.tsx";
 import QR from "../components/QR.tsx";
@@ -18,7 +17,7 @@ import {
   getUserByZuTicketId,
 } from "../models/user.ts";
 import { createQuestion, getQuestionsByEventId } from "../models/questions.ts";
-import { generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
+import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
 
@@ -148,8 +147,6 @@ app.post(
       userId: user.id,
     });
 
-    console.info(`User ${user.id} asked question: ${questionText}`);
-
     return c.redirect(`/events/${uid}/qa`);
   },
 );
@@ -190,16 +187,7 @@ app.get("/events/:uid/proof/:watermark", async (c) => {
 
   let ticketPCD: ZKEdDSAEventTicketPCD;
   try {
-    ticketPCD = await authenticate(proofString, {
-      watermark,
-      // For now, we have to use the watermark as the external nullifier
-      externalNullifier: watermark,
-      config: conference.zuAuthConfig,
-      fieldsToReveal: {
-        revealTicketId: true,
-        revealEventId: true,
-      },
-    });
+    ticketPCD = await checkProof(proofString, BigInt(watermark), conference);
   } catch (error) {
     console.error(`Failed to authenticate: ${error}`);
     throw new HTTPException(400, {
