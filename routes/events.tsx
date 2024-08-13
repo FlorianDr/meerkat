@@ -23,7 +23,7 @@ import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 
 const app = new Hono();
 
-app.get("/:uid", async (c) => {
+app.get("/events/:uid", async (c) => {
   const uid = c.req.param("uid");
   const event = await getEventByUID(uid);
 
@@ -53,7 +53,7 @@ app.get("/:uid", async (c) => {
   );
 });
 
-app.get("/:uid/qa", async (c) => {
+app.get("/events/:uid/qa", async (c) => {
   const uid = c.req.param("uid");
   const event = await getEventByUID(uid);
 
@@ -108,7 +108,7 @@ app.get("/:uid/qa", async (c) => {
 const SUB_TYPE_ID = "user" as const;
 
 app.post(
-  "/:uid/questions",
+  "/events/:uid/questions",
   jwt({ secret: env.secret, cookie: "jwt" }),
   validator("form", (value, c) => {
     const question = value["question"];
@@ -147,7 +147,7 @@ app.post(
   },
 );
 
-app.get("/:uid/proof/:watermark", async (c) => {
+app.get("/events/:uid/proof/:watermark", async (c) => {
   const watermark = c.req.param("watermark");
 
   if (!watermark) {

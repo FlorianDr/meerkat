@@ -13,7 +13,7 @@ import { HTTPException } from "@hono/hono/http-exception";
 
 const app = new Hono();
 
-app.get("/", async (c) => {
+app.get("/api/v1/conferences", async (c) => {
   const conferences = await getConferences();
   return c.json({ data: conferences });
 });
@@ -34,42 +34,46 @@ app.post(
   },
 );
 
-app.get("/:id/events", bearerAuth({ token: env.adminToken }), async (c) => {
-  const conferenceId = parseInt(c.req.param("id"));
-  if (Number.isInteger(conferenceId) === false) {
-    throw new HTTPException(400, {
-      message: `Invalid conference id ${conferenceId}`,
-    });
-  }
+app.get(
+  "/api/v1/conferences/:id/events",
+  bearerAuth({ token: env.adminToken }),
+  async (c) => {
+    const conferenceId = parseInt(c.req.param("id"));
+    if (Number.isInteger(conferenceId) === false) {
+      throw new HTTPException(400, {
+        message: `Invalid conference id ${conferenceId}`,
+      });
+    }
 
-  const conference = await getConferenceById(conferenceId);
+    const conference = await getConferenceById(conferenceId);
 
-  if (!conference) {
-    throw new HTTPException(404, {
-      message: `Conference with id ${conferenceId} not found`,
-    });
-  }
+    if (!conference) {
+      throw new HTTPException(404, {
+        message: `Conference with id ${conferenceId} not found`,
+      });
+    }
 
-  const format = c.req.query("format");
+    const format = c.req.query("format");
 
-  if (format && format !== "csv") {
-    throw new HTTPException(400, { message: `Supported formats: csv` });
-  }
+    if (format && format !== "csv") {
+      throw new HTTPException(400, { message: `Supported formats: csv` });
+    }
 
-  const events = await getEvents(conferenceId);
+    const events = await getEvents(conferenceId);
 
-  if (format === "csv") {
-    c.header("Content-Type", "text/csv");
-    c.header(
-      "Content-Disposition",
-      `attachment; filename="${conference.name}.csv"`,
-    );
-    const origin = c.req.header("origin");
-    const responseText = createCsvResponse(origin ?? env.base, events);
-    return c.text(responseText);
-  }
-  return c.json({ data: events });
-});
+    if (format === "csv") {
+      c.header("Content-Type", "text/csv");
+      c.header(
+        "Content-Disposition",
+        `attachment; filename="${conference.name}.csv"`,
+      );
+      const origin = c.req.header("origin");
+      const responseText = createCsvResponse(origin ?? env.base, events);
+      return c.text(responseText);
+    }
+    return c.json({ data: events });
+  },
+);
 
 const eventCreateSchema = zod.object({
   code: zod.string(),
@@ -88,7 +92,7 @@ const eventCreateSchema = zod.object({
 const eventsCreateSchema = zod.array(eventCreateSchema).max(50);
 
 app.post(
-  "/:id/events",
+  "/api/v1/conferences/:id/events",
   bearerAuth({ token: env.adminToken }),
   zValidator("json", eventsCreateSchema),
   async (c) => {

@@ -6,7 +6,7 @@ import events from "./routes/events.tsx";
 const app = new Hono();
 
 app.use(logger());
-app.route("/api/v1/conferences", conferences);
-app.route("/events", events);
+app.route("/", conferences);
+app.route("/", events);
 
 export default app;
