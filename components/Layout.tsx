@@ -3,9 +3,11 @@ import type { FC } from "@hono/hono/jsx";
 
 const Layout: FC = ({ children }) => {
   return (
-    <html>
+    <html lang="en">
       <head>
-        <title>Meerkat</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Meerkat - engaging conferences</title>
       </head>
       <body>
         {children}
