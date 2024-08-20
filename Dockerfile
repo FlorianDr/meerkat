@@ -1,21 +1,27 @@
-FROM denoland/deno:1.45.5
-
-# The port that your application listens to.
-EXPOSE 8000
-
-# Prefer not to run as root.
-# TODO: Use non-root user if esbuild doesn't fail with permission errors.
-# USER deno
+FROM denoland/deno:1.45.5 AS builder
 
 WORKDIR /app
+
+COPY . .
+
+RUN deno task ui:cache && \
+	deno task ui:build
+
+FROM denoland/deno:1.45.5
+
+WORKDIR /app
+
+# Prefer not to run as root.
+# TODO: Enable when there is a way to run as non-root user.
+# USER deno
 
 ENV DENO_DIR=/app/.cache
 
 COPY . .
 
 RUN deno task api:cache && \
-		deno task api:patch:linux && \
-		deno task ui:cache && \
-		deno task ui:build
+		deno task api:patch:linux 
+
+COPY --from=builder /app/ui/dist /app/ui/dist
 
 CMD ["task", "api:start"]
