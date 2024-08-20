@@ -7,8 +7,8 @@ import { serveStatic } from "@hono/hono/deno";
 const app = new Hono();
 
 app.use(logger());
-app.use("*", serveStatic({ root: "./ui/dist" }));
 app.route("/", conferences);
 app.route("/", events);
+app.get("/*", serveStatic({ root: "./ui/dist" }));
 
 export default app;
