@@ -4,4 +4,5 @@ node_modules
 .env
 .cache
 .vite
+.secrets
 dist
