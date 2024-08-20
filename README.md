@@ -13,13 +13,12 @@ data.
 
 1. Copy `.env.example` to `.env` and update the values as needed.
 2. Start the database with `docker compose up -d`.
-3. Run database setup with `deno task db:setup`.
-4. Run database migration with `deno task db:migrate`.
-5. Seed the database with `./scripts/seed.sh`.
-6. Cache dependencies with `deno task cache`.
-7. Patch dependencies with `./scripts/patch-dependencies-macos.sh` or
-   `./scripts/patch-dependencies-linux.sh`.
-8. Start the local development server with `deno task dev`.
+3. Run database migration with `deno task db:migrate`.
+4. Seed the database with `deno task db:seed`.
+5. Cach dependencies with `deno task api:cache` and patch dependencies with
+   `deno task api:patch:mac` or `deno task:api:patch:linux`.
+6. Start the local development server with `deno task api:dev`.
+7. Open a second terminal and start the frontend with `deno task ui:dev`.
 
 Open your browser and visit
 [http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t](http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t)
