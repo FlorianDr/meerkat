@@ -1,4 +1,15 @@
-fly.toml
+.github
+.vite
+.vscode
+drizzle
+node_modules
+ui/dist
+.env
+.env.example
+.git
+.gitignore
 docker-compose.yaml
 drizzle.config.ts
+fly.toml
+LICENSE
 README.md
