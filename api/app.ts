@@ -1,14 +1,21 @@
 import { Hono } from "@hono/hono";
 import { logger } from "@hono/hono/logger";
-import conferences from "./routes/conferences.ts";
-import events from "./routes/events.tsx";
 import { serveStatic } from "@hono/hono/deno";
+import conferences from "./routes/conferences.ts";
+import users from "./routes/users.ts";
+import events from "./routes/events.tsx";
 
 const app = new Hono();
 
 app.use(logger());
+
 app.route("/", conferences);
+app.route("/", users);
 app.route("/", events);
-app.get("/*", serveStatic({ root: "./ui/dist" }));
+
+app.get(
+  "/events/:uid/qa",
+  serveStatic({ root: "./ui/dist", path: "/" }),
+);
 
 export default app;

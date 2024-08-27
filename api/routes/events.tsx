@@ -1,8 +1,8 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
-import { getCookie, setCookie } from "@hono/hono/cookie";
+import { setCookie } from "@hono/hono/cookie";
 import { HTTPException } from "@hono/hono/http-exception";
-import { jwt, sign, verify } from "@hono/hono/jwt";
+import { jwt, sign } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
 import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { fromString, getSuffix } from "typeid-js";
@@ -53,7 +53,7 @@ app.get("/events/:uid", async (c) => {
   );
 });
 
-app.get("/events/:uid/qa", async (c) => {
+app.get("/api/v1/events/:uid", async (c) => {
   const uid = c.req.param("uid");
   const event = await getEventByUID(uid);
 
@@ -69,52 +69,44 @@ app.get("/events/:uid/qa", async (c) => {
     });
   }
 
-  const cookieValue = getCookie(c, "jwt");
-  let userId: string | null = null;
-  if (cookieValue) {
-    const payload = await verify(cookieValue, env.secret);
-    userId = payload.sub as string;
-  }
-
   const questions = await getQuestionsByEventId(event.id);
 
   const origin = c.req.header("origin") ?? env.base;
 
-  const url = await getZupassAddPCDURL({
+  const collectURL = await getZupassAddPCDURL({
     conference,
     event,
     origin,
   });
 
   const watermark = randomBigInt();
-  const returnUrl = new URL(`/events/${uid}/proof/${watermark}`, origin);
+  const returnURL = new URL(`/api/v1/events/${uid}/proof/${watermark}`, origin);
   const proofURL = generateProofURL(
     watermark,
-    returnUrl.toString(),
+    returnURL.toString(),
     conference.zuAuthConfig,
   );
 
-  return c.html(
-    <Layout>
-      <h1>{event.title}</h1>
-      <div style={{ height: 300, width: 300 }}>
-        {questions.map(({ question }) => <div>{question}</div>)}
-      </div>
-      <a href={url.toString()} target="_blank">Collect event card</a>
-      <a href={proofURL}>Prove attendance</a>
-      {userId ? <p>Logged in as {userId}</p> : null}
-      <form method="POST" action={`/events/${uid}/questions`}>
-        <input type="text" name="question" />
-        <button type="submit">Submit</button>
-      </form>
-    </Layout>,
-  );
+  // Strips out internal fields
+  const { id: _id, conferenceId: _conferenceId, ...rest } = event;
+  const publicQuestions = questions.map((
+    { id: _id, eventId: _eventId, ...rest },
+  ) => rest);
+
+  return c.json({
+    data: {
+      ...rest,
+      questions: publicQuestions,
+      collectURL,
+      proofURL,
+    },
+  });
 });
 
 const SUB_TYPE_ID = "user" as const;
 
 app.post(
-  "/events/:uid/questions",
+  "/api/v1/events/:uid/questions",
   jwt({ secret: env.secret, cookie: "jwt" }),
   validator("form", (value, c) => {
     const question = value["question"];
@@ -136,6 +128,8 @@ app.post(
     const payload = c.get("jwtPayload");
     const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
     const user = await getUserByUID(getSuffix(userUID));
+    const origin = c.req.header("origin") ?? env.base;
+    const redirect = new URL(`/events/${uid}/qa`, origin);
 
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });
@@ -147,11 +141,11 @@ app.post(
       userId: user.id,
     });
 
-    return c.redirect(`/events/${uid}/qa`);
+    return c.redirect(redirect.toString());
   },
 );
 
-app.get("/events/:uid/proof/:watermark", async (c) => {
+app.get("/api/v1/events/:uid/proof/:watermark", async (c) => {
   const watermark = c.req.param("watermark");
 
   if (!watermark) {
@@ -225,7 +219,9 @@ app.get("/events/:uid/proof/:watermark", async (c) => {
     sameSite: "Lax",
   });
 
-  return c.redirect(`${origin}/events/${uid}/qa`);
+  const redirect = new URL(`/events/${uid}/qa`, origin);
+
+  return c.redirect(redirect.toString());
 });
 
 export default app;
