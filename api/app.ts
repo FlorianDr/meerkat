@@ -15,7 +15,12 @@ app.route("/", events);
 
 app.get(
   "/events/:uid/qa",
-  serveStatic({ root: "./ui/dist", path: "/" }),
+  serveStatic({ path: "./ui/dist/index.html" }),
+);
+
+app.get(
+  "/assets/*",
+  serveStatic({ root: "./ui/dist/" }),
 );
 
 export default app;
