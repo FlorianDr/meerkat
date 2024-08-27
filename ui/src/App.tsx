@@ -2,7 +2,6 @@ import { Button, Flex, Heading, Input, Link } from "@chakra-ui/react";
 import { parseUid } from "./route.ts";
 import { useUser } from "./hooks/use-user.ts";
 import { useEvent } from "./hooks/use-event.ts";
-import "./index.css";
 
 function App() {
   const url = new URL(window.location.href);
