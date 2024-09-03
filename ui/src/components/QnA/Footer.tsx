@@ -1,14 +1,14 @@
 import { Button, Flex, Input, Link } from "@chakra-ui/react";
 import { useUser } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
-import "./index.css";
+import styles from "./styles.module.css";
 
 export function Footer({ event }: { event: Event | undefined }) {
   const { data: user, isLoading: isLoadingUser } = useUser();
   const isAuthenticated = !isLoadingUser && !!user;
 
   return (
-    <footer className="footer">
+    <footer className={styles["footer"]}>
       <form method="POST" action={`/api/v1/events/${event?.uid}/questions`}>
         <Flex gap={4}>
           <Input
