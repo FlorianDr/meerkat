@@ -1,8 +1,8 @@
 import { useEvent } from "../../hooks/use-event.ts";
 import { parseUid } from "../../route.ts";
+import { Question } from "../Question/index.tsx";
 import { Footer } from "./Footer.tsx";
 import { Header } from "./Header.tsx";
-import { Main } from "./Main.tsx";
 
 export function QnA() {
   const url = new URL(window.location.href);
@@ -12,7 +12,7 @@ export function QnA() {
   return (
     <div className="layout">
       <Header event={event} />
-      <Main event={event} />
+      <Question event={event} />
       <Footer event={event} />
     </div>
   );

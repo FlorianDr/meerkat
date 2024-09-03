@@ -3,7 +3,7 @@ import { ArrowUpIcon } from "@chakra-ui/icons";
 import { Event } from "../../hooks/use-event.ts";
 import "./index.css";
 
-export function Main({ event }: { event: Event | undefined }) {
+export function Question({ event }: { event: Event | undefined }) {
   return (
     <main className="content">
       <ol>
