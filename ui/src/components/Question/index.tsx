@@ -1,20 +1,20 @@
 import { Heading, IconButton } from "@chakra-ui/react";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { Event } from "../../hooks/use-event.ts";
-import styles from "./styles.module.css";
+import "./styles.css";
 
 export function Question({ event }: { event: Event | undefined }) {
   return (
-    <main className={styles["content"]}>
+    <main className="content">
       <ol>
         {event?.questions.map((question) => (
-          <li key={question.uid} className={styles["bubble"]}>
+          <li key={question.uid} className="bubble">
             <Heading as="h3" color="white" size="sm" mb={2}>
               {question.question}
             </Heading>
             <div>Hello! How can I improve my programming skills?</div>
-            <div className={styles["upvote-section"]}>
-              <div className={styles["upvote-count"]}>5</div>
+            <div className="upvote-section">
+              <div className="upvote-count">5</div>
               <IconButton
                 ml={1}
                 icon={<ArrowUpIcon />}

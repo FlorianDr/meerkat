@@ -9,14 +9,14 @@ import { Icon } from "@chakra-ui/icons";
 import { useUser } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { Login } from "./Login.tsx";
-import styles from "./styles.module.css";
+import "./styles.css";
 
 export function Footer({ event }: { event: Event | undefined }) {
   const { data: user, isLoading: isLoadingUser } = useUser();
   const isAuthenticated = !isLoadingUser && !!user;
 
   return (
-    <footer className={styles["footer"]} style={{ position: "relative" }}>
+    <footer className="footer" style={{ position: "relative" }}>
       <form method="POST" action={`/api/v1/events/${event?.uid}/questions`}>
         <Flex gap={4}>
           <InputGroup size="md">
