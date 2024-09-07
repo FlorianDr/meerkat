@@ -13,14 +13,10 @@ app.route("/", conferences);
 app.route("/", users);
 app.route("/", events);
 
-app.get(
-  "/events/:uid/qa",
-  serveStatic({ path: "./ui/dist/index.html" }),
-);
+app.get("/events/:uid/qa", serveStatic({ path: "./ui/dist/index.html" }));
+app.get("/assets/*", serveStatic({ root: "./ui/dist/" }));
 
-app.get(
-  "/assets/*",
-  serveStatic({ root: "./ui/dist/" }),
-);
+// TODO: fix this
+app.get("/style", serveStatic({ path: "./api/components/index.css" }));
 
 export default app;

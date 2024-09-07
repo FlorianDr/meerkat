@@ -8,6 +8,7 @@ import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { fromString, getSuffix } from "typeid-js";
 import Layout from "../components/Layout.tsx";
 import QR from "../components/QR.tsx";
+import TopQuestions from "../components/TopQuestions.tsx";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { getEventByUID } from "../models/events.ts";
@@ -42,13 +43,16 @@ app.get("/events/:uid", async (c) => {
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/events/${uid}/qa`, origin);
 
+  const questions = await getQuestionsByEventId(event.id);
+
   return c.html(
     <Layout>
-      <h1>{event.title}</h1>
-      <div style={{ height: 300, width: 300 }}>
-        <QR url={url} />
+      <div className="top-questions-container">
+        <TopQuestions questions={questions} />
       </div>
-      <span>Scan above QR code to join the discussion</span>
+      <div className="qr-container">
+        <QR url={url} event={event} conferenceName={conference.name} />
+      </div>
     </Layout>,
   );
 });
@@ -89,9 +93,9 @@ app.get("/api/v1/events/:uid", async (c) => {
 
   // Strips out internal fields
   const { id: _id, conferenceId: _conferenceId, ...rest } = event;
-  const publicQuestions = questions.map((
-    { id: _id, eventId: _eventId, ...rest },
-  ) => rest);
+  const publicQuestions = questions.map(
+    ({ id: _id, eventId: _eventId, ...rest }) => rest,
+  );
 
   return c.json({
     data: {
@@ -199,10 +203,7 @@ app.get("/api/v1/events/:uid/proof/:watermark", async (c) => {
   let user = await getUserByZuTicketId(ticketId);
 
   if (!user) {
-    user = await createUserFromZuTicketId(
-      conference.id,
-      ticketId,
-    );
+    user = await createUserFromZuTicketId(conference.id, ticketId);
   }
 
   const origin = c.req.header("origin") ?? env.base;

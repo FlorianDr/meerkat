@@ -1,0 +1,157 @@
+html,
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(
+    218.34deg,
+    rgba(175, 177, 245, 0.86) 22.08%,
+    #854fe3 90.71%
+  );
+}
+
+h2 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+ol,
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  & > li {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.layout {
+  display: grid;
+  height: 100vh;
+  grid-template-areas: "top-questions-container qr-container";
+  margin: 0;
+}
+
+.top-questions-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: linear-gradient(
+    218.34deg,
+    rgba(50, 51, 77, 0.86) 22.08%,
+    #2a1059 90.71%
+  );
+  color: white;
+  /* padding: 2rem; */
+}
+
+.qr-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: black;
+  /* padding: 2rem; */
+}
+
+/* TopQuestions */
+
+.top-questions-layout {
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  max-height: calc(100vh - 4rem);
+  margin: 2rem;
+  height: 38rem;
+}
+/* TopQuestions - Header */
+
+.header {
+  display: flex;
+  justify-content: center;
+}
+
+.header-title {
+  margin-bottom: 1.5rem;
+}
+
+.question-count {
+  font-weight: 400;
+}
+/* TopQuestions - Content */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  max-height: 32rem;
+}
+
+.bubble {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  padding: 1rem 1rem 1rem 1rem;
+  margin-bottom: 1.125rem;
+  position: relative;
+}
+
+.upvote-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.upvote-count {
+  display: inline;
+  color: white;
+  font-weight: 100;
+  margin-right: 0.25rem;
+  line-height: 1rem;
+}
+
+/* TopQuestions - Footer */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* QR */
+
+.qr-layout {
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  margin: 2rem;
+  width: 28rem;
+  height: 38rem;
+  max-height: calc(100vh - 4rem);
+}
+
+/* QR - Header */
+.qr-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* QR - Content */
+
+.qr-conentet {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* QR - Footer */
+
+.qr-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}

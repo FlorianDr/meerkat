@@ -1,7 +1,6 @@
 import { Heading, IconButton } from "@chakra-ui/react";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { Event } from "../../hooks/use-event.ts";
-import "./styles.css";
 
 export function Question({ event }: { event: Event | undefined }) {
   return (
@@ -23,6 +22,8 @@ export function Question({ event }: { event: Event | undefined }) {
                 colorScheme="whiteAlpha"
                 fontSize="1.5rem"
                 top="0.1rem"
+                p={0}
+                m={0}
                 _hover={{ bg: "none" }}
               />
             </div>

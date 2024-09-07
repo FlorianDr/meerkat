@@ -1,8 +1,8 @@
-import { useEvent } from "../../hooks/use-event.ts";
-import { parseUid } from "../../route.ts";
-import { Question } from "../Question/index.tsx";
-import { Footer } from "./Footer.tsx";
-import { Header } from "./Header.tsx";
+import { useEvent } from "../hooks/use-event.ts";
+import { parseUid } from "../route.ts";
+import { Question } from "../components/QnA/Questions.tsx";
+import { Footer } from "../components/QnA/Footer.tsx";
+import { Header } from "../components/QnA/Header.tsx";
 
 export function QnA() {
   const url = new URL(window.location.href);

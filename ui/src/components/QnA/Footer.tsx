@@ -9,7 +9,6 @@ import { Icon } from "@chakra-ui/icons";
 import { useUser } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { Login } from "./Login.tsx";
-import "./styles.css";
 
 export function Footer({ event }: { event: Event | undefined }) {
   const { data: user, isLoading: isLoadingUser } = useUser();
@@ -21,7 +20,7 @@ export function Footer({ event }: { event: Event | undefined }) {
         <Flex gap={4}>
           <InputGroup size="md">
             <Input
-              disabled={!isAuthenticated}
+              disabled={isAuthenticated}
               placeholder={
                 !isAuthenticated
                   ? "Please, login before submitting a question!"
