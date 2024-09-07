@@ -89,22 +89,23 @@ ul {
 .bubble {
   background-color: #191919;
   border-radius: 5px;
-  padding: 1rem 1rem 2rem 1rem;
+  padding: 1rem 1rem 1rem 1rem;
   margin-bottom: 1rem;
   position: relative;
 }
 
 .upvote-section {
-  right: 0.5rem;
-  top: 3.5rem;
   display: flex;
   align-items: center;
   justify-content: end;
+  right: 0.5rem;
+  top: 3.5rem;
+  margin-top: 0.5rem;
 }
 
 .upvote-count {
-  font-size: 1.2rem;
   display: inline;
-  top: 0.5rem;
+  margin-top: 0.35rem;
+  margin-right: 0.25rem;
   color: white;
 }

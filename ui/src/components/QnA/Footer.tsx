@@ -20,7 +20,7 @@ export function Footer({ event }: { event: Event | undefined }) {
         <Flex gap={4}>
           <InputGroup size="md">
             <Input
-              disabled={isAuthenticated}
+              disabled={!isAuthenticated}
               placeholder={!isAuthenticated
                 ? "Please, login before submitting a question!"
                 : "Type a question..."}

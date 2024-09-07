@@ -15,15 +15,15 @@ export function Question({ event }: { event: Event | undefined }) {
             <div className="upvote-section">
               <div className="upvote-count">5</div>
               <IconButton
-                ml={1}
                 icon={<ArrowUpIcon />}
                 aria-label="Upvote"
                 variant="ghost"
-                colorScheme="whiteAlpha"
+                colorScheme="white"
                 fontSize="1.5rem"
                 top="0.1rem"
                 p={0}
                 m={0}
+                size="xs"
                 _hover={{ bg: "none" }}
               />
             </div>
