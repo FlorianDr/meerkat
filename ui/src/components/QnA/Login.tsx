@@ -1,10 +1,10 @@
 import {
   Button,
-  Flex,
   Drawer,
-  DrawerOverlay,
-  DrawerContent,
   DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
   Heading,
   Link,
   useDisclosure,
@@ -23,11 +23,9 @@ export function Login({ user, isAuthenticated, event }: LoginProps) {
 
   return (
     <>
-      {isAuthenticated ? (
-        <>Signed with uid {user?.uid}</>
-      ) : (
-        <Link onClick={onOpen}>Login</Link>
-      )}
+      {isAuthenticated
+        ? <>Signed with uid {user?.uid}</>
+        : <Link onClick={onOpen}>Login</Link>}
       <Drawer
         isOpen={isOpen}
         placement="bottom"

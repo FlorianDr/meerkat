@@ -1,9 +1,9 @@
 import {
   Flex,
+  IconButton,
   Input,
   InputGroup,
   InputRightElement,
-  IconButton,
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icons";
 import { useUser } from "../../hooks/use-user.ts";
@@ -21,11 +21,9 @@ export function Footer({ event }: { event: Event | undefined }) {
           <InputGroup size="md">
             <Input
               disabled={isAuthenticated}
-              placeholder={
-                !isAuthenticated
-                  ? "Please, login before submitting a question!"
-                  : "Type a question..."
-              }
+              placeholder={!isAuthenticated
+                ? "Please, login before submitting a question!"
+                : "Type a question..."}
               name="question"
               bg="#191919"
               color="white"

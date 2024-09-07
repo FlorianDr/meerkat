@@ -2,7 +2,6 @@ import { Heading } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
 
 export function Header({ event }: { event: Event | undefined }) {
-  const upVotes = () => {};
   return (
     <header className="header">
       <div className="title-section">
