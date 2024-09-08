@@ -6,64 +6,11 @@ import { Event } from "../models/events.ts";
 // TODO: move to a separate file once agreed on structure
 const QrFrame: FC = () => {
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "0",
-        left: "0",
-        right: "0",
-        bottom: "0",
-        pointerEvents: "none",
-      }}
-    >
-      {/* Top-left corner */}
-      <div
-        style={{
-          position: "absolute",
-          top: "0",
-          left: "0",
-          width: "6rem",
-          height: "6rem",
-          borderTop: "0.6rem solid black",
-          borderLeft: "0.6rem solid black",
-        }}
-      />
-      {/* Top-right corner */}
-      <div
-        style={{
-          position: "absolute",
-          top: "0",
-          right: "0",
-          width: "6rem",
-          height: "6rem",
-          borderTop: "0.6rem solid black",
-          borderRight: "0.6rem solid black",
-        }}
-      />
-      {/* Bottom-left corner */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "0",
-          left: "0",
-          width: "6rem",
-          height: "6rem",
-          borderBottom: "0.6rem solid black",
-          borderLeft: "0.6rem solid black",
-        }}
-      />
-      {/* Bottom-right corner */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "0",
-          right: "0",
-          width: "6rem",
-          height: "6rem",
-          borderBottom: "0.6rem solid black",
-          borderRight: "0.6rem solid black",
-        }}
-      />
+    <div className="qr-frame">
+      <div className="qr-corner qr-corner-top-left" />
+      <div className="qr-corner qr-corner-top-right" />
+      <div className="qr-corner qr-corner-bottom-left" />
+      <div className="qr-corner qr-corner-bottom-right" />
     </div>
   );
 };
