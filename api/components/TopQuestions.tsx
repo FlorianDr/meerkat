@@ -12,7 +12,7 @@ const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
 
   return (
     <div className="top-questions-layout">
-      <header className="header">
+      <header className="top-questions-header">
         <h2 className="header-title">
           Top Questions{" "}
           <span className="question-count">
@@ -20,11 +20,11 @@ const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
           </span>
         </h2>
       </header>
-      <main className="content">
+      <main className="top-questions-content">
         <ol>
           {questions.map((question) => (
             <li key={question.uid} className="bubble">
-              <h2 as="h2" color="white" size="sm" mb={2}>
+              <h2>
                 {question.question}
               </h2>
               <div>Hello! How can I improve my programming skills?</div>
@@ -36,11 +36,11 @@ const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
           ))}
         </ol>
       </main>
-      <footer className="footer">
-        <h2 as="h1" color="white" size="md" mb={1.5}>
+      <footer className="top-questions-footer">
+        <h2>
           Attendees <span className="question-count">(121)</span>
         </h2>
-        <h2 as="h1" color="white" size="md" mb={1.5}>
+        <h2>
           Votes <span className="question-count">(53)</span>
         </h2>
       </footer>

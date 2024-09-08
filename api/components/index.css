@@ -67,7 +67,7 @@ ul {
 }
 /* TopQuestions - Header */
 
-.header {
+.top-questions-header {
   display: flex;
   justify-content: center;
 }
@@ -81,7 +81,7 @@ ul {
 }
 /* TopQuestions - Content */
 
-.content {
+.top-questions-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -113,7 +113,7 @@ ul {
 
 /* TopQuestions - Footer */
 
-.footer {
+.top-questions-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,6 +129,10 @@ ul {
   width: 28rem;
   height: 38rem;
   max-height: calc(100vh - 4rem);
+}
+
+.qr-border {
+  border: 1px solid black;
 }
 
 /* QR - Header */
@@ -154,4 +158,49 @@ ul {
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
+}
+
+/* QR - Frame */
+
+.qr-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.qr-corner {
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
+.qr-corner-top-left {
+  top: 0;
+  left: 0;
+  border-top: 0.6rem solid black;
+  border-left: 0.6rem solid black;
+}
+
+.qr-corner-top-right {
+  top: 0;
+  right: 0;
+  border-top: 0.6rem solid black;
+  border-right: 0.6rem solid black;
+}
+
+.qr-corner-bottom-left {
+  bottom: 0;
+  left: 0;
+  border-bottom: 0.6rem solid black;
+  border-left: 0.6rem solid black;
+}
+
+.qr-corner-bottom-right {
+  bottom: 0;
+  right: 0;
+  border-bottom: 0.6rem solid black;
+  border-right: 0.6rem solid black;
 }
