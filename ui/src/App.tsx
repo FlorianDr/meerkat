@@ -6,7 +6,7 @@ import { parseUid } from "./route.ts";
 const routes = (currentPath: string) => {
   const routeConfig = [
     {
-      regex: /^\/events\/(?<uid>[^/]+)\/qa\/collect$/,
+      regex: /^\/events\/(?<uid>[^/]+)\/collect$/,
       component: CollectCard,
     },
     { regex: /^\/events\/(?<uid>[^/]+)\/qa$/, component: QnA },
