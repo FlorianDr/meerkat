@@ -46,8 +46,8 @@ const QR: FC<{ url: URL; event: Event | null; conferenceName: string }> = ({
         <QrFrame />
       </main>
       <footer className="qr-footer">
-        <h2 as="h1">{conferenceName}</h2>
-        <h2 as="h1">
+        <h2>{conferenceName}</h2>
+        <h2>
           {/* QUESTION: Is it today? */}
           {new Date().toLocaleDateString("en-US", {
             month: "long",

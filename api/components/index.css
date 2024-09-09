@@ -31,7 +31,7 @@ ul {
 .layout {
   display: grid;
   height: 100vh;
-  grid-template-areas: "top-questions-container qr-container";
+  grid-template-columns: repeat(2, 1fr);
   margin: 0;
 }
 
@@ -144,7 +144,7 @@ ul {
 /* QR - Content */
 
 .qr-conentet {
-  padding: 16px;
+  padding: 0.8rem;
   display: flex;
   justify-content: center;
   align-items: center;
