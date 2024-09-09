@@ -25,5 +25,6 @@ export const useUser = () => {
     data: data?.data,
     error,
     isLoading,
+    isAuthenticated: !isLoading && !!data,
   };
 };

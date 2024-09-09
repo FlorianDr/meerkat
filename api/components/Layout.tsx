@@ -7,10 +7,11 @@ const Layout: FC = ({ children }) => {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/index.css" />
         <title>Meerkat - engaging conferences</title>
       </head>
       <body>
-        {children}
+        <div className="layout">{children}</div>
       </body>
     </html>
   );
