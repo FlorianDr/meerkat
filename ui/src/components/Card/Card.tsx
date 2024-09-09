@@ -1,6 +1,7 @@
-import { Button, Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
 import { useUser } from "../../hooks/use-user.ts";
+import { PrimaryButton } from "../Buttons/PrimaryButton";
 
 export const Card = ({ event }: { event: Event | undefined }) => {
   const { data: user, isAuthenticated } = useUser();
@@ -33,29 +34,13 @@ export const Card = ({ event }: { event: Event | undefined }) => {
           )}
       </div>
       <Flex direction="column" align="center">
-        <Button
-          isDisabled={!isAuthenticated}
+        <PrimaryButton
+          text="COLLECT"
           onClick={() => {
-            globalThis.open(event?.proofURL, "_blank");
+            console.log("clicked");
           }}
-          width="12rem"
-          bg="linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)"
-          _active={{
-            bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
-          }}
-          _hover={{ opacity: isAuthenticated ? 0.8 : 1 }}
-          _disabled={{
-            bg:
-              "linear-gradient(90deg, rgba(136,116,170,0.5) 0%, rgba(83,160,243,0.5) 139%)",
-            opacity: 0.6,
-            cursor: "not-allowed",
-          }}
-          color="white"
-          fontWeight="bold"
-          py={6}
-        >
-          COLLECT
-        </Button>
+          isDisabled={!isAuthenticated}
+        />
       </Flex>
     </main>
   );

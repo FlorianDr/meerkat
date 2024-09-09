@@ -1,5 +1,4 @@
 import {
-  Button,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -11,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { User } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
+import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 interface LoginProps {
   user: User | undefined;
@@ -50,22 +50,12 @@ export function Login({ user, isAuthenticated, event }: LoginProps) {
               <Heading as="h1" color="white" size="sm" mb={8}>
                 Login to participate:
               </Heading>
-              <Button
+              <PrimaryButton
+                text="LOGIN"
                 onClick={() => {
                   globalThis.open(event?.proofURL, "_blank");
                 }}
-                width="16rem"
-                bg="linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)"
-                _active={{
-                  bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
-                }}
-                _hover={{ opacity: 0.8 }}
-                color="white"
-                fontWeight="bold"
-                py={6}
-              >
-                LOGIN
-              </Button>
+              />
             </Flex>
           </DrawerBody>
         </DrawerContent>
