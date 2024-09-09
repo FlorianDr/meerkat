@@ -1,6 +1,8 @@
 import { Button } from "@chakra-ui/react";
+import { useNavigateCallback } from "../../hooks/use-navigate-callback.ts";
 
 export function CollectButton({ eventUID }: { eventUID: string }) {
+  const navigate = useNavigateCallback(`/events/${eventUID}/qa/collect`);
   return (
     <Button
       bg="none"
@@ -17,14 +19,7 @@ export function CollectButton({ eventUID }: { eventUID: string }) {
       _active={{
         bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
       }}
-      onClick={() => {
-        globalThis.history.pushState(
-          {},
-          "",
-          `/events/${eventUID}/qa/collect`,
-        );
-        globalThis.dispatchEvent(new globalThis.Event("popstate"));
-      }}
+      onClick={navigate}
       type="button"
     >
       Collect
