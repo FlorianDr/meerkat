@@ -4,12 +4,6 @@ import { Question } from "../models/questions.ts";
 import { ArrowUpIcon } from "./assets/arrow-up.ts";
 
 const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
-  // QUESTION:
-  // 1. do we want questions to be scrollable?  currently - `overflow-y: scroll` ;
-  // 2. What if the length of the question requires line breaks?
-  // TODO: remove
-  questions = [...questions, ...questions, ...questions, ...questions];
-
   return (
     <div className="top-questions-layout">
       <header className="top-questions-header">

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { parseUid } from "../utils/route.ts";
 
+interface RouteConfig {
+  regex: RegExp;
+  component: React.FC<{ uid: string }>;
+}
+
 const routes = (currentPath: string, routeConfig: RouteConfig[]) => {
   const matchedRoute = routeConfig.find((route) =>
     currentPath.match(route.regex)
@@ -13,11 +18,6 @@ const routes = (currentPath: string, routeConfig: RouteConfig[]) => {
 
   return <div>404</div>;
 };
-
-interface RouteConfig {
-  regex: RegExp;
-  component: React.FC<{ uid: string }>;
-}
 
 export function useRoutes(routeConfig: RouteConfig[]) {
   const [currentPath, setCurrentPath] = useState(globalThis.location.pathname);
