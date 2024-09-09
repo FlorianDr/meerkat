@@ -1,6 +1,4 @@
-const routeRegex = /\/events\/(?<uid>[^/]+)\/qa/;
-
-export const parseUid = (url: URL) => {
-  const match = routeRegex.exec(url.pathname);
+export const parseUid = (url: URL, regex: RegExp) => {
+  const match = regex.exec(url.pathname);
   return match?.groups?.uid;
 };

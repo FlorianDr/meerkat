@@ -19,7 +19,9 @@ export function Header(
           <Heading as="h2" size="md" fontWeight="thin">
             Vitalik Buterin
           </Heading>
-          {buttonToRender === "kudos" ? <KudosButton /> : <CollectButton />}
+          {buttonToRender === "kudos"
+            ? <KudosButton />
+            : <CollectButton eventUID={event?.uid ?? ""} />}
         </Flex>
       </div>
       <div className="stats-section">

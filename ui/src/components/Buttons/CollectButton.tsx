@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
-export function CollectButton() {
+export function CollectButton({ eventUID }: { eventUID: string }) {
   return (
     <Button
       bg="none"
@@ -18,13 +18,12 @@ export function CollectButton() {
         bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
       }}
       onClick={() => {
-        console.log("clicked");
-        // globalThis.history.pushState(
-        //   {},
-        //   "",
-        //   "/events/01j4yc358mf4xrd5aqj8kvj75t/qa/collect",
-        // );
-        // globalThis.dispatchEvent(new globalThis.Event("popstate"));
+        globalThis.history.pushState(
+          {},
+          "",
+          `/events/${eventUID}/qa/collect`,
+        );
+        globalThis.dispatchEvent(new globalThis.Event("popstate"));
       }}
       type="button"
     >
