@@ -11,8 +11,7 @@ import { Event } from "../../hooks/use-event.ts";
 import { Login } from "./Login.tsx";
 
 export function Footer({ event }: { event: Event | undefined }) {
-  const { data: user, isLoading: isLoadingUser } = useUser();
-  const isAuthenticated = !isLoadingUser && !!user;
+  const { data: user, isAuthenticated } = useUser();
 
   return (
     <footer className="footer" style={{ position: "relative" }}>
