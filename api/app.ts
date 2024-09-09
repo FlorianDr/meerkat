@@ -17,6 +17,6 @@ app.get("/events/:uid/qa", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/assets/*", serveStatic({ root: "./ui/dist/" }));
 
 // TODO: fix this
-app.get("/style", serveStatic({ path: "./api/components/index.css" }));
+app.get("/index.css", serveStatic({ path: "./api/components/index.css" }));
 
 export default app;
