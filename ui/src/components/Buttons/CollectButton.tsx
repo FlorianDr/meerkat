@@ -1,10 +1,11 @@
 import { Button } from "@chakra-ui/react";
 import { useNavigateCallback } from "../../hooks/use-navigate-callback.ts";
 
-export function CollectButton({ eventUID }: { eventUID: string }) {
-  const navigate = useNavigateCallback(`/events/${eventUID}/qa/collect`);
+export function CollectButton({ eventUID }: { eventUID: string | undefined }) {
+  const navigate = useNavigateCallback(`/events/${eventUID}/collect`);
   return (
     <Button
+      isDisabled={!eventUID}
       bg="none"
       p={2}
       size="sm"

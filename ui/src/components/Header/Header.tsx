@@ -21,7 +21,7 @@ export function Header(
           </Heading>
           {buttonToRender === "kudos"
             ? <KudosButton />
-            : <CollectButton eventUID={event?.uid ?? ""} />}
+            : <CollectButton eventUID={event?.uid} />}
         </Flex>
       </div>
       <div className="stats-section">
