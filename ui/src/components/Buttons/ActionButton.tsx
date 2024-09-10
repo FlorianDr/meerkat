@@ -1,8 +1,17 @@
 import { Button } from "@chakra-ui/react";
 
-export function KudosButton() {
+export interface ActionButtonProps {
+  text: string;
+  onClick: () => void;
+  isDisabled?: boolean;
+}
+
+export function ActionButton(
+  { text, onClick, isDisabled }: ActionButtonProps,
+) {
   return (
     <Button
+      isDisabled={isDisabled}
       bg="none"
       p={2}
       size="sm"
@@ -17,9 +26,10 @@ export function KudosButton() {
       _active={{
         bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
       }}
+      onClick={onClick}
       type="button"
     >
-      Kudos
+      {text}
     </Button>
   );
 }

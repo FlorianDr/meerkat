@@ -1,14 +1,12 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
-import { KudosButton } from "../Buttons/KudosButton.tsx";
-import { CollectButton } from "../Buttons/CollectButton.tsx";
 
-export function Header(
-  { event, buttonToRender = "kudos" }: {
-    event: Event | undefined;
-    buttonToRender?: "kudos" | "collect";
-  },
-) {
+interface HeaderProps {
+  event: Event | undefined;
+  actionButton: JSX.Element;
+}
+
+export function Header({ event, actionButton }: HeaderProps) {
   return (
     <header className="header">
       <div className="title-section">
@@ -19,9 +17,7 @@ export function Header(
           <Heading as="h2" size="md" fontWeight="thin">
             Vitalik Buterin
           </Heading>
-          {buttonToRender === "kudos"
-            ? <KudosButton />
-            : <CollectButton eventUID={event?.uid} />}
+          {actionButton}
         </Flex>
       </div>
       <div className="stats-section">
