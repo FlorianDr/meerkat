@@ -11,7 +11,6 @@ export function Question({ event }: { event: Event | undefined }) {
             <Heading as="h3" color="white" size="sm" mb={2}>
               {question.question}
             </Heading>
-            <div>Hello! How can I improve my programming skills?</div>
             <div className="upvote-section">
               <div className="upvote-count">5</div>
               <UpVoteButton />

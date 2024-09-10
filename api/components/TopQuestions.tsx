@@ -21,7 +21,6 @@ const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
               <h2>
                 {question.question}
               </h2>
-              <div>Hello! How can I improve my programming skills?</div>
               <div className="upvote-section">
                 <div className="upvote-count">5</div>
                 <div dangerouslySetInnerHTML={{ __html: ArrowUpIcon }} />
