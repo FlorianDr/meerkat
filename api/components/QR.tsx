@@ -24,6 +24,9 @@ const QR: FC<{ url: URL; event: Event | null; conferenceName: string }> = ({
   const svg = qrcode(url, { output: "svg", border: 0 }).replace(
     '<rect width="100%" height="100%" fill="white"/>',
     '<rect width="100%" height="100%" fill="none"/>',
+  ).replace(
+    'viewBox="0 0 33 33"',
+    'viewBox="0 0 33 33" style="width: 100%; height: 100%;"',
   );
 
   return (
