@@ -14,7 +14,7 @@ export type Event = {
   track: string | null;
   cover: string | null;
   questions: Question[];
-  collectUrl: string;
+  collectURL: string;
   proofURL: string;
 };
 

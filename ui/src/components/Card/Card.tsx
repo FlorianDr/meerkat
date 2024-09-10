@@ -1,4 +1,4 @@
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading, Link } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
 import { useUser } from "../../hooks/use-user.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
@@ -34,13 +34,7 @@ export const Card = ({ event }: { event: Event | undefined }) => {
           )}
       </div>
       <Flex direction="column" align="center">
-        <PrimaryButton
-          text="COLLECT"
-          isDisabled={!isAuthenticated}
-          onClick={() => {
-            console.log("clicked");
-          }}
-        />
+        <Link href={event?.collectURL}>Collect</Link>
       </Flex>
     </main>
   );
