@@ -1,7 +1,11 @@
 import { Button } from "@chakra-ui/react";
 
 export function PrimaryButton(
-  { text, onClick }: { text: string; onClick: () => void },
+  { text, onClick, isDisabled }: {
+    text: string;
+    onClick: () => void;
+    isDisabled: boolean;
+  },
 ) {
   return (
     <Button
@@ -15,6 +19,7 @@ export function PrimaryButton(
       color="white"
       fontWeight="bold"
       py={6}
+      isDisabled={isDisabled}
     >
       {text}
     </Button>

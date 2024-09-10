@@ -1,6 +1,6 @@
-import { Heading, IconButton } from "@chakra-ui/react";
-import { ArrowUpIcon } from "@chakra-ui/icons";
+import { Heading } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
+import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 
 export function Question({ event }: { event: Event | undefined }) {
   return (
@@ -14,18 +14,7 @@ export function Question({ event }: { event: Event | undefined }) {
             <div>Hello! How can I improve my programming skills?</div>
             <div className="upvote-section">
               <div className="upvote-count">5</div>
-              <IconButton
-                icon={<ArrowUpIcon />}
-                aria-label="Upvote"
-                variant="ghost"
-                colorScheme="white"
-                fontSize="1.5rem"
-                top="0.1rem"
-                p={0}
-                m={0}
-                size="xs"
-                _hover={{ bg: "none" }}
-              />
+              <UpVoteButton />
             </div>
           </li>
         ))}

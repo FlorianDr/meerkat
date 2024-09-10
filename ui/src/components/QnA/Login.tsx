@@ -55,6 +55,7 @@ export function Login({ user, isAuthenticated, event }: LoginProps) {
                 onClick={() => {
                   globalThis.open(event?.proofURL, "_blank");
                 }}
+                isDisabled={isAuthenticated}
               />
             </Flex>
           </DrawerBody>

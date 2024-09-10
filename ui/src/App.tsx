@@ -1,6 +1,7 @@
 import { CollectCard } from "./pages/CollectCard.tsx";
 import { QnA } from "./pages/QnA.tsx";
 import { useRoutes } from "./hooks/use-routes.tsx";
+import { Layout } from "./components/Layout/Layout.tsx";
 
 const routeConfig = [
   {
@@ -14,9 +15,9 @@ function App() {
   const children = useRoutes(routeConfig);
 
   return (
-    <>
+    <Layout>
       {children}
-    </>
+    </Layout>
   );
 }
 
