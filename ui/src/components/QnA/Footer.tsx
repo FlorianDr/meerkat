@@ -1,11 +1,11 @@
 import {
   Flex,
+  Icon,
   IconButton,
   Input,
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { Icon } from "@chakra-ui/icons";
 import { useUser } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { Login } from "./Login.tsx";

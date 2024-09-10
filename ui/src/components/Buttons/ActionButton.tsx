@@ -18,14 +18,12 @@ export function ActionButton(
       color="rgba(136, 116, 170, 1)"
       border="solid 0.1px rgba(136, 116, 170, 1)"
       width="6rem"
-      _hover={1}
+      _hover={{ opacity: isDisabled ? "none" : 0.8 }}
+      _active={{ opacity: isDisabled ? "none" : 0.8 }}
       fontWeight="bold"
       py={2}
       position="relative"
       bottom={15}
-      _active={{
-        bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
-      }}
       onClick={onClick}
       type="button"
     >
