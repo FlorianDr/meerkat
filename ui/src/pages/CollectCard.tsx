@@ -7,7 +7,7 @@ export function CollectCard({ uid }: { uid: string }) {
   const { data: event } = useEvent(uid);
 
   return (
-    <div className="layout">
+    <>
       <Header
         event={event}
         actionButton={
@@ -19,6 +19,6 @@ export function CollectCard({ uid }: { uid: string }) {
         }
       />
       <Card event={event} />
-    </div>
+    </>
   );
 }

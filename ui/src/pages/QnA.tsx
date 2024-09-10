@@ -10,7 +10,7 @@ export function QnA({ uid }: { uid: string }) {
   const navigate = useNavigateCallback(`/events/${event?.uid}/collect`);
 
   return (
-    <div className="layout">
+    <>
       <Header
         event={event}
         actionButton={
@@ -23,6 +23,6 @@ export function QnA({ uid }: { uid: string }) {
       />
       <Question event={event} />
       <Footer event={event} />
-    </div>
+    </>
   );
 }
