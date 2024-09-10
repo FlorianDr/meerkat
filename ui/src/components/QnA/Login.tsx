@@ -25,7 +25,7 @@ export function Login({ user, isAuthenticated, event }: LoginProps) {
     <>
       {isAuthenticated
         ? <>Signed with uid {user?.uid}</>
-        : <Link onClick={onOpen}>Login</Link>}
+        : <Link href={event?.proofURL}>Login</Link>}
       <Drawer
         isOpen={isOpen}
         placement="bottom"
@@ -52,9 +52,7 @@ export function Login({ user, isAuthenticated, event }: LoginProps) {
               </Heading>
               <PrimaryButton
                 text="LOGIN"
-                onClick={() => {
-                  globalThis.open(event?.proofURL, "_blank");
-                }}
+                onClick={() => {}}
                 isDisabled={isAuthenticated}
               />
             </Flex>
