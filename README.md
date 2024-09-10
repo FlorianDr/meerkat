@@ -18,7 +18,8 @@ data.
 5. Cach dependencies with `deno task api:cache` and patch dependencies with
    `deno task api:patch:mac` or `deno task:api:patch:linux`.
 6. Start the local development server with `deno task api:dev`.
-7. Open a second terminal and run `deno task ui:cache` and then start the frontend with `deno task ui:dev`.
+7. Open a second terminal and run `deno task ui:cache` and then start the
+   frontend with `deno task ui:dev`.
 
 Open your browser and visit
 [http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t](http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t)
