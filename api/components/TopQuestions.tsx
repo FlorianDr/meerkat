@@ -18,7 +18,7 @@ const TopQuestions: FC<{ questions: QuestionWithVotes[] }> = (
       </header>
       <main className="top-questions-content">
         <ol>
-          {questions.map((question) => (
+          {questions.sort((a, b) => b.votes - a.votes).map((question) => (
             <li key={question.uid} className="bubble">
               <h2>
                 {question.question}
