@@ -1,9 +1,11 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { type FC } from "@hono/hono/jsx";
-import { Question } from "../models/questions.ts";
+import { QuestionWithVotes } from "../models/questions.ts";
 import { ArrowUpIcon } from "./assets/arrow-up.ts";
 
-const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
+const TopQuestions: FC<{ questions: QuestionWithVotes[] }> = (
+  { questions },
+) => {
   return (
     <div className="top-questions-layout">
       <header className="top-questions-header">
@@ -16,13 +18,13 @@ const TopQuestions: FC<{ questions: Question[] }> = ({ questions }) => {
       </header>
       <main className="top-questions-content">
         <ol>
-          {questions.map((question) => (
+          {questions.sort((a, b) => b.votes - a.votes).map((question) => (
             <li key={question.uid} className="bubble">
               <h2>
                 {question.question}
               </h2>
               <div className="upvote-section">
-                <div className="upvote-count">5</div>
+                <div className="upvote-count">{question.votes ?? 0}</div>
                 <div dangerouslySetInnerHTML={{ __html: ArrowUpIcon }} />
               </div>
             </li>

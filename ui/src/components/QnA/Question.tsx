@@ -1,14 +1,14 @@
 import { Heading } from "@chakra-ui/react";
 import { MemoizedUpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { useCallback, useEffect, useState } from "react";
-import { Question as QuestionType } from "../../hooks/use-event.ts";
+import { QuestionWithVotes } from "../../hooks/use-event.ts";
 import { useUpvote } from "../../hooks/use-upvote.ts";
 
 export function Question(
-  { question }: { question: QuestionType },
+  { question }: { question: QuestionWithVotes },
 ) {
   const { upvote, error, upVotesAfterUserVote } = useUpvote(question.uid);
-  const [upvotes, setUpvotes] = useState(question.upVotes ?? 0);
+  const [votes, setVotes] = useState(question.votes ?? 0);
   const [hasVoted, setHasVoted] = useState(false);
 
   useEffect(() => {
@@ -18,14 +18,12 @@ export function Question(
     }
 
     const isAfterUserVote = typeof upVotesAfterUserVote === "number" &&
-      upVotesAfterUserVote > question.upVotes;
+      upVotesAfterUserVote > question.votes;
 
-    const newUpvotes = isAfterUserVote
-      ? upVotesAfterUserVote
-      : question.upVotes;
+    const newUpvotes = isAfterUserVote ? upVotesAfterUserVote : question.votes;
 
-    setUpvotes(newUpvotes);
-  }, [question.upVotes, error, upVotesAfterUserVote]);
+    setVotes(newUpvotes);
+  }, [question.votes, error, upVotesAfterUserVote]);
 
   const handleUpvote = useCallback(() => {
     if (hasVoted) return;
@@ -39,7 +37,7 @@ export function Question(
         {question.question}
       </Heading>
       <div className="upvote-section">
-        <div className="upvote-count">{upvotes}</div>
+        <div className="upvote-count">{votes}</div>
         <MemoizedUpVoteButton onClick={handleUpvote} />
       </div>
     </li>

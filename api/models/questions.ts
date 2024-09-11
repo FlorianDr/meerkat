@@ -5,7 +5,7 @@ import db from "../db.ts";
 
 const questionByEventIdPreparedStatement = db.select().from(questions).where(
   eq(questions.eventId, sql.placeholder("event_id")),
-).orderBy(questions.createdAt).prepare("question_by_event_id");
+).orderBy(questions.createdAt, "desc").prepare("question_by_event_id");
 
 export async function getQuestionsByEventId(
   eventId: number,
@@ -24,7 +24,7 @@ const questionsWithVotesByEventIdPreparedStatement = db
     question: questions.question,
     createdAt: questions.createdAt,
     userId: questions.userId,
-    upVotes: sql<
+    votes: sql<
       number
     >`CAST(COALESCE(COUNT(${votes.questionId}), 0) AS INTEGER)`.as("votes"),
   })
@@ -32,12 +32,12 @@ const questionsWithVotesByEventIdPreparedStatement = db
   .leftJoin(votes, eq(questions.id, votes.questionId))
   .where(eq(questions.eventId, sql.placeholder("event_id")))
   .groupBy(questions.id)
-  .orderBy(questions.createdAt)
+  .orderBy(questions.createdAt, "desc")
   .prepare("questions_with_votes_by_event_id");
 
 export async function getQuestionsWithVotesByEventId(
   eventId: number,
-): Promise<(Question & { upVotes: number })[]> {
+): Promise<(Question & { votes: number })[]> {
   const results = await questionsWithVotesByEventIdPreparedStatement.execute({
     event_id: eventId,
   });
@@ -71,3 +71,4 @@ export async function getQuestionByUID(uid: string) {
 }
 
 export type Question = typeof questions.$inferSelect;
+export type QuestionWithVotes = Question & { votes: number };
