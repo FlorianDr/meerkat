@@ -1,11 +1,11 @@
-import { eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { typeid } from "typeid-js";
 import { questions, votes } from "../schema.ts";
 import db from "../db.ts";
 
 const questionByEventIdPreparedStatement = db.select().from(questions).where(
   eq(questions.eventId, sql.placeholder("event_id")),
-).orderBy(questions.createdAt, "desc").prepare("question_by_event_id");
+).orderBy(desc(questions.createdAt)).prepare("question_by_event_id");
 
 export async function getQuestionsByEventId(
   eventId: number,
@@ -16,6 +16,9 @@ export async function getQuestionsByEventId(
   return results;
 }
 
+const votesSnippet = sql<
+  number
+>`COUNT(${votes.questionId})`.as("votes");
 const questionsWithVotesByEventIdPreparedStatement = db
   .select({
     id: questions.id,
@@ -24,15 +27,13 @@ const questionsWithVotesByEventIdPreparedStatement = db
     question: questions.question,
     createdAt: questions.createdAt,
     userId: questions.userId,
-    votes: sql<
-      number
-    >`CAST(COALESCE(COUNT(${votes.questionId}), 0) AS INTEGER)`.as("votes"),
+    votes: votesSnippet,
   })
   .from(questions)
   .leftJoin(votes, eq(questions.id, votes.questionId))
   .where(eq(questions.eventId, sql.placeholder("event_id")))
   .groupBy(questions.id)
-  .orderBy(questions.createdAt, "desc")
+  .orderBy(desc(votesSnippet), desc(questions.createdAt))
   .prepare("questions_with_votes_by_event_id");
 
 export async function getQuestionsWithVotesByEventId(

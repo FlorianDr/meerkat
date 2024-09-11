@@ -59,3 +59,8 @@ VALUES (
 		'Can you provide more details about the schedule?',
 		1
 	) ON CONFLICT DO NOTHING;
+INSERT INTO votes (question_id, user_id)
+VALUES (
+		1,
+		1
+	) ON CONFLICT DO NOTHING;
