@@ -49,7 +49,7 @@ app.get("/events/:uid", async (c) => {
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/events/${uid}/qa`, origin);
 
-  const questions = await getQuestionsByEventId(event.id);
+  const questions = await getQuestionsWithVotesByEventId(event.id);
 
   return c.html(
     <Layout>
