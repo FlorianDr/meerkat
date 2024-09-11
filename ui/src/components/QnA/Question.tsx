@@ -1,11 +1,11 @@
 import { Heading } from "@chakra-ui/react";
 import { MemoizedUpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { useCallback, useEffect, useState } from "react";
-import { Question as QuestionType } from "../../hooks/use-event.ts";
+import { QuestionWithVotes } from "../../hooks/use-event.ts";
 import { useUpvote } from "../../hooks/use-upvote.ts";
 
 export function Question(
-  { question }: { question: QuestionType },
+  { question }: { question: QuestionWithVotes },
 ) {
   const { upvote, error, upVotesAfterUserVote } = useUpvote(question.uid);
   const [votes, setVotes] = useState(question.votes ?? 0);
