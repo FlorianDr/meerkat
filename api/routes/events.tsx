@@ -190,9 +190,9 @@ app.post(
       throw new Error(error);
     }
 
-    const upVotes = await getVoteCountByQuestionId(question.id);
+    const votes = await getVoteCountByQuestionId(question.id);
 
-    return c.json({ upVotes });
+    return c.json({ votes });
   },
 );
 

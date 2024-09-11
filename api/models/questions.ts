@@ -24,7 +24,7 @@ const questionsWithVotesByEventIdPreparedStatement = db
     question: questions.question,
     createdAt: questions.createdAt,
     userId: questions.userId,
-    upVotes: sql<
+    votes: sql<
       number
     >`CAST(COALESCE(COUNT(${votes.questionId}), 0) AS INTEGER)`.as("votes"),
   })
@@ -37,7 +37,7 @@ const questionsWithVotesByEventIdPreparedStatement = db
 
 export async function getQuestionsWithVotesByEventId(
   eventId: number,
-): Promise<(Question & { upVotes: number })[]> {
+): Promise<(Question & { votes: number })[]> {
   const results = await questionsWithVotesByEventIdPreparedStatement.execute({
     event_id: eventId,
   });
@@ -71,3 +71,4 @@ export async function getQuestionByUID(uid: string) {
 }
 
 export type Question = typeof questions.$inferSelect;
+export type QuestionWithVotes = Question & { votes: number };

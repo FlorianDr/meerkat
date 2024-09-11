@@ -22,7 +22,7 @@ interface UpvoteResponse {
 }
 
 interface UpvoteData {
-  upVotes: number;
+  votes: number;
 }
 
 export const useUpvote = (questionId: string | undefined): UpvoteResponse => {
@@ -38,6 +38,6 @@ export const useUpvote = (questionId: string | undefined): UpvoteResponse => {
     upvote: trigger,
     error: error ?? null, // Ensure error is HTTPError or null
     isUpvoting: isMutating,
-    upVotesAfterUserVote: data?.upVotes,
+    upVotesAfterUserVote: data?.votes,
   };
 };
