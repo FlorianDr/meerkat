@@ -17,7 +17,13 @@ import {
   getUserByUID,
   getUserByZuTicketId,
 } from "../models/user.ts";
-import { createQuestion, getQuestionsByEventId } from "../models/questions.ts";
+import {
+  createQuestion,
+  getQuestionByUID,
+  getQuestionsByEventId,
+  getQuestionsWithVotesByEventId,
+} from "../models/questions.ts";
+import { addVote, getVoteCountByQuestionId } from "../models/votes.ts";
 import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
@@ -73,7 +79,7 @@ app.get("/api/v1/events/:uid", async (c) => {
     });
   }
 
-  const questions = await getQuestionsByEventId(event.id);
+  const questions = await getQuestionsWithVotesByEventId(event.id);
 
   const origin = c.req.header("origin") ?? env.base;
 
@@ -146,6 +152,47 @@ app.post(
     });
 
     return c.redirect(redirect.toString());
+  },
+);
+
+app.post(
+  "/api/v1/questions/:questionUID/upvote",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const questionUID = c.req.param("questionUID");
+
+    const payload = c.get("jwtPayload");
+    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
+
+    const [user, question] = await Promise.all([
+      getUserByUID(getSuffix(userUID)),
+      getQuestionByUID(questionUID),
+    ]);
+
+    if (!user) {
+      throw new HTTPException(404, { message: `User ${userUID} not found` });
+    }
+
+    if (!question) {
+      throw new HTTPException(404, {
+        message: `Question ${questionUID} not found`,
+      });
+    }
+
+    try {
+      await addVote(question.id, user.id);
+    } catch (error) {
+      if (error.message.includes("duplicate key value")) {
+        throw new HTTPException(400, {
+          message: `User ${userUID} already voted for question ${questionUID}`,
+        });
+      }
+      throw new Error(error);
+    }
+
+    const upVotes = await getVoteCountByQuestionId(question.id);
+
+    return c.json({ upVotes });
   },
 );
 
