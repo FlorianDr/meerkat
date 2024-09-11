@@ -17,10 +17,12 @@ export function Question(
       return;
     }
 
-    const afterUserVote = typeof upVotesAfterUserVote === "number" &&
+    const isAfterUserVote = typeof upVotesAfterUserVote === "number" &&
       upVotesAfterUserVote > question.upVotes;
 
-    const newUpvotes = afterUserVote ? upVotesAfterUserVote : question.upVotes;
+    const newUpvotes = isAfterUserVote
+      ? upVotesAfterUserVote
+      : question.upVotes;
 
     setUpvotes(newUpvotes);
   }, [question.upVotes, error, upVotesAfterUserVote]);
