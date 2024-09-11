@@ -74,6 +74,7 @@ ul {
   flex-direction: column;
   justify-content: flex-end;
   padding: 1.5rem;
+  overflow-y: auto;
 }
 
 ol,

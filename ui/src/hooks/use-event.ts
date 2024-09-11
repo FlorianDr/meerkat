@@ -26,7 +26,7 @@ export type Question = {
   userId: number;
 };
 
-type QuestionWithVotes = Question & { votes: number };
+export type QuestionWithVotes = Question & { votes: number };
 
 const fetcher = (uid: string) =>
   fetch(`/api/v1/events/${uid}`).then((res) => {

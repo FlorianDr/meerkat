@@ -4,6 +4,7 @@
     "specifiers": {
       "jsr:@libs/qrcode@^1.2.5": "jsr:@libs/qrcode@1.2.5",
       "jsr:@std/dotenv@^0.225.0": "jsr:@std/dotenv@0.225.0",
+      "npm:@chakra-ui/icons@^2.1.1": "npm:@chakra-ui/icons@2.1.1_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_react@18.3.1",
       "npm:@chakra-ui/react@^2.8.2": "npm:@chakra-ui/react@2.8.2_@emotion+react@11.13.3__react@18.3.1_@emotion+styled@11.13.0__@emotion+react@11.13.3___react@18.3.1__react@18.3.1_framer-motion@11.3.31__react@18.3.1__react-dom@18.3.1___react@18.3.1_react@18.3.1_react-dom@18.3.1__react@18.3.1_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_@chakra-ui+styled-system@2.9.2",
       "npm:@hono/zod-validator@^0.2.2": "npm:@hono/zod-validator@0.2.2_hono@4.5.6_zod@3.23.8",
       "npm:@pcd/passport-interface@^0.11.4": "npm:@pcd/passport-interface@0.11.7_react@18.3.1_react-dom@18.3.1__react@18.3.1",
@@ -404,10 +405,26 @@
           "react": "react@18.3.1"
         }
       },
+      "@chakra-ui/icon@3.2.0_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_react@18.3.1": {
+        "integrity": "sha512-xxjGLvlX2Ys4H0iHrI16t74rG9EBcpFvJ3Y3B7KMQTrnW34Kf7Da/UC8J67Gtx85mTHW020ml85SVPKORWNNKQ==",
+        "dependencies": {
+          "@chakra-ui/shared-utils": "@chakra-ui/shared-utils@2.0.5",
+          "@chakra-ui/system": "@chakra-ui/system@2.6.2_@emotion+react@11.13.3__react@18.3.1_@emotion+styled@11.13.0__@emotion+react@11.13.3___react@18.3.1__react@18.3.1_react@18.3.1",
+          "react": "react@18.3.1"
+        }
+      },
       "@chakra-ui/icon@3.2.0_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_react@18.3.1_@emotion+react@11.13.3__react@18.3.1_@emotion+styled@11.13.0__@emotion+react@11.13.3___react@18.3.1__react@18.3.1": {
         "integrity": "sha512-xxjGLvlX2Ys4H0iHrI16t74rG9EBcpFvJ3Y3B7KMQTrnW34Kf7Da/UC8J67Gtx85mTHW020ml85SVPKORWNNKQ==",
         "dependencies": {
           "@chakra-ui/shared-utils": "@chakra-ui/shared-utils@2.0.5",
+          "@chakra-ui/system": "@chakra-ui/system@2.6.2_@emotion+react@11.13.3__react@18.3.1_@emotion+styled@11.13.0__@emotion+react@11.13.3___react@18.3.1__react@18.3.1_react@18.3.1",
+          "react": "react@18.3.1"
+        }
+      },
+      "@chakra-ui/icons@2.1.1_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_react@18.3.1": {
+        "integrity": "sha512-3p30hdo4LlRZTT5CwoAJq3G9fHI0wDc0pBaMHj4SUn0yomO+RcDRlzhdXqdr5cVnzax44sqXJVnf3oQG0eI+4g==",
+        "dependencies": {
+          "@chakra-ui/icon": "@chakra-ui/icon@3.2.0_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_react@18.3.1",
           "@chakra-ui/system": "@chakra-ui/system@2.6.2_@emotion+react@11.13.3__react@18.3.1_@emotion+styled@11.13.0__@emotion+react@11.13.3___react@18.3.1__react@18.3.1_react@18.3.1",
           "react": "react@18.3.1"
         }
@@ -3570,6 +3587,7 @@
       },
       "ui": {
         "dependencies": [
+          "npm:@chakra-ui/icons@^2.1.1",
           "npm:@chakra-ui/react@^2.8.2",
           "npm:@emotion/react@^11.13.0",
           "npm:@emotion/styled@^11.13.0",

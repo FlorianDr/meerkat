@@ -6,11 +6,10 @@ import {
   Flex,
   Heading,
   Link,
-  useDisclosure,
 } from "@chakra-ui/react";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { User } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
-import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 interface LoginProps {
   user: User | undefined;
@@ -19,17 +18,15 @@ interface LoginProps {
 }
 
 export function Login({ user, isAuthenticated, event }: LoginProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const isOpen = !isAuthenticated;
 
   return (
     <>
-      {isAuthenticated
-        ? <>Signed with uid {user?.uid}</>
-        : <Link href={event?.proofURL}>Login</Link>}
+      {isAuthenticated && <>Signed with uid {user?.uid}</>}
       <Drawer
         isOpen={isOpen}
         placement="bottom"
-        onClose={onClose}
+        onClose={() => {}}
         autoFocus={false}
         returnFocusOnClose={false}
       >
@@ -50,11 +47,9 @@ export function Login({ user, isAuthenticated, event }: LoginProps) {
               <Heading as="h1" color="white" size="sm" mb={8}>
                 Login to participate:
               </Heading>
-              <PrimaryButton
-                text="LOGIN"
-                onClick={() => {}}
-                isDisabled={isAuthenticated}
-              />
+              <Link href={event?.proofURL}>
+                Login with Zupass <ExternalLinkIcon mx="2px" />
+              </Link>
             </Flex>
           </DrawerBody>
         </DrawerContent>

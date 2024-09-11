@@ -16,7 +16,7 @@ export function Footer({ event }: { event: Event | undefined }) {
   return (
     <footer className="footer" style={{ position: "relative" }}>
       <form method="POST" action={`/api/v1/events/${event?.uid}/questions`}>
-        <Flex gap={4}>
+        <Flex gap={4} flexFlow="column" alignItems="center">
           <InputGroup size="md">
             <Input
               disabled={!isAuthenticated}
@@ -46,11 +46,13 @@ export function Footer({ event }: { event: Event | undefined }) {
                     />
                   </Icon>
                 }
-                _hover={{
-                  bg: "rgba(136, 116, 170, 1)",
-                  color: "white",
-                  opacity: 0.8,
-                }}
+                _hover={isAuthenticated
+                  ? {
+                    bg: "rgba(136, 116, 170, 1)",
+                    color: "white",
+                    opacity: 0.8,
+                  }
+                  : {}}
                 aria-label="Send question"
                 colorScheme="purple"
                 variant="ghost"

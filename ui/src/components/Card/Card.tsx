@@ -1,10 +1,9 @@
 import { Flex, Heading, Link } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
 import { useUser } from "../../hooks/use-user.ts";
-import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 export const Card = ({ event }: { event: Event | undefined }) => {
-  const { data: user, isAuthenticated } = useUser();
+  const { data: user } = useUser();
 
   const hasUserAskedQuestion = event?.questions.some((question) =>
     (question.userId) === Number(user?.uid)

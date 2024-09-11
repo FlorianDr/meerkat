@@ -1,8 +1,8 @@
 import { Button } from "@chakra-ui/react";
 
 export function PrimaryButton(
-  { text, onClick, isDisabled }: {
-    text: string;
+  { onClick, isDisabled, children }: {
+    children?: React.ReactNode;
     onClick: () => void;
     isDisabled: boolean;
   },
@@ -21,7 +21,7 @@ export function PrimaryButton(
       py={6}
       isDisabled={isDisabled}
     >
-      {text}
+      {children}
     </Button>
   );
 }

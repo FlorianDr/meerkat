@@ -1,6 +1,7 @@
 {
   "imports": {
     "@chakra-ui/react": "npm:@chakra-ui/react@^2.8.2",
+    "@chakra-ui/icons": "npm:@chakra-ui/icons@^2.1.1",
     "@emotion/react": "npm:@emotion/react@^11.13.0",
     "@emotion/styled": "npm:@emotion/styled@^11.13.0",
     "framer-motion": "npm:framer-motion@^11.3.28",
