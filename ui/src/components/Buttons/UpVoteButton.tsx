@@ -1,8 +1,10 @@
 import { Icon, IconButton } from "@chakra-ui/react";
+import { memo } from "react";
 
-export function UpVoteButton() {
+function UpVoteButton({ onClick }: { onClick: () => void }) {
   return (
     <IconButton
+      onClick={onClick}
       icon={
         <Icon viewBox="0 0 24 24">
           <path
@@ -23,3 +25,5 @@ export function UpVoteButton() {
     />
   );
 }
+
+export const MemoizedUpVoteButton = memo(UpVoteButton);

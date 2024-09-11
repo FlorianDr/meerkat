@@ -43,6 +43,13 @@
       "when": 1723393604325,
       "tag": "0005_goofy_blacklash",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1726049611416,
+      "tag": "0006_slippery_bastion",
+      "breakpoints": true
     }
   ]
 }

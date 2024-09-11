@@ -2,6 +2,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  primaryKey,
   serial,
   text,
   timestamp,
@@ -45,6 +46,20 @@ export const questions = pgTable("questions", {
   ),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const votes = pgTable("votes", {
+  questionId: integer("question_id").notNull().references(
+    () => questions.id,
+    { onDelete: "cascade" },
+  ),
+  userId: integer("user_id").notNull().references(
+    () => users.id,
+    { onDelete: "cascade" },
+  ),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.questionId, table.userId] }),
+}));
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),

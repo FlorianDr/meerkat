@@ -20,6 +20,7 @@ export type Event = {
 
 export type Question = {
   uid: string;
+  upVotes: number;
   question: string;
   createdAt: Date;
   userId: number;
