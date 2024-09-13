@@ -3,9 +3,15 @@ import { type FC } from "@hono/hono/jsx";
 import { QuestionWithVotes } from "../models/questions.ts";
 import { ArrowUpIcon } from "./assets/arrow-up.ts";
 
-const TopQuestions: FC<{ questions: QuestionWithVotes[] }> = (
-  { questions },
+interface TopQuestionsProps {
+  questions: QuestionWithVotes[];
+  participants: number;
+}
+
+const TopQuestions: FC<TopQuestionsProps> = (
+  { questions, participants },
 ) => {
+  const votes = questions.reduce((acc, question) => acc + question.votes, 0);
   return (
     <div className="top-questions-layout">
       <header className="top-questions-header">
@@ -33,10 +39,10 @@ const TopQuestions: FC<{ questions: QuestionWithVotes[] }> = (
       </main>
       <footer className="top-questions-footer">
         <h2>
-          Attendees <span className="question-count">(121)</span>
+          Attendees <span className="question-count">({participants})</span>
         </h2>
         <h2>
-          Votes <span className="question-count">(53)</span>
+          Votes <span className="question-count">({votes})</span>
         </h2>
       </footer>
     </div>
