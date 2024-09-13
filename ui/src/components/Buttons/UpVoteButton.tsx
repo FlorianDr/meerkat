@@ -1,7 +1,14 @@
 import { Icon, IconButton } from "@chakra-ui/react";
-import { memo } from "react";
+import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 
-function UpVoteButton({ onClick }: { onClick: () => void }) {
+interface UpVoteButtonProps {
+  onClick: () => void;
+  hasVoted: boolean;
+}
+
+export function UpVoteButton({ onClick, hasVoted }: UpVoteButtonProps) {
+  const { primaryPurple } = useThemeColors();
+
   return (
     <IconButton
       onClick={onClick}
@@ -9,7 +16,7 @@ function UpVoteButton({ onClick }: { onClick: () => void }) {
         <Icon viewBox="0 0 24 24">
           <path
             d="M7.66671 5.21875V18.0001H10.3334V5.21875L16.0574 10.9427L17.9427 9.05741L9.00004 0.114746L0.057373 9.05741L1.94271 10.9427L7.66671 5.21875Z"
-            fill="white"
+            fill={hasVoted ? primaryPurple : "white"}
           />
         </Icon>
       }
@@ -25,5 +32,3 @@ function UpVoteButton({ onClick }: { onClick: () => void }) {
     />
   );
 }
-
-export const MemoizedUpVoteButton = memo(UpVoteButton);

@@ -10,6 +10,9 @@ const theme = extendTheme({
       body: {
         bg: "#010101",
         color: "#C2C2C2",
+        colors: {
+          purple: "rgba(136, 116, 170, 1)",
+        },
       },
     },
   },

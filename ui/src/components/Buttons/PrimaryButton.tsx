@@ -1,4 +1,5 @@
 import { Button } from "@chakra-ui/react";
+import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 
 export function PrimaryButton(
   { onClick, isDisabled, children }: {
@@ -7,13 +8,14 @@ export function PrimaryButton(
     isDisabled: boolean;
   },
 ) {
+  const { primaryPurple } = useThemeColors();
   return (
     <Button
       onClick={onClick}
       width="16rem"
-      bg="linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)"
+      bg={`linear-gradient(90deg, ${primaryPurple} 0%, #53A0F3 139%)`}
       _active={{
-        bg: "linear-gradient(90deg, #8874AA 0%, #53A0F3 139%)",
+        bg: `linear-gradient(90deg, ${primaryPurple} 0%, #53A0F3 139%)`,
       }}
       _hover={{ opacity: 0.8 }}
       color="white"

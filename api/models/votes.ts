@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { votes } from "../schema.ts";
 import db from "../db.ts";
 
@@ -29,6 +29,30 @@ export async function getVoteCountByQuestionId(
   });
 
   return Number(results[0].count);
+}
+
+const votesByEventIdAndUserId = db
+  .select()
+  .from(votes)
+  .where(
+    and(
+      eq(votes.questionId, sql.placeholder("question_id")),
+      eq(votes.userId, sql.placeholder("user_id")),
+    ),
+  )
+  .prepare("votes_by_event_id_and_user_id");
+
+export async function getVotesByQuestionIdAndUserId(
+  { questionId, userId }: { questionId: number; userId: number },
+) {
+  const [results]: [Vote] | [undefined] = await votesByEventIdAndUserId.execute(
+    {
+      question_id: questionId,
+      user_id: userId,
+    },
+  );
+
+  return results;
 }
 
 export type Vote = typeof votes.$inferSelect;

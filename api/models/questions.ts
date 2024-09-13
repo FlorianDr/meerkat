@@ -36,7 +36,7 @@ const questionsWithVotesByEventIdPreparedStatement = db
   .orderBy(desc(votesSnippet), desc(questions.createdAt))
   .prepare("questions_with_votes_by_event_id");
 
-export async function getQuestionsWithVotesByEventId(
+export async function getQuestionsWithVoteCountByEventId(
   eventId: number,
 ): Promise<(Question & { votes: number })[]> {
   const results = await questionsWithVotesByEventIdPreparedStatement.execute({
@@ -73,3 +73,6 @@ export async function getQuestionByUID(uid: string) {
 
 export type Question = typeof questions.$inferSelect;
 export type QuestionWithVotes = Question & { votes: number };
+export type QuestionWithVotesAndHasVoted = QuestionWithVotes & {
+  hasVoted?: boolean;
+};
