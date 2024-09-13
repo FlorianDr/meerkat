@@ -5,14 +5,9 @@ export function QuestionsSection({ event }: { event: Event | undefined }) {
   return (
     <main className="content">
       <ol>
-        {event?.questions.map((question) => {
-          return (
-            <MemoizedQuestion
-              key={question.uid}
-              question={question}
-            />
-          );
-        })}
+        {event?.questions.map((question) => (
+          <MemoizedQuestion key={question.uid} question={question} />
+        ))}
       </ol>
     </main>
   );
