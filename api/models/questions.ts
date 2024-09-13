@@ -16,9 +16,9 @@ export async function getQuestionsByEventId(
   return results;
 }
 
-const votesSnippet = sql<
-  number
->`COUNT(${votes.questionId})`.as("votes");
+const votesSnippet = sql<number>`CAST(COUNT(${votes.questionId}) AS INTEGER)`
+  .as("votes");
+
 const questionsWithVotesByEventIdPreparedStatement = db
   .select({
     id: questions.id,
