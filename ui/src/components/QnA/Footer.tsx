@@ -9,9 +9,11 @@ import {
 import { useUser } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { Login } from "./Login.tsx";
+import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 
 export function Footer({ event }: { event: Event | undefined }) {
   const { data: user, isAuthenticated } = useUser();
+  const { primaryPurple } = useThemeColors();
 
   return (
     <footer className="footer" style={{ position: "relative" }}>
@@ -37,7 +39,7 @@ export function Footer({ event }: { event: Event | undefined }) {
                 type="submit"
                 h="1.75rem"
                 size="sm"
-                bg="rgba(136, 116, 170, 1)"
+                bg={primaryPurple}
                 icon={
                   <Icon viewBox="0 0 24 24">
                     <path
@@ -48,7 +50,7 @@ export function Footer({ event }: { event: Event | undefined }) {
                 }
                 _hover={isAuthenticated
                   ? {
-                    bg: "rgba(136, 116, 170, 1)",
+                    bg: primaryPurple,
                     color: "white",
                     opacity: 0.8,
                   }
