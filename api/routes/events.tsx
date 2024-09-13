@@ -1,8 +1,8 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
-import { setCookie } from "@hono/hono/cookie";
+import { getCookie, setCookie } from "@hono/hono/cookie";
 import { HTTPException } from "@hono/hono/http-exception";
-import { jwt, sign } from "@hono/hono/jwt";
+import { decode, jwt, sign } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
 import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { fromString, getSuffix } from "typeid-js";
@@ -20,13 +20,17 @@ import {
 import {
   createQuestion,
   getQuestionByUID,
-  getQuestionsByEventId,
-  getQuestionsWithVotesByEventId,
+  getQuestionsWithVoteCountByEventId,
 } from "../models/questions.ts";
-import { addVote, getVoteCountByQuestionId } from "../models/votes.ts";
+import {
+  addVote,
+  getVoteCountByQuestionId,
+  getVotesByQuestionIdAndUserId,
+} from "../models/votes.ts";
 import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
+import { QuestionWithVotesAndHasVoted } from "../models/questions.ts";
 
 const app = new Hono();
 
@@ -49,7 +53,7 @@ app.get("/events/:uid", async (c) => {
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/events/${uid}/qa`, origin);
 
-  const questions = await getQuestionsWithVotesByEventId(event.id);
+  const questions = await getQuestionsWithVoteCountByEventId(event.id);
 
   return c.html(
     <Layout>
@@ -79,7 +83,7 @@ app.get("/api/v1/events/:uid", async (c) => {
     });
   }
 
-  const questions = await getQuestionsWithVotesByEventId(event.id);
+  const questions = await getQuestionsWithVoteCountByEventId(event.id);
 
   const origin = c.req.header("origin") ?? env.base;
 
@@ -99,9 +103,48 @@ app.get("/api/v1/events/:uid", async (c) => {
 
   // Strips out internal fields
   const { id: _id, conferenceId: _conferenceId, ...rest } = event;
-  const publicQuestions = questions.map(
-    ({ id: _id, eventId: _eventId, ...rest }) => rest,
-  );
+
+  let publicQuestions: Omit<QuestionWithVotesAndHasVoted, "id" | "eventId">[];
+
+  const jwtCookie = getCookie(c, "jwt");
+  // if user is logged in, we check if user has voted on a particular question
+  if (jwtCookie) {
+    const decoded = decode(jwtCookie);
+    const userUID = fromString(decoded.payload.sub as string, SUB_TYPE_ID);
+
+    const user = await getUserByUID(getSuffix(userUID));
+
+    if (!user) {
+      throw new HTTPException(401, { message: `User not found` });
+    }
+
+    // checks if user has voted on a particular question
+    publicQuestions = await Promise.all(
+      questions.map(async (question) => {
+        const userVote = await getVotesByQuestionIdAndUserId(
+          {
+            questionId: question.id,
+            userId: user.id,
+          },
+        );
+
+        const { id: _id, eventId: _eventId, ...rest } = question;
+
+        return {
+          ...rest,
+          hasVoted: !!userVote,
+        };
+      }),
+    );
+  } else {
+    // Strips out internal fields
+    publicQuestions = questions.map(
+      ({ id: _id, eventId: _eventId, ...rest }) => ({
+        ...rest,
+        hasVoted: false,
+      }),
+    );
+  }
 
   return c.json({
     data: {
