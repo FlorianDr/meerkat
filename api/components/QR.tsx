@@ -15,7 +15,13 @@ const QrFrame: FC = () => {
   );
 };
 
-const QR: FC<{ url: URL; event: Event | null; conferenceName: string }> = ({
+interface QRProps {
+  url: URL;
+  event: Event | null;
+  conferenceName: string;
+}
+
+const QR: FC<QRProps> = ({
   url,
   event,
   conferenceName,
