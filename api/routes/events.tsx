@@ -31,6 +31,7 @@ import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
 import { QuestionWithVotesAndHasVoted } from "../models/questions.ts";
+import { getUniqueVotersByEventId } from "../models/votes.ts";
 
 const app = new Hono();
 
@@ -54,14 +55,29 @@ app.get("/events/:uid", async (c) => {
   const url = new URL(`/events/${uid}/qa`, origin);
 
   const questions = await getQuestionsWithVoteCountByEventId(event.id);
+  const uniqueVoters = await getUniqueVotersByEventId(event.id);
+  const uniqueVotersSet = new Set<number>(uniqueVoters);
+  const participants = questions.reduce((acc, question) => {
+    if (question.userId) {
+      acc.add(question.userId);
+    }
+    return acc;
+  }, uniqueVotersSet).size;
 
   return c.html(
     <Layout>
       <div className="top-questions-container">
-        <TopQuestions questions={questions} />
+        <TopQuestions
+          questions={questions}
+          participants={participants}
+        />
       </div>
       <div className="qr-container">
-        <QR url={url} event={event} conferenceName={conference.name} />
+        <QR
+          url={url}
+          event={event}
+          conferenceName={conference.name}
+        />
       </div>
     </Layout>,
   );
@@ -313,6 +329,21 @@ app.get("/api/v1/events/:uid/proof/:watermark", async (c) => {
   const redirect = new URL(`/events/${uid}/qa`, origin);
 
   return c.redirect(redirect.toString());
+});
+
+app.get("/api/v1/events/:uid/participants", async (c) => {
+  const uid = c.req.param("uid");
+  const event = await getEventByUID(uid);
+
+  if (!event) {
+    throw new HTTPException(404, { message: `Event ${uid} not found` });
+  }
+
+  const participants = await getUniqueVotersByEventId(event.id);
+
+  console.log({ participants });
+
+  return c.json({ data: participants });
 });
 
 export default app;
