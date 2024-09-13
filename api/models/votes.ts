@@ -45,12 +45,10 @@ const votesByEventIdAndUserId = db
 export async function getVotesByQuestionIdAndUserId(
   { questionId, userId }: { questionId: number; userId: number },
 ) {
-  const [results]: [Vote] | [undefined] = await votesByEventIdAndUserId.execute(
-    {
-      question_id: questionId,
-      user_id: userId,
-    },
-  );
+  const [results] = await votesByEventIdAndUserId.execute({
+    question_id: questionId,
+    user_id: userId,
+  });
 
   return results;
 }
