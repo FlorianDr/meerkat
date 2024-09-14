@@ -1,5 +1,5 @@
 import { and, eq, sql } from "drizzle-orm";
-import { votes } from "../schema.ts";
+import { questions, votes } from "../schema.ts";
 import db from "../db.ts";
 
 export async function addVote(
@@ -45,7 +45,7 @@ const votesByEventIdAndUserId = db
 export async function getVotesByQuestionIdAndUserId(
   { questionId, userId }: { questionId: number; userId: number },
 ) {
-  const [results]: [Vote] | [undefined] = await votesByEventIdAndUserId.execute(
+  const [results]: Vote[] | undefined = await votesByEventIdAndUserId.execute(
     {
       question_id: questionId,
       user_id: userId,
@@ -53,6 +53,25 @@ export async function getVotesByQuestionIdAndUserId(
   );
 
   return results;
+}
+
+const uniqueVotersByEventId = db
+  .select({
+    userId: sql<number>`DISTINCT ${votes.userId}`,
+  })
+  .from(votes)
+  .innerJoin(questions, eq(votes.questionId, questions.id))
+  .where(eq(questions.eventId, sql.placeholder("event_id")))
+  .prepare("unique_voters_by_event_id");
+
+export async function getUniqueVotersByEventId(
+  eventId: number,
+): Promise<number[]> {
+  const results = await uniqueVotersByEventId.execute({
+    event_id: eventId,
+  });
+
+  return results.map((result) => result.userId);
 }
 
 export type Vote = typeof votes.$inferSelect;
