@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
 import { parseUid } from "../utils/route.ts";
 
-interface RouteConfig {
+export type Route = {
   regex: RegExp;
   component: React.FC<{ uid: string }>;
-}
+};
 
-const routes = (currentPath: string, routeConfig: RouteConfig[]) => {
-  const matchedRoute = routeConfig.find((route) =>
-    currentPath.match(route.regex)
-  );
+export type Routes = Route[];
+
+const NotFound = () => <div>404</div>;
+
+const matchRoute = (currentPath: string, routes: Routes) => {
+  const matchedRoute = routes.find((route) => currentPath.match(route.regex));
 
   if (matchedRoute) {
     const uid = parseUid(new URL(window.location.href), matchedRoute.regex);
-    return uid ? <matchedRoute.component uid={uid} /> : <div>404</div>;
+    return uid ? <matchedRoute.component uid={uid} /> : <NotFound />;
   }
 
-  return <div>404</div>;
+  return <NotFound />;
 };
 
-export function useRoutes(routeConfig: RouteConfig[]) {
+export function useRoutes(routes: Routes) {
   const [currentPath, setCurrentPath] = useState(globalThis.location.pathname);
 
   useEffect(() => {
@@ -32,5 +34,14 @@ export function useRoutes(routeConfig: RouteConfig[]) {
     return () => globalThis.removeEventListener("popstate", onLocationChange);
   }, []);
 
-  return routes(currentPath, routeConfig);
+  return matchRoute(currentPath, routes);
 }
+
+export const useNavigate = (path: string) => {
+  const navigate = () => {
+    globalThis.history.pushState({}, "", path);
+    globalThis.dispatchEvent(new globalThis.Event("popstate"));
+  };
+
+  return navigate;
+};

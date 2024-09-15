@@ -3,26 +3,32 @@ import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
 import { Footer } from "../components/QnA/Footer.tsx";
 import { Header } from "../components/Header/Header.tsx";
 import { ActionButton } from "../components/Buttons/ActionButton.tsx";
-import { useNavigateCallback } from "../hooks/use-navigate-callback.ts";
+import { useNavigate } from "../hooks/use-routes.tsx";
 
 export function QnA({ uid }: { uid: string }) {
   const { data: event } = useEvent(uid);
-  const navigate = useNavigateCallback(`/events/${event?.uid}/collect`);
+  const navigate = useNavigate(`/events/${event?.uid}/collect`);
 
   return (
-    <>
-      <Header
-        event={event}
-        actionButton={
-          <ActionButton
-            text="Collect"
-            onClick={navigate}
-            isDisabled={!event?.uid}
-          />
-        }
-      />
-      <QuestionsSection event={event} />
-      <Footer event={event} />
-    </>
+    <div className="layout">
+      <header className="header">
+        <Header
+          event={event}
+          actionButton={
+            <ActionButton
+              text="View"
+              onClick={navigate}
+              isDisabled={!event?.uid}
+            />
+          }
+        />
+      </header>
+      <main className="content">
+        <QuestionsSection event={event} />
+      </main>
+      <footer className="footer">
+        <Footer event={event} />
+      </footer>
+    </div>
   );
 }

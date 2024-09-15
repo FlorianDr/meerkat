@@ -7,18 +7,22 @@ export function CollectCard({ uid }: { uid: string }) {
   const { data: event } = useEvent(uid);
 
   return (
-    <>
-      <Header
-        event={event}
-        actionButton={
-          <ActionButton
-            text="Kudos"
-            onClick={() => console.log("kudos")}
-            isDisabled={true}
-          />
-        }
-      />
-      <Card event={event} />
-    </>
+    <div className="layout">
+      <header className="header">
+        <Header
+          event={event}
+          actionButton={
+            <ActionButton
+              text="Kudos"
+              onClick={() => console.log("kudos")}
+              isDisabled={true}
+            />
+          }
+        />
+      </header>
+      <main className="collect-card-content">
+        <Card event={event} />
+      </main>
+    </div>
   );
 }

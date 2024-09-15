@@ -10,8 +10,6 @@ body {
   height: 100vh;
   grid-template-rows: max-content 1fr max-content;
   grid-template-columns: 1fr minmax(0, 512px) 1fr;
-  margin: 0;
-  padding: 1.5rem 0;
 }
 
 .header {
@@ -22,11 +20,10 @@ body {
 .footer {
   grid-row: 3;
   grid-column: 2;
-  padding: 0 1.5rem 1.5rem 1.5rem;
 }
 
 .title-section {
-  padding: 0 1rem 1.5rem 1rem;
+  padding: 1.5rem 1rem 1.5rem 1rem;
 }
 
 .stats-section {
@@ -88,7 +85,7 @@ ul {
 }
 
 .bubble {
-  background-color: #191919;
+  background-color: #342749;
   border-radius: 5px;
   padding: 1rem 1rem 1rem 1rem;
   margin-bottom: 1rem;

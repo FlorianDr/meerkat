@@ -3,12 +3,12 @@ import { Event } from "../../hooks/use-event.ts";
 
 interface HeaderProps {
   event: Event | undefined;
-  actionButton: JSX.Element;
+  actionButton: React.ReactNode;
 }
 
 export function Header({ event, actionButton }: HeaderProps) {
   return (
-    <header className="header">
+    <>
       <div className="title-section">
         <Heading as="h1" color="white" size="md" mb={1.5}>
           {event?.title ?? "Loading..."}
@@ -34,6 +34,6 @@ export function Header({ event, actionButton }: HeaderProps) {
           <div className="stat-label">Up-votes</div>
         </div>
       </div>
-    </header>
+    </>
   );
 }

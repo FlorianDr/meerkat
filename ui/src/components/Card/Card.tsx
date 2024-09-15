@@ -10,14 +10,14 @@ export const Card = ({ event }: { event: Event | undefined }) => {
   );
 
   return (
-    <main className="collect-card-content">
+    <>
       <div className="collect-card-text">
         <Heading as="h3" color="white" size="sm">
           Collect your event card on Zupass
         </Heading>
       </div>
       <div className="collect-card-image">
-        {/* if users aske a q he gets a special card */}
+        {/* if users ask a q he gets a special card */}
         {hasUserAskedQuestion
           ? (
             <img
@@ -35,7 +35,7 @@ export const Card = ({ event }: { event: Event | undefined }) => {
       <Flex direction="column" align="center">
         <Link href={event?.collectURL}>Collect</Link>
       </Flex>
-    </main>
+    </>
   );
 };
 

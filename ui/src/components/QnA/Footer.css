@@ -1,0 +1,29 @@
+.overlay-container { 
+	display: grid;
+}
+
+.target, .overlay {
+	grid-area: 1 / 1 / 2 / 2;
+}
+
+.login {
+	display: flex;
+	flex-flow: column;
+	color: white;
+	justify-content: center;
+	align-items: center;
+	padding: 1.5rem;
+  backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
+	padding-bottom: 12px;
+	gap: 8px;
+}
+
+.question-input {
+	padding: 1.5rem;
+}
+
+.signin-name {
+	display: block;
+	padding-top: 8px;
+}

@@ -1,9 +1,8 @@
 import { CollectCard } from "./pages/CollectCard.tsx";
 import { QnA } from "./pages/QnA.tsx";
-import { useRoutes } from "./hooks/use-routes.tsx";
-import { Layout } from "./components/Layout/Layout.tsx";
+import { type Routes, useRoutes } from "./hooks/use-routes.tsx";
 
-const routeConfig = [
+const routeConfig: Routes = [
   {
     regex: /^\/events\/(?<uid>[^/]+)\/collect$/,
     component: CollectCard,
@@ -12,13 +11,7 @@ const routeConfig = [
 ];
 
 function App() {
-  const children = useRoutes(routeConfig);
-
-  return (
-    <Layout>
-      {children}
-    </Layout>
-  );
+  return useRoutes(routeConfig);
 }
 
 export default App;

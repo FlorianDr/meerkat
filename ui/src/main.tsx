@@ -1,22 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  extendTheme,
+  withDefaultColorScheme,
+} from "@chakra-ui/react";
+import "./index.css";
 
-// TODO: add colors when palette defined
-const theme = extendTheme({
-  styles: {
-    global: {
-      body: {
-        bg: "#010101",
-        color: "#C2C2C2",
-        colors: {
-          purple: "rgba(136, 116, 170, 1)",
+const theme = extendTheme(
+  withDefaultColorScheme({ colorScheme: "purple" }),
+  {
+    config: {
+      initialColorMode: "dark",
+      useSystemColorMode: false,
+    },
+    styles: {
+      global: {
+        body: {
+          bg: "#0C021D",
+          color: "#AFA5C0",
+          // colors: {
+          //   purple: "rgba(136, 116, 170, 1)",
+          // },
         },
       },
     },
   },
-});
+);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

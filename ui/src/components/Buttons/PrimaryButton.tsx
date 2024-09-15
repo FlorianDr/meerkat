@@ -1,17 +1,15 @@
-import { Button } from "@chakra-ui/react";
+import { Button, ButtonProps } from "@chakra-ui/react";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 
-export function PrimaryButton(
-  { onClick, isDisabled, children }: {
-    children?: React.ReactNode;
-    onClick: () => void;
-    isDisabled: boolean;
-  },
-) {
+export type PrimaryButtonProps = ButtonProps;
+
+export function PrimaryButton(props: PrimaryButtonProps) {
   const { primaryPurple } = useThemeColors();
+  const { children, ...rest } = props;
+
   return (
     <Button
-      onClick={onClick}
+      {...rest}
       width="16rem"
       bg={`linear-gradient(90deg, ${primaryPurple} 0%, #53A0F3 139%)`}
       _active={{
@@ -21,7 +19,6 @@ export function PrimaryButton(
       color="white"
       fontWeight="bold"
       py={6}
-      isDisabled={isDisabled}
     >
       {children}
     </Button>
