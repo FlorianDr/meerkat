@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import { HTTPError } from "./http-error.ts";
+import { fetcher } from "./fetcher.ts";
 
 // TODO: Get interface from api
 export type Event = {
@@ -26,17 +27,9 @@ export type Question = {
   userId: number;
 };
 
-const fetcher = (uid: string) =>
-  fetch(`/api/v1/events/${uid}`).then((res) => {
-    if (!res.ok) {
-      throw new HTTPError(res);
-    }
-    return res.json();
-  });
-
 export const useEvent = (uid: string | undefined) => {
   const { data, error, isLoading } = useSWR<{ data: Event }, HTTPError>(
-    uid,
+    `/api/v1/events/${uid}`,
     fetcher,
   );
 
