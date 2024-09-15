@@ -1,14 +1,15 @@
 import { Heading } from "@chakra-ui/react";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
-import { QuestionWithVotes } from "../../hooks/use-event.ts";
+import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useUser } from "../../hooks/use-user.ts";
 
 interface QuestionProps {
-  question: QuestionWithVotes;
+  question: QuestionModel;
+  voted: boolean;
 }
 
 export function Question(
-  { question }: QuestionProps,
+  { question, voted }: QuestionProps,
 ) {
   const { isAuthenticated } = useUser();
   return (
@@ -17,12 +18,12 @@ export function Question(
         {question.question}
       </Heading>
       <div className="upvote-section">
-        <div className={`upvote-count ${question.hasVoted && "voted"}`}>
+        <div className={`upvote-count ${voted && "voted"}`}>
           {question.votes}
         </div>
         <form method="POST" action={`/api/v1/questions/${question.uid}/upvote`}>
           <UpVoteButton
-            hasVoted={question.hasVoted}
+            hasVoted={voted}
             isDisabled={!isAuthenticated}
           />
         </form>

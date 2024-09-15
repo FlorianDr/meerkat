@@ -1,6 +1,8 @@
 import { and, eq, sql } from "drizzle-orm";
-import { questions, votes } from "../schema.ts";
+import { questions, users, votes } from "../schema.ts";
 import db from "../db.ts";
+import { Question } from "./questions.ts";
+import { User } from "./user.ts";
 
 export async function createVote(
   questionId: number,
@@ -65,6 +67,23 @@ export async function getVotesByQuestionIdAndUserId(
   );
 
   return results;
+}
+
+export async function getVotesByUserId(
+  userId: number,
+): Promise<(Vote & { question: Question; user: User })[]> {
+  const results = await db.select().from(votes).where(
+    eq(votes.userId, userId),
+  ).leftJoin(questions, eq(votes.questionId, questions.id)).leftJoin(
+    users,
+    eq(votes.userId, users.id),
+  ).execute();
+
+  return results.map((result) => ({
+    ...result.votes,
+    question: result.questions as Question,
+    user: result.users as User,
+  }));
 }
 
 const uniqueVotersByEventId = db

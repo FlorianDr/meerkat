@@ -4,9 +4,11 @@ import { Footer } from "../components/QnA/Footer.tsx";
 import { Header } from "../components/Header/Header.tsx";
 import { ActionButton } from "../components/Buttons/ActionButton.tsx";
 import { useNavigate } from "../hooks/use-routes.tsx";
+import { useVotes } from "../hooks/use-votes.ts";
 
 export function QnA({ uid }: { uid: string }) {
   const { data: event } = useEvent(uid);
+  const { data: votes } = useVotes();
   const navigate = useNavigate(`/events/${event?.uid}/collect`);
 
   return (
@@ -24,7 +26,7 @@ export function QnA({ uid }: { uid: string }) {
         />
       </header>
       <main className="content">
-        <QuestionsSection event={event} />
+        <QuestionsSection event={event} votes={votes} />
       </main>
       <footer className="footer">
         <Footer event={event} />

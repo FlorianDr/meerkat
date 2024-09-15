@@ -119,53 +119,16 @@ app.get("/api/v1/events/:uid", async (c) => {
 
   // Strips out internal fields
   const { id: _id, conferenceId: _conferenceId, ...rest } = event;
-
-  let publicQuestions: Omit<QuestionWithVotesAndHasVoted, "id" | "eventId">[];
-
-  const jwtCookie = getCookie(c, "jwt");
-  // if user is logged in, we check if user has voted on a particular question
-  if (jwtCookie) {
-    const decoded = decode(jwtCookie);
-    const userUID = fromString(decoded.payload.sub as string, SUB_TYPE_ID);
-
-    const user = await getUserByUID(getSuffix(userUID));
-
-    if (!user) {
-      throw new HTTPException(401, { message: `User not found` });
-    }
-
-    // checks if user has voted on a particular question
-    publicQuestions = await Promise.all(
-      questions.map(async (question) => {
-        const userVote = await getVotesByQuestionIdAndUserId(
-          {
-            questionId: question.id,
-            userId: user.id,
-          },
-        );
-
-        const { id: _id, eventId: _eventId, ...rest } = question;
-
-        return {
-          ...rest,
-          hasVoted: !!userVote,
-        };
-      }),
-    );
-  } else {
-    // Strips out internal fields
-    publicQuestions = questions.map(
-      ({ id: _id, eventId: _eventId, ...rest }) => ({
-        ...rest,
-        hasVoted: false,
-      }),
-    );
-  }
+  const apiQuestions = questions.map((
+    { id: _id, eventId: _eventId, ...rest },
+  ) => ({
+    ...rest,
+  }));
 
   return c.json({
     data: {
       ...rest,
-      questions: publicQuestions,
+      questions: apiQuestions,
       collectURL,
       proofURL,
     },
@@ -348,8 +311,6 @@ app.get("/api/v1/events/:uid/participants", async (c) => {
   }
 
   const participants = await getUniqueVotersByEventId(event.id);
-
-  console.log({ participants });
 
   return c.json({ data: participants });
 });

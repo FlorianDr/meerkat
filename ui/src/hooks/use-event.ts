@@ -13,20 +13,18 @@ export type Event = {
   description: string | null;
   track: string | null;
   cover: string | null;
-  questions: QuestionWithVotes[];
+  questions: Question[];
   collectURL: string;
   proofURL: string;
 };
 
-type Question = {
+export type Question = {
   uid: string;
   votes: number;
   question: string;
   createdAt: Date;
   userId: number;
 };
-
-export type QuestionWithVotes = Question & { votes: number; hasVoted: boolean };
 
 const fetcher = (uid: string) =>
   fetch(`/api/v1/events/${uid}`).then((res) => {
