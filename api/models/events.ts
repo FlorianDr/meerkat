@@ -33,4 +33,13 @@ export async function getEventByUID(uid: string): Promise<Event | null> {
   return event.length === 1 ? event[0] : null;
 }
 
+const eventByID = db.select().from(events).where(
+  eq(events.id, sql.placeholder("id")),
+).limit(1).prepare("event_by_id");
+
+export async function getEventById(id: number): Promise<Event | null> {
+  const event = await eventByID.execute({ id });
+  return event.length === 1 ? event[0] : null;
+}
+
 export type Event = typeof events.$inferSelect;

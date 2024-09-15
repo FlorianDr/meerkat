@@ -106,6 +106,10 @@ ul {
 .upvote-count {
   display: inline;
   margin-right: 0.25rem;
+  color: #AFA5C0;
+}
+
+.upvote-count.voted { 
   color: white;
 }
 

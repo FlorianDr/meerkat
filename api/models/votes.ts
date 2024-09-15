@@ -2,7 +2,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { questions, votes } from "../schema.ts";
 import db from "../db.ts";
 
-export async function addVote(
+export async function createVote(
   questionId: number,
   userId: number,
 ): Promise<Vote> {
@@ -13,6 +13,18 @@ export async function addVote(
   }).execute();
 
   return newVote;
+}
+
+export async function deleteVote(
+  questionId: number,
+  userId: number,
+): Promise<void> {
+  await db.delete(votes).where(
+    and(
+      eq(votes.questionId, questionId),
+      eq(votes.userId, userId),
+    ),
+  ).execute();
 }
 
 const voteCountByQuestionId = db.select({

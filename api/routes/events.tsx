@@ -11,7 +11,7 @@ import QR from "../components/QR.tsx";
 import TopQuestions from "../components/TopQuestions.tsx";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
-import { getEventByUID } from "../models/events.ts";
+import { getEventById, getEventByUID } from "../models/events.ts";
 import {
   createUserFromZuTicketId,
   getUserByUID,
@@ -23,8 +23,8 @@ import {
   getQuestionsWithVoteCountByEventId,
 } from "../models/questions.ts";
 import {
-  addVote,
-  getVoteCountByQuestionId,
+  createVote,
+  deleteVote,
   getVotesByQuestionIdAndUserId,
 } from "../models/votes.ts";
 import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
@@ -215,17 +215,17 @@ app.post(
 );
 
 app.post(
-  "/api/v1/questions/:questionUID/upvote",
+  "/api/v1/questions/:uid/upvote",
   jwt({ secret: env.secret, cookie: "jwt" }),
   async (c) => {
-    const questionUID = c.req.param("questionUID");
+    const uid = c.req.param("uid");
 
     const payload = c.get("jwtPayload");
     const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
 
     const [user, question] = await Promise.all([
       getUserByUID(getSuffix(userUID)),
-      getQuestionByUID(questionUID),
+      getQuestionByUID(uid),
     ]);
 
     if (!user) {
@@ -234,24 +234,32 @@ app.post(
 
     if (!question) {
       throw new HTTPException(404, {
-        message: `Question ${questionUID} not found`,
+        message: `Question ${uid} not found`,
       });
     }
 
-    try {
-      await addVote(question.id, user.id);
-    } catch (error) {
-      if (error.message.includes("duplicate key value")) {
-        throw new HTTPException(400, {
-          message: `User ${userUID} already voted for question ${questionUID}`,
-        });
-      }
-      throw new Error(error);
+    const event = await getEventById(question.eventId);
+
+    if (!event) {
+      throw new HTTPException(404, {
+        message: `Event ${question.eventId} not found`,
+      });
     }
 
-    const votes = await getVoteCountByQuestionId(question.id);
+    const hasVoted = await getVotesByQuestionIdAndUserId({
+      questionId: question.id,
+      userId: user.id,
+    });
 
-    return c.json({ votes });
+    if (hasVoted) {
+      await deleteVote(question.id, user.id);
+    } else {
+      await createVote(question.id, user.id);
+    }
+
+    const origin = c.req.header("origin") ?? env.base;
+    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
+    return c.redirect(redirect.toString());
   },
 );
 

@@ -31,6 +31,7 @@ export function Footer({ event }: { event: Event | undefined }) {
               name="question"
               bg="#342749"
               color="white"
+              borderColor={primaryPurple}
               border="none"
               borderRadius="md"
               p={4}
