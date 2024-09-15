@@ -11,7 +11,6 @@ import { useUser } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
-import "./Footer.css";
 
 export function Footer({ event }: { event: Event | undefined }) {
   const { data: user, isAuthenticated } = useUser();
