@@ -57,11 +57,9 @@ export function Footer({ event }: { event: Event | undefined }) {
             </InputRightElement>
           </InputGroup>
         </Flex>
-        {isAuthenticated && (
-          <span className="signin-name">
-            Signed as {user?.name ?? user?.uid}
-          </span>
-        )}
+        <span className="signin-name">
+          Signed as {user?.name ?? user?.uid ?? "Anonymous"}
+        </span>
       </form>
       {!isAuthenticated && <LoginOverlay event={event}></LoginOverlay>}
     </div>

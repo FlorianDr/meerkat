@@ -12,10 +12,9 @@
 	color: white;
 	justify-content: center;
 	align-items: center;
-	padding: 1.5rem;
-  backdrop-filter: blur(2px);
-	-webkit-backdrop-filter: blur(2px);
-	padding-bottom: 12px;
+	padding: 0 1.5rem 1.5rem 1.5rem;
+  backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(3px);
 	gap: 8px;
 }
 
