@@ -6,3 +6,4 @@ node_modules
 .vite
 .secrets
 dist
+fly.toml

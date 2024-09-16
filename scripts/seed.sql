@@ -1,5 +1,10 @@
 -- Seed data for conferences table
 -- Auth config taken from https://github.com/proofcarryingdata/zupass/blob/main/packages/lib/zuauth/src/configs/ethberlin.ts
+ALTER SEQUENCE conferences_id_seq RESTART WITH 1;
+ALTER SEQUENCE events_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
+ALTER SEQUENCE questions_id_seq RESTART WITH 1;
+
 INSERT INTO conferences (name, zu_auth_config)
 VALUES (
 		'ETHBerlin04',
