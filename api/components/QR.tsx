@@ -39,7 +39,7 @@ const QR: FC<QRProps> = ({
     <div className="qr-layout">
       <header className="qr-header">
         <h2 className="header-title">{event?.title}</h2>
-        <h2 className="header-title">Vitalik Buterin</h2>
+        <h2 className="header-title">{event?.speaker}</h2>
       </header>
       <main className="qr-conentet">
         <div

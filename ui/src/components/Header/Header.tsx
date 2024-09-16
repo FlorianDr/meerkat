@@ -15,7 +15,7 @@ export function Header({ event, actionButton }: HeaderProps) {
         </Heading>
         <Flex justifyContent="space-between">
           <Heading as="h2" size="md" fontWeight="thin">
-            Vitalik Buterin
+            {event?.speaker ?? "Loading..."}
           </Heading>
           {actionButton}
         </Flex>

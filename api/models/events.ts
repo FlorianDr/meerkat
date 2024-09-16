@@ -7,7 +7,7 @@ import { events, questions, votes } from "../schema.ts";
 export async function createEvents(
   conferenceId: number,
   newEvents: Omit<Event, "id" | "uid" | "conferenceId" | "createAt">[],
-): Promise<Event[]> {
+) {
   const results = await db.insert(events).values(
     newEvents.map((event) => ({
       ...event,
@@ -18,7 +18,7 @@ export async function createEvents(
   return results;
 }
 
-export async function getEvents(conferenceId: number): Promise<Event[]> {
+export async function getEvents(conferenceId: number) {
   const results = await db.select().from(events).where(
     eq(events.conferenceId, conferenceId),
   ).orderBy(events.start).execute();
@@ -29,18 +29,20 @@ const eventByUID = db.select().from(events).where(
   eq(events.uid, sql.placeholder("uid")),
 ).limit(1).prepare("event_by_uid");
 
-export async function getEventByUID(uid: string): Promise<Event | null> {
-  const event = await eventByUID.execute({ uid });
-  return event.length === 1 ? event[0] : null;
+export async function getEventByUID(uid: string) {
+  const results = await eventByUID.execute({ uid });
+  const event = results.length === 1 ? results[0] : null;
+  return event ? { ...event, speaker: "gubsheep" } : null;
 }
 
 const eventByID = db.select().from(events).where(
   eq(events.id, sql.placeholder("id")),
 ).limit(1).prepare("event_by_id");
 
-export async function getEventById(id: number): Promise<Event | null> {
-  const event = await eventByID.execute({ id });
-  return event.length === 1 ? event[0] : null;
+export async function getEventById(id: number) {
+  const results = await eventByID.execute({ id });
+  const event = results.length === 1 ? results[0] : null;
+  return event ? { ...event, speaker: "gubsheep" } : null;
 }
 
 export async function countParticipants(eventId: number) {
@@ -64,4 +66,4 @@ export async function countParticipants(eventId: number) {
   return results[0].count;
 }
 
-export type Event = typeof events.$inferSelect;
+export type Event = typeof events.$inferSelect & { speaker: string };

@@ -19,6 +19,7 @@ export type Event = {
   proofURL: string;
   votes: number;
   participants: number;
+  speaker: string;
 };
 
 export type Question = {
