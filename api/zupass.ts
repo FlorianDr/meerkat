@@ -24,6 +24,8 @@ export async function getZupassAddPCDURL(
       "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg",
     "zupass_title": event.title,
     "zupass_description": event.description ?? "",
+    "code": event.code,
+    "track": event.track,
   };
   const podContent = JSON.stringify(pod);
   const podFolder = conference?.name ?? "Conference";
