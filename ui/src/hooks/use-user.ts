@@ -6,6 +6,7 @@ import { fetcher } from "./fetcher.ts";
 export type User = {
   uid: string;
   createdAt: Date;
+  name?: string | undefined;
 };
 
 export const useUser = () => {

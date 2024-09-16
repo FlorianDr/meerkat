@@ -21,8 +21,13 @@ app.get(
       throw new HTTPException(401, { message: `User not found` });
     }
 
-    const { id: _id, ...rest } = user;
-    return c.json({ data: rest });
+    const { id: _id, name, ...rest } = user;
+    return c.json({
+      data: {
+        ...rest,
+        name: name ?? undefined,
+      },
+    });
   },
 );
 

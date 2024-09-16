@@ -64,6 +64,7 @@ export const votes = pgTable("votes", {
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   uid: text("uid").notNull().unique(),
+  name: text("name").unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

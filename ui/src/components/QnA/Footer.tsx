@@ -58,7 +58,9 @@ export function Footer({ event }: { event: Event | undefined }) {
           </InputGroup>
         </Flex>
         {isAuthenticated && (
-          <span className="signin-name">Signed with uid {user?.uid}</span>
+          <span className="signin-name">
+            Signed as {user?.name ?? user?.uid}
+          </span>
         )}
       </form>
       {!isAuthenticated && <LoginOverlay event={event}></LoginOverlay>}

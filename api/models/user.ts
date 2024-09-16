@@ -3,6 +3,7 @@ import { typeid } from "typeid-js";
 import { users } from "../schema.ts";
 import db from "../db.ts";
 import { tickets } from "../schema.ts";
+import { generateUsername } from "../usernames.ts";
 
 export async function createUserFromZuTicketId(
   conferenceId: number,
@@ -11,6 +12,7 @@ export async function createUserFromZuTicketId(
   const result = await db.transaction(async (db) => {
     const result = await db.insert(users).values({
       uid: typeid().getSuffix(),
+      name: generateUsername(),
     }).returning().execute();
 
     if (result.length !== 1) {
