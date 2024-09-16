@@ -1,8 +1,8 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
-import { getCookie, setCookie } from "@hono/hono/cookie";
+import { setCookie } from "@hono/hono/cookie";
 import { HTTPException } from "@hono/hono/http-exception";
-import { decode, jwt, sign } from "@hono/hono/jwt";
+import { jwt, sign } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
 import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { fromString, getSuffix } from "typeid-js";
@@ -11,7 +11,11 @@ import QR from "../components/QR.tsx";
 import TopQuestions from "../components/TopQuestions.tsx";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
-import { getEventById, getEventByUID } from "../models/events.ts";
+import {
+  countParticipants,
+  getEventById,
+  getEventByUID,
+} from "../models/events.ts";
 import {
   createUserFromZuTicketId,
   getUserByUID,
@@ -20,7 +24,7 @@ import {
 import {
   createQuestion,
   getQuestionByUID,
-  getQuestionsWithVoteCountByEventId,
+  getQuestions,
 } from "../models/questions.ts";
 import {
   createVote,
@@ -30,8 +34,6 @@ import {
 import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
-import { QuestionWithVotesAndHasVoted } from "../models/questions.ts";
-import { getUniqueVotersByEventId } from "../models/votes.ts";
 
 const app = new Hono();
 
@@ -54,15 +56,8 @@ app.get("/events/:uid", async (c) => {
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/events/${uid}/qa`, origin);
 
-  const questions = await getQuestionsWithVoteCountByEventId(event.id);
-  const uniqueVoters = await getUniqueVotersByEventId(event.id);
-  const uniqueVotersSet = new Set<number>(uniqueVoters);
-  const participants = questions.reduce((acc, question) => {
-    if (question.userId) {
-      acc.add(question.userId);
-    }
-    return acc;
-  }, uniqueVotersSet).size;
+  const questions = await getQuestions(event.id);
+  const participants = await countParticipants(event.id);
 
   return c.html(
     <Layout>
@@ -99,7 +94,7 @@ app.get("/api/v1/events/:uid", async (c) => {
     });
   }
 
-  const questions = await getQuestionsWithVoteCountByEventId(event.id);
+  const questions = await getQuestions(event.id);
 
   const origin = c.req.header("origin") ?? env.base;
 
@@ -120,10 +115,19 @@ app.get("/api/v1/events/:uid", async (c) => {
   // Strips out internal fields
   const { id: _id, conferenceId: _conferenceId, ...rest } = event;
   const apiQuestions = questions.map((
-    { id: _id, eventId: _eventId, ...rest },
+    { id: _id, eventId: _eventId, userId: _userId, user, ...rest },
   ) => ({
     ...rest,
+    user: user
+      ? {
+        uid: user?.uid,
+        name: user?.name ?? undefined,
+      }
+      : undefined,
   }));
+
+  const votes = questions.reduce((acc, question) => acc + question.votes, 0);
+  const participants = await countParticipants(event.id);
 
   return c.json({
     data: {
@@ -131,6 +135,8 @@ app.get("/api/v1/events/:uid", async (c) => {
       questions: apiQuestions,
       collectURL,
       proofURL,
+      votes,
+      participants,
     },
   });
 });
@@ -300,19 +306,6 @@ app.get("/api/v1/events/:uid/proof/:watermark", async (c) => {
   const redirect = new URL(`/events/${uid}/qa`, origin);
 
   return c.redirect(redirect.toString());
-});
-
-app.get("/api/v1/events/:uid/participants", async (c) => {
-  const uid = c.req.param("uid");
-  const event = await getEventByUID(uid);
-
-  if (!event) {
-    throw new HTTPException(404, { message: `Event ${uid} not found` });
-  }
-
-  const participants = await getUniqueVotersByEventId(event.id);
-
-  return c.json({ data: participants });
 });
 
 export default app;

@@ -18,15 +18,21 @@ export function Question(
         {question.question}
       </Heading>
       <div className="upvote-section">
-        <div className={`upvote-count ${voted && "voted"}`}>
-          {question.votes}
+        {question.user?.name ?? question.user?.uid}
+        <div className="upvote">
+          <div className={`upvote-count ${voted && "voted"}`}>
+            {question.votes}
+          </div>
+          <form
+            method="POST"
+            action={`/api/v1/questions/${question.uid}/upvote`}
+          >
+            <UpVoteButton
+              hasVoted={voted}
+              isDisabled={!isAuthenticated}
+            />
+          </form>
         </div>
-        <form method="POST" action={`/api/v1/questions/${question.uid}/upvote`}>
-          <UpVoteButton
-            hasVoted={voted}
-            isDisabled={!isAuthenticated}
-          />
-        </form>
       </div>
     </li>
   );

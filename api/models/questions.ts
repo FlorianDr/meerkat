@@ -1,12 +1,13 @@
 import { desc, eq, sql } from "drizzle-orm";
 import { typeid } from "typeid-js";
-import { questions, votes } from "../schema.ts";
+import { questions, users, votes } from "../schema.ts";
 import db from "../db.ts";
 
-const votesSnippet = sql<number>`CAST(COUNT(${votes.questionId}) AS INTEGER)`
-  .as("votes");
+const votesSnippet = sql`COUNT(${votes.questionId})`.mapWith(Number).as(
+  "votes",
+);
 
-const questionsWithVotesByEventIdPreparedStatement = db
+const questionsPreparedStatement = db
   .select({
     id: questions.id,
     uid: questions.uid,
@@ -14,19 +15,21 @@ const questionsWithVotesByEventIdPreparedStatement = db
     question: questions.question,
     createdAt: questions.createdAt,
     userId: questions.userId,
+    user: users,
     votes: votesSnippet,
   })
   .from(questions)
   .leftJoin(votes, eq(questions.id, votes.questionId))
+  .leftJoin(users, eq(questions.userId, users.id))
   .where(eq(questions.eventId, sql.placeholder("event_id")))
-  .groupBy(questions.id)
+  .groupBy(questions.id, users.id)
   .orderBy(desc(votesSnippet), desc(questions.createdAt))
   .prepare("questions_with_votes_by_event_id");
 
-export async function getQuestionsWithVoteCountByEventId(
+export async function getQuestions(
   eventId: number,
-): Promise<(Question & { votes: number })[]> {
-  const results = await questionsWithVotesByEventIdPreparedStatement.execute({
+) {
+  const results = await questionsPreparedStatement.execute({
     event_id: eventId,
   });
 
@@ -35,7 +38,7 @@ export async function getQuestionsWithVoteCountByEventId(
 
 export async function createQuestion(
   question: Omit<Question, "uid" | "createdAt" | "id">,
-): Promise<Question> {
+) {
   const result = await db.insert(questions).values({
     ...question,
     uid: typeid().getSuffix(),
@@ -60,6 +63,3 @@ export async function getQuestionByUID(uid: string) {
 
 export type Question = typeof questions.$inferSelect;
 export type QuestionWithVotes = Question & { votes: number };
-export type QuestionWithVotesAndHasVoted = QuestionWithVotes & {
-  hasVoted?: boolean;
-};

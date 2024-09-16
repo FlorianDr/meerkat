@@ -97,10 +97,16 @@ ul {
 .upvote-section {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: space-between;
   right: 0.5rem;
   top: 3.5rem;
   margin-top: 0.5rem;
+}
+
+.upvote {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
 }
 
 .upvote-count {

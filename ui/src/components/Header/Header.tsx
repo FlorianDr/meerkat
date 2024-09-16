@@ -26,12 +26,12 @@ export function Header({ event, actionButton }: HeaderProps) {
           <div className="stat-label">Questions</div>
         </div>
         <div className="stat-box">
-          <div className="stat-value">121</div>
+          <div className="stat-value">{event?.participants}</div>
           <div className="stat-label">Participants</div>
         </div>
         <div className="stat-box">
-          <div className="stat-value">32</div>
-          <div className="stat-label">Up-votes</div>
+          <div className="stat-value">{event?.votes}</div>
+          <div className="stat-label">Votes</div>
         </div>
       </div>
     </>

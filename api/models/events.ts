@@ -1,7 +1,8 @@
 import { eq, sql } from "drizzle-orm";
-import db from "../db.ts";
-import { events } from "../schema.ts";
+import { union } from "drizzle-orm/pg-core";
 import { typeid } from "typeid-js";
+import db from "../db.ts";
+import { events, questions, votes } from "../schema.ts";
 
 export async function createEvents(
   conferenceId: number,
@@ -40,6 +41,27 @@ const eventByID = db.select().from(events).where(
 export async function getEventById(id: number): Promise<Event | null> {
   const event = await eventByID.execute({ id });
   return event.length === 1 ? event[0] : null;
+}
+
+export async function countParticipants(eventId: number) {
+  const results = await db.select({
+    count: sql`COUNT(DISTINCT(participants.user_id))`.mapWith(
+      Number,
+    ),
+  }).from(
+    union(
+      db.select({ user_id: questions.userId }).from(questions).where(
+        eq(questions.eventId, eventId),
+      ),
+      db.select({ user_id: votes.userId }).from(votes).innerJoin(
+        questions,
+        eq(questions.id, votes.questionId),
+      ).where(
+        eq(questions.eventId, eventId),
+      ),
+    ).as("participants"),
+  ).execute();
+  return results[0].count;
 }
 
 export type Event = typeof events.$inferSelect;

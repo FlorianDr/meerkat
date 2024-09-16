@@ -17,6 +17,8 @@ export type Event = {
   questions: Question[];
   collectURL: string;
   proofURL: string;
+  votes: number;
+  participants: number;
 };
 
 export type Question = {
@@ -24,7 +26,10 @@ export type Question = {
   votes: number;
   question: string;
   createdAt: Date;
-  userId: number;
+  user?: {
+    uid: string;
+    name?: string | undefined;
+  } | undefined;
 };
 
 export const useEvent = (uid: string | undefined) => {

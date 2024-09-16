@@ -86,23 +86,4 @@ export async function getVotesByUserId(
   }));
 }
 
-const uniqueVotersByEventId = db
-  .select({
-    userId: sql<number>`DISTINCT ${votes.userId}`,
-  })
-  .from(votes)
-  .innerJoin(questions, eq(votes.questionId, questions.id))
-  .where(eq(questions.eventId, sql.placeholder("event_id")))
-  .prepare("unique_voters_by_event_id");
-
-export async function getUniqueVotersByEventId(
-  eventId: number,
-): Promise<number[]> {
-  const results = await uniqueVotersByEventId.execute({
-    event_id: eventId,
-  });
-
-  return results.map((result) => result.userId);
-}
-
 export type Vote = typeof votes.$inferSelect;
