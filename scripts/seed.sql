@@ -49,8 +49,8 @@ VALUES (
 		'Track 2',
 		'Cover 2'
 	) ON CONFLICT DO NOTHING;
-INSERT INTO users (uid)
-VALUES ('01j513yxhnf66t1m7awr087d9m') ON CONFLICT DO NOTHING;
+INSERT INTO users (uid, name)
+VALUES ('01j513yxhnf66t1m7awr087d9m', 'vibrant-barking-deer-57d6') ON CONFLICT DO NOTHING;
 INSERT INTO questions (uid, event_id, question, user_id)
 VALUES (
 		'01j4yc358mf4xrd5aqj8kvj75t',
