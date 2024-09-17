@@ -17,6 +17,7 @@ jobs:
         env:
           APP_NAME: ${{ secrets.APP_NAME }}
           BASE_URL: ${{ secrets.BASE_URL }}
+          ZUPASS_URL: ${{ secrets.ZUPASS_URL }}
           PRIMARY_REGION: ${{ secrets.PRIMARY_REGION }}
       - run: flyctl deploy --remote-only
         env:
