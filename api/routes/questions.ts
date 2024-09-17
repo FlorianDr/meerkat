@@ -60,7 +60,7 @@ app.post(
     }
 
     broadcast(
-      uid,
+      event.uid,
       { op: "update", type: "question", uid: question.uid },
     );
 

@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { asc, desc, eq, sql } from "drizzle-orm";
 import { typeid } from "typeid-js";
 import { questions, users, votes } from "../schema.ts";
 import db from "../db.ts";
@@ -23,7 +23,7 @@ const questionsPreparedStatement = db
   .leftJoin(users, eq(questions.userId, users.id))
   .where(eq(questions.eventId, sql.placeholder("event_id")))
   .groupBy(questions.id, users.id)
-  .orderBy(desc(votesSnippet), desc(questions.createdAt))
+  .orderBy(desc(votesSnippet), asc(questions.createdAt))
   .prepare("questions_with_votes_by_event_id");
 
 export async function getQuestions(
