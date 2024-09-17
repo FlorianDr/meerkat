@@ -32,7 +32,7 @@ const eventByUID = db.select().from(events).where(
 export async function getEventByUID(uid: string) {
   const results = await eventByUID.execute({ uid });
   const event = results.length === 1 ? results[0] : null;
-  return event ? { ...event, speaker: "gubsheep" } : null;
+  return event ? { ...event } : null;
 }
 
 const eventByID = db.select().from(events).where(
@@ -42,7 +42,7 @@ const eventByID = db.select().from(events).where(
 export async function getEventById(id: number) {
   const results = await eventByID.execute({ id });
   const event = results.length === 1 ? results[0] : null;
-  return event ? { ...event, speaker: "gubsheep" } : null;
+  return event ? { ...event } : null;
 }
 
 export async function countParticipants(eventId: number) {
