@@ -26,6 +26,8 @@ if (!secret) {
 const zupassUrl = Deno.env.get("ZUPASS_URL") ?? "https://zupass.org";
 const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 
+console.info(`Env - zupassUrl: ${zupassUrl}, base: ${base}`);
+
 export default {
   adminToken,
   connectionString,
