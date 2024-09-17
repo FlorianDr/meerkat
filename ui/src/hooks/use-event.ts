@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import useSWRSubscription from "swr/subscription";
 import { HTTPError } from "./http-error.ts";
 import { fetcher } from "./fetcher.ts";
 
@@ -34,10 +35,37 @@ export type Question = {
 };
 
 export const useEvent = (uid: string | undefined) => {
-  const { data, error, isLoading } = useSWR<{ data: Event }, HTTPError>(
+  const { data, error, isLoading, mutate } = useSWR<{ data: Event }, HTTPError>(
     `/api/v1/events/${uid}`,
     fetcher,
   );
 
-  return { data: data?.data, error, isLoading };
+  return { data: data?.data, error, isLoading, mutate };
+};
+
+export const useEventUpdates = (
+  uid: string | undefined,
+  { onUpdate }: { onUpdate: (message: string) => void },
+) => {
+  const url = new URL(`/api/v1/events/${uid}/live`, globalThis.location.origin);
+  url.protocol = url.protocol.replace("http", "ws");
+
+  const { data, error } = useSWRSubscription(
+    url.toString(),
+    (key, { next }) => {
+      const socket = new WebSocket(key);
+      socket.addEventListener("message", (event) => {
+        onUpdate(event.data);
+        console.log("Received message", event.data);
+        next(null, event.data);
+      });
+      socket.addEventListener("error", (event) => next((event as any).error));
+      return () => socket.close();
+    },
+  );
+
+  return {
+    data,
+    error,
+  };
 };

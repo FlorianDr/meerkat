@@ -25,7 +25,9 @@ import {
   SUB_TYPE_ID,
 } from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
+import { upgradeWebSocket } from "@hono/hono/deno";
 import { createMiddleware } from "@hono/hono/factory";
+import { broadcast, join, leave } from "../realtime.ts";
 
 const app = new Hono();
 
@@ -144,6 +146,26 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   });
 });
 
+app.get(
+  "/api/v1/events/:uid/live",
+  eventMiddleware,
+  upgradeWebSocket((c) => {
+    const event = c.get("event");
+    const uid = event.uid;
+    return {
+      onMessage: (_event, ws) => {
+        console.log("Received unexpected message from client", _event.data);
+      },
+      onOpen: (_event, ws) => {
+        join(uid, ws);
+      },
+      onClose: (_event, ws) => {
+        leave(uid, ws);
+      },
+    };
+  }),
+);
+
 app.post(
   "/api/v1/events/:uid/questions",
   jwt({ secret: env.secret, cookie: "jwt" }),
@@ -174,11 +196,16 @@ app.post(
       throw new HTTPException(401, { message: `User not found` });
     }
 
-    await createQuestion({
+    const question = await createQuestion({
       eventId: event.id,
       question: questionText,
       userId: user.id,
     });
+
+    broadcast(
+      uid,
+      { op: "insert", type: "question", uid: question.uid },
+    );
 
     return c.redirect(redirect.toString());
   },

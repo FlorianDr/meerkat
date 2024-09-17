@@ -12,6 +12,7 @@ import {
   getVotesByQuestionIdAndUserId,
 } from "../models/votes.ts";
 import { SUB_TYPE_ID } from "../utils/jwt.ts";
+import { broadcast } from "../realtime.ts";
 
 const app = new Hono();
 
@@ -57,6 +58,11 @@ app.post(
     } else {
       await createVote(question.id, user.id);
     }
+
+    broadcast(
+      uid,
+      { op: "update", type: "question", uid: question.uid },
+    );
 
     const origin = c.req.header("origin") ?? env.base;
     const redirect = new URL(`/events/${event?.uid}/qa`, origin);
