@@ -11,7 +11,8 @@
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
     "ui:cache": "deno cache --node-modules-dir ./ui/src/main.tsx",
     "ui:dev": "deno run -A --node-modules-dir npm:vite ui",
-    "ui:build": "deno run -A --node-modules-dir npm:vite build ui"
+    "ui:build": "deno run -A --node-modules-dir npm:vite build ui",
+    "fmt": "deno fmt --ignore=.cache,ui/.vite"
   },
   "workspace": [
     "ui",
