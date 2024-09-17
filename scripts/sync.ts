@@ -30,6 +30,6 @@ function mapSessionToEvent(session: Session): EventCreate {
     abstract: session.description,
     description: session.description,
     track: session.track,
-    speaker: session.speakers.join(", ") ?? "Unknown",
+    speaker: session.speakers.map(({ name }) => name).join(", ") ?? "Unknown",
   };
 }
