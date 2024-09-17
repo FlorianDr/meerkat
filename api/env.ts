@@ -23,6 +23,7 @@ if (!secret) {
   throw new Error("SECRET is required");
 }
 
+const zupassUrl = Deno.env.get("ZUPASS_URL") ?? "https://zupass.org";
 const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 
 export default {
@@ -31,4 +32,5 @@ export default {
   base,
   secret,
   privateKey,
+  zupassUrl,
 };

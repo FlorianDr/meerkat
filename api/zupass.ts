@@ -38,7 +38,7 @@ export async function getZupassAddPCDURL(
   const serializedPODPCD = await PODPCDPackage.serialize(newPOD);
 
   const addPODURL = new URL(constructZupassPcdAddRequestUrl(
-    "https://zupass.org",
+    env.zupassUrl,
     returnUrl.toString(),
     serializedPODPCD,
     podFolder,
@@ -54,6 +54,7 @@ export function generateProofURL(
   config: PipelineEdDSATicketZuAuthConfig[],
 ) {
   const proofURL = constructZkTicketProofUrl({
+    zupassUrl: env.zupassUrl,
     returnUrl,
     fieldsToReveal: {
       revealTicketId: true,
@@ -72,6 +73,7 @@ export async function checkProof(
   conference: Conference,
 ) {
   const ticketPCD = await authenticate(proof, {
+    zupassUrl: env.zupassUrl,
     watermark,
     // For now, we have to use the watermark as the external nullifier
     externalNullifier: watermark,
