@@ -4,6 +4,9 @@ import { typeid } from "typeid-js";
 import db from "../db.ts";
 import { events, questions, votes } from "../schema.ts";
 
+const FALLBACK_COVER =
+  "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg";
+
 export async function createEvents(
   conferenceId: number,
   newEvents: Omit<Event, "id" | "uid" | "conferenceId" | "createAt">[],
@@ -32,7 +35,7 @@ const eventByUID = db.select().from(events).where(
 export async function getEventByUID(uid: string) {
   const results = await eventByUID.execute({ uid });
   const event = results.length === 1 ? results[0] : null;
-  return event ? { ...event } : null;
+  return event ? { ...event, cover: event.cover ?? FALLBACK_COVER } : null;
 }
 
 const eventByID = db.select().from(events).where(
@@ -42,7 +45,7 @@ const eventByID = db.select().from(events).where(
 export async function getEventById(id: number) {
   const results = await eventByID.execute({ id });
   const event = results.length === 1 ? results[0] : null;
-  return event ? { ...event } : null;
+  return event ? { ...event, cover: event.cover ?? FALLBACK_COVER } : null;
 }
 
 export async function countParticipants(eventId: number) {

@@ -60,7 +60,7 @@ export function generateProofURL(
       revealEventId: true,
     },
     watermark,
-    proofTitle: "Prove event attendance",
+    proofTitle: "Prove Event Attendance",
     config,
   });
   return proofURL;
