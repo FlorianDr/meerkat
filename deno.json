@@ -5,6 +5,7 @@
     "api:patch:linux": "DENO_DIR=./.cache ./scripts/patch-dependencies-linux.sh",
     "api:dev": "DENO_DIR=./.cache deno run --allow-env --allow-sys --allow-read --allow-net --watch ./api/dev.ts",
     "api:start": "deno run --allow-read --allow-env --allow-sys --allow-net ./api/main.ts",
+    "api:sync": "deno run -A ./scripts/sync.ts",
     "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate",
     "db:seed": "./scripts/seed.sh",
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
@@ -17,6 +18,7 @@
     "api"
   ],
   "imports": {
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
     "drizzle-kit": "npm:drizzle-kit@^0.24.0",
     "postgres": "npm:postgres@^3.4.4"
   },

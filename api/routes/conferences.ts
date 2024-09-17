@@ -22,8 +22,10 @@ const conferenceCreateSchema = zod.object({
   name: zod.string(),
 });
 
+export type ConferenceCreate = zod.infer<typeof conferenceCreateSchema>;
+
 app.post(
-  "/",
+  "/api/v1/conferences",
   bearerAuth({ token: env.adminToken }),
   zValidator("json", conferenceCreateSchema),
   async (c) => {
@@ -87,7 +89,10 @@ const eventCreateSchema = zod.object({
   description: zod.string().optional(),
   track: zod.string().optional(),
   cover: zod.string().optional(),
+  speaker: zod.string().optional(),
 });
+
+export type EventCreate = zod.infer<typeof eventCreateSchema>;
 
 const eventsCreateSchema = zod.array(eventCreateSchema).max(50);
 
@@ -119,6 +124,7 @@ app.post(
         abstract: event.abstract ?? null,
         track: event.track ?? null,
         cover: event.cover ?? null,
+        speaker: event.speaker ?? null,
       };
     });
 

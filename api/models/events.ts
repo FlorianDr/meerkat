@@ -66,4 +66,4 @@ export async function countParticipants(eventId: number) {
   return results[0].count;
 }
 
-export type Event = typeof events.$inferSelect & { speaker: string };
+export type Event = typeof events.$inferSelect & { speaker: string | null };
