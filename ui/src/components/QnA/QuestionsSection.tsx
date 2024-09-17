@@ -14,7 +14,7 @@ export function QuestionsSection(
   }, [votes, event]);
 
   return (
-    <ol>
+    <ol className="question-list">
       {event?.questions.map((question) => (
         <Question
           key={question.uid}

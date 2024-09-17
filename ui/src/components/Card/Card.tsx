@@ -4,7 +4,7 @@ import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 export const Card = ({ event }: { event: Event | undefined }) => {
   return (
-    <>
+    <div className="card">
       <div className="collect-card-text">
         <Heading as="h3" color="white" size="sm">
           Collect your event card on Zupass
@@ -21,7 +21,7 @@ export const Card = ({ event }: { event: Event | undefined }) => {
           Collect
         </PrimaryButton>
       </Flex>
-    </>
+    </div>
   );
 };
 

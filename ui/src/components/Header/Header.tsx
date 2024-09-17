@@ -20,20 +20,6 @@ export function Header({ event, actionButton }: HeaderProps) {
           {actionButton}
         </Flex>
       </div>
-      <div className="stats-section">
-        <div className="stat-box">
-          <div className="stat-value">{event?.questions.length ?? 0}</div>
-          <div className="stat-label">Questions</div>
-        </div>
-        <div className="stat-box">
-          <div className="stat-value">{event?.participants}</div>
-          <div className="stat-label">Participants</div>
-        </div>
-        <div className="stat-box">
-          <div className="stat-value">{event?.votes}</div>
-          <div className="stat-label">Votes</div>
-        </div>
-      </div>
     </>
   );
 }

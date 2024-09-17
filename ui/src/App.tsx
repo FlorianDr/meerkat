@@ -1,17 +1,19 @@
-import { CollectCard } from "./pages/CollectCard.tsx";
 import { QnA } from "./pages/QnA.tsx";
-import { type Routes, useRoutes } from "./hooks/use-routes.tsx";
-
-const routeConfig: Routes = [
-  {
-    regex: /^\/events\/(?<uid>[^/]+)\/collect$/,
-    component: CollectCard,
-  },
-  { regex: /^\/events\/(?<uid>[^/]+)\/qa$/, component: QnA },
-];
+import { parseUid } from "./utils/route.ts";
 
 function App() {
-  return useRoutes(routeConfig);
+  const uid = parseUid(
+    new URL(window.location.href),
+    /^\/events\/(?<uid>[^/]+)\/qa$/,
+  );
+
+  if (!uid) {
+    return <NotFound />;
+  }
+
+  return <QnA uid={uid} />;
 }
+
+const NotFound = () => <div>404 Not Found</div>;
 
 export default App;
