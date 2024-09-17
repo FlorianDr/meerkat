@@ -11,40 +11,47 @@ import QR from "../components/QR.tsx";
 import TopQuestions from "../components/TopQuestions.tsx";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
-import {
-  countParticipants,
-  getEventById,
-  getEventByUID,
-} from "../models/events.ts";
+import { countParticipants, getEventByUID } from "../models/events.ts";
 import {
   createUserFromZuTicketId,
   getUserByUID,
   getUserByZuTicketId,
 } from "../models/user.ts";
-import {
-  createQuestion,
-  getQuestionByUID,
-  getQuestions,
-} from "../models/questions.ts";
-import {
-  createVote,
-  deleteVote,
-  getVotesByQuestionIdAndUserId,
-} from "../models/votes.ts";
+import { createQuestion, getQuestions } from "../models/questions.ts";
 import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
-import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
+import {
+  constructJWTPayload,
+  JWT_EXPIRATION_TIME,
+  SUB_TYPE_ID,
+} from "../utils/jwt.ts";
 import { randomBigInt } from "../utils/random-bigint.ts";
+import { createMiddleware } from "@hono/hono/factory";
 
 const app = new Hono();
 
-app.get("/events/:uid", async (c) => {
+type Env = {
+  Variables: {
+    event: NonNullable<Awaited<ReturnType<typeof getEventByUID>>>;
+  };
+};
+
+const eventMiddleware = createMiddleware<Env>(async (c) => {
   const uid = c.req.param("uid");
+  if (!uid) {
+    throw new HTTPException(400, { message: `Event UID is required` });
+  }
   const event = await getEventByUID(uid);
 
   if (!event) {
     throw new HTTPException(404, { message: `Event ${uid} not found` });
   }
 
+  c.set("event", event);
+});
+
+app.get("/events/:uid", eventMiddleware, async (c) => {
+  const event = c.get("event");
+  const uid = event.uid;
   const conference = await getConferenceById(event.conferenceId);
 
   if (!conference) {
@@ -78,14 +85,9 @@ app.get("/events/:uid", async (c) => {
   );
 });
 
-app.get("/api/v1/events/:uid", async (c) => {
-  const uid = c.req.param("uid");
-  const event = await getEventByUID(uid);
-
-  if (!event) {
-    throw new HTTPException(404, { message: `Event ${uid} not found` });
-  }
-
+app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
+  const event = c.get("event");
+  const uid = event.uid;
   const conference = await getConferenceById(event.conferenceId);
 
   if (!conference) {
@@ -141,11 +143,10 @@ app.get("/api/v1/events/:uid", async (c) => {
   });
 });
 
-const SUB_TYPE_ID = "user" as const;
-
 app.post(
   "/api/v1/events/:uid/questions",
   jwt({ secret: env.secret, cookie: "jwt" }),
+  eventMiddleware,
   validator("form", (value, c) => {
     const question = value["question"];
     if (!question || typeof question !== "string") {
@@ -155,9 +156,8 @@ app.post(
   }),
   async (c) => {
     const questionText = c.req.valid("form");
-    const uid = c.req.param("uid");
-
-    const event = await getEventByUID(uid);
+    const event = c.get("event");
+    const uid = event.uid;
 
     if (!event) {
       throw new HTTPException(404, { message: `Event ${uid} not found` });
@@ -183,64 +183,15 @@ app.post(
   },
 );
 
-app.post(
-  "/api/v1/questions/:uid/upvote",
-  jwt({ secret: env.secret, cookie: "jwt" }),
-  async (c) => {
-    const uid = c.req.param("uid");
-
-    const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
-
-    const [user, question] = await Promise.all([
-      getUserByUID(getSuffix(userUID)),
-      getQuestionByUID(uid),
-    ]);
-
-    if (!user) {
-      throw new HTTPException(404, { message: `User ${userUID} not found` });
-    }
-
-    if (!question) {
-      throw new HTTPException(404, {
-        message: `Question ${uid} not found`,
-      });
-    }
-
-    const event = await getEventById(question.eventId);
-
-    if (!event) {
-      throw new HTTPException(404, {
-        message: `Event ${question.eventId} not found`,
-      });
-    }
-
-    const hasVoted = await getVotesByQuestionIdAndUserId({
-      questionId: question.id,
-      userId: user.id,
-    });
-
-    if (hasVoted) {
-      await deleteVote(question.id, user.id);
-    } else {
-      await createVote(question.id, user.id);
-    }
-
-    const origin = c.req.header("origin") ?? env.base;
-    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
-    return c.redirect(redirect.toString());
-  },
-);
-
-app.get("/api/v1/events/:uid/proof/:watermark", async (c) => {
+app.get("/api/v1/events/:uid/proof/:watermark", eventMiddleware, async (c) => {
   const watermark = c.req.param("watermark");
 
   if (!watermark) {
     throw new HTTPException(400, { message: `Watermark is required` });
   }
 
-  const uid = c.req.param("uid");
-  const event = await getEventByUID(uid);
+  const event = c.get("event");
+  const uid = event.uid;
 
   if (!event) {
     throw new HTTPException(404, { message: `Event ${uid} not found` });
