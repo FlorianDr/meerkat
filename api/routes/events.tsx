@@ -35,7 +35,7 @@ type Env = {
   };
 };
 
-const eventMiddleware = createMiddleware<Env>(async (c) => {
+const eventMiddleware = createMiddleware<Env>(async (c, next) => {
   const uid = c.req.param("uid");
   if (!uid) {
     throw new HTTPException(400, { message: `Event UID is required` });
@@ -47,6 +47,7 @@ const eventMiddleware = createMiddleware<Env>(async (c) => {
   }
 
   c.set("event", event);
+  await next();
 });
 
 app.get("/events/:uid", eventMiddleware, async (c) => {
