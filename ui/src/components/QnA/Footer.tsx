@@ -34,11 +34,9 @@ export function Footer({
             <Input
               size="lg"
               disabled={!isAuthenticated}
-              placeholder={
-                !isAuthenticated
-                  ? "Please, login before submitting a question!"
-                  : "Type a question..."
-              }
+              placeholder={!isAuthenticated
+                ? "Please, login before submitting a question!"
+                : "Type a question..."}
               name="question"
               bg="#342749"
               color="white"
@@ -57,15 +55,13 @@ export function Footer({
                   size="sm"
                   colorScheme="purple"
                   icon={<SendIcon />}
-                  _hover={
-                    isAuthenticated
-                      ? {
-                          bg: primaryPurple,
-                          color: "white",
-                          opacity: 0.8,
-                        }
-                      : {}
-                  }
+                  _hover={isAuthenticated
+                    ? {
+                      bg: primaryPurple,
+                      color: "white",
+                      opacity: 0.8,
+                    }
+                    : {}}
                   aria-label="Submit question"
                 />
                 <IconButton
@@ -82,15 +78,13 @@ export function Footer({
                   size="sm"
                   colorScheme="purple"
                   icon={<HeartIcon />}
-                  _hover={
-                    isAuthenticated
-                      ? {
-                          bg: primaryPurple,
-                          color: "white",
-                          opacity: 0.8,
-                        }
-                      : {}
-                  }
+                  _hover={isAuthenticated
+                    ? {
+                      bg: primaryPurple,
+                      color: "white",
+                      opacity: 0.8,
+                    }
+                    : {}}
                   aria-label="React to event"
                 />
               </Flex>

@@ -8,9 +8,7 @@ interface QuestionProps {
   voted: boolean;
 }
 
-export function Question(
-  { question, voted }: QuestionProps,
-) {
+export function Question({ question, voted }: QuestionProps) {
   const { isAuthenticated } = useUser();
   return (
     <li key={`${question.uid}-${question.question}`} className="bubble">
@@ -27,10 +25,7 @@ export function Question(
             method="POST"
             action={`/api/v1/questions/${question.uid}/upvote`}
           >
-            <UpVoteButton
-              hasVoted={voted}
-              isDisabled={!isAuthenticated}
-            />
+            <UpVoteButton hasVoted={voted} isDisabled={!isAuthenticated} />
           </form>
         </div>
       </div>
