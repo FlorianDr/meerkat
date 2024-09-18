@@ -12,7 +12,8 @@
     "ui:cache": "deno cache --node-modules-dir ./ui/src/main.tsx",
     "ui:dev": "deno run -A --node-modules-dir npm:vite ui",
     "ui:build": "deno run -A --node-modules-dir npm:vite build ui",
-    "fmt": "deno fmt --ignore=.cache,ui/.vite"
+    "fmt": "deno fmt --ignore=.cache,ui/.vite,drizzle",
+    "setup": "cp ./scripts/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
   },
   "workspace": [
     "ui",
