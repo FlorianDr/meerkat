@@ -45,7 +45,6 @@ ul {
     #2a1059 90.71%
   );
   color: white;
-  /* padding: 2rem; */
 }
 
 .qr-container {
@@ -53,7 +52,6 @@ ul {
   justify-content: flex-start;
   align-items: center;
   color: black;
-  /* padding: 2rem; */
 }
 
 /* TopQuestions */
@@ -64,6 +62,7 @@ ul {
   max-height: calc(100vh - 4rem);
   margin: 2rem;
   height: 38rem;
+  width: 100%;
 }
 /* TopQuestions - Header */
 
@@ -85,7 +84,7 @@ ul {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: auto;
+  overflow-y: hidden;
   max-height: 32rem;
 }
 
