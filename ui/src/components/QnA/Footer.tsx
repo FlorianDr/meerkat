@@ -22,8 +22,9 @@ export function Footer({ event }: { event: Event | undefined }) {
     <div className="overlay-container">
       <form className="target question-input" method="POST" action={action}>
         <Flex gap={4} flexFlow="column" alignItems="center">
-          <InputGroup size="md">
+          <InputGroup size="lg">
             <Input
+              size="lg"
               disabled={!isAuthenticated}
               placeholder={!isAuthenticated
                 ? "Please, login before submitting a question!"

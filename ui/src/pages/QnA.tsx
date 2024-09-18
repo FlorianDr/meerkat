@@ -38,7 +38,7 @@ export function QnA({ uid }: { uid: string }) {
         >
           <TabList>
             <Tab>Q&A</Tab>
-            <Tab>Details</Tab>
+            <Tab>Info</Tab>
           </TabList>
 
           <TabPanels>
