@@ -71,6 +71,13 @@
       "when": 1726635428743,
       "tag": "0009_normal_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1726671970483,
+      "tag": "0010_crazy_meteorite",
+      "breakpoints": true
     }
   ]
 }
