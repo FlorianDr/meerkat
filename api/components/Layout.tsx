@@ -12,6 +12,7 @@ const Layout: FC = ({ children }) => {
       </head>
       <body>
         <div className="layout">{children}</div>
+        <script src="/index.js" type="module"></script>
       </body>
     </html>
   );

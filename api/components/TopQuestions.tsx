@@ -23,6 +23,11 @@ const TopQuestions: FC<TopQuestionsProps> = (
         </h2>
       </header>
       <main className="top-questions-content">
+        {questions.length === 0 && (
+          <p>
+            No questions yet. Scan the QR code on the right side to ask one.
+          </p>
+        )}
         <ol>
           {questions.sort((a, b) => b.votes - a.votes).map((question) => (
             <li key={question.uid} className="bubble">

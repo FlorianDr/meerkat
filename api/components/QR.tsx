@@ -58,7 +58,7 @@ const QR: FC<QRProps> = ({
         <h2>{conferenceName}</h2>
         <h2>
           {/* QUESTION: Is it today? */}
-          {new Date().toLocaleDateString("en-US", {
+          {event?.start.toLocaleTimeString("en-US", {
             month: "long",
             day: "numeric",
             year: "numeric",

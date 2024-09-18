@@ -153,8 +153,8 @@ app.get(
     const event = c.get("event");
     const uid = event.uid;
     return {
-      onMessage: (_event, ws) => {
-        console.log("Received unexpected message from client", _event.data);
+      onMessage: (event) => {
+        console.log("Received unexpected message from client", event.data);
       },
       onOpen: (_event, ws) => {
         join(uid, ws);
