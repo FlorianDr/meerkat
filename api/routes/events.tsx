@@ -78,7 +78,7 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
       <div className="qr-container">
         <QR url={url} event={event} conferenceName={conference.name} />
       </div>
-    </Layout>,
+    </Layout>
   );
 });
 
@@ -108,7 +108,7 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   const proofURL = generateProofURL(
     watermark,
     returnURL.toString(),
-    conference.zuAuthConfig,
+    conference.zuAuthConfig
   );
 
   // Strips out internal fields
@@ -118,11 +118,11 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
       ...rest,
       user: user
         ? {
-          uid: user?.uid,
-          name: user?.name ?? undefined,
-        }
+            uid: user?.uid,
+            name: user?.name ?? undefined,
+          }
         : undefined,
-    }),
+    })
   );
 
   const votes = questions.reduce((acc, question) => acc + question.votes, 0);
@@ -157,7 +157,7 @@ app.get(
         leave(uid, ws);
       },
     };
-  }),
+  })
 );
 
 app.post(
@@ -199,7 +199,7 @@ app.post(
     broadcast(uid, { op: "insert", type: "question", uid: question.uid });
 
     return c.redirect(redirect.toString());
-  },
+  }
 );
 
 app.get("/api/v1/events/:uid/proof/:watermark", eventMiddleware, async (c) => {
@@ -299,7 +299,7 @@ app.post(
     });
 
     broadcast(event.uid, {
-      op: "update",
+      op: "insert",
       type: "reaction",
       createdAt: reaction.createdAt,
     });
@@ -307,7 +307,7 @@ app.post(
     const origin = c.req.header("origin") ?? env.base;
     const redirect = new URL(`/events/${event?.uid}/qa`, origin);
     return c.redirect(redirect.toString());
-  },
+  }
 );
 
 export default app;

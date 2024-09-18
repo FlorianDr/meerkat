@@ -61,7 +61,7 @@ app.post(
 
     broadcast(
       event.uid,
-      { op: "insert", type: "question", uid: question.uid },
+      { op: "update", type: "question", uid: question.uid },
     );
 
     const origin = c.req.header("origin") ?? env.base;
