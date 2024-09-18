@@ -13,8 +13,8 @@ export function ReactionAnimation({
 }: ReactionAnimationProps) {
   // Remove icon after animation ends
   const removeReaction = (id: number) => {
-    setReactions((reaction) =>
-      reaction.filter((reaction) => reaction.id !== id)
+    setReactions((prevReaction) =>
+      prevReaction.filter((reaction) => reaction.id !== id)
     );
   };
 
