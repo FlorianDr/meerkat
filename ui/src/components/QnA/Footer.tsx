@@ -7,13 +7,18 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { useUser } from "../../hooks/use-user.ts";
+import { User } from "../../hooks/use-user.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
-export function Footer({ event }: { event: Event | undefined }) {
-  const { data: user, isAuthenticated } = useUser();
+export function Footer(
+  { event, isAuthenticated, user }: {
+    event: Event | undefined;
+    isAuthenticated: boolean;
+    user: User | undefined;
+  },
+) {
   const { primaryPurple } = useThemeColors();
 
   const action = `/api/v1/events/${event?.uid}/questions`;

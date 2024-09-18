@@ -1,27 +1,68 @@
+import { z } from "zod";
 import { Hono } from "@hono/hono";
-import { jwt } from "@hono/hono/jwt";
+import { jwt, sign, verify } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { fromString, getSuffix } from "typeid-js";
-import { SUB_TYPE_ID } from "../utils/jwt.ts";
-import { getUserByUID } from "../models/user.ts";
+import {
+  constructJWTPayload,
+  JWT_EXPIRATION_TIME,
+  SUB_TYPE_ID,
+} from "../utils/jwt.ts";
+import {
+  createUserFromZuTicketId,
+  getUserByUID,
+  User,
+} from "../models/user.ts";
 import { HTTPException } from "@hono/hono/http-exception";
 import { getVotesByUserId } from "../models/votes.ts";
+import { zValidator } from "@hono/zod-validator";
+import { getCookie, setCookie } from "@hono/hono/cookie";
+import { getFeatures } from "../models/features.ts";
 
 const app = new Hono();
 
 app.get(
   "/api/v1/users/me",
-  jwt({ secret: env.secret, cookie: "jwt" }),
   async (c) => {
-    const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
-    const user = await getUserByUID(getSuffix(userUID));
+    const features = await getFeatures();
+    const supportsAnonymousLogin = features.some((f) =>
+      f.name === "anonymous-login" && f.active
+    );
+    const jwt = getCookie(c, "jwt");
 
-    if (!user) {
+    let user: User;
+    if (jwt) {
+      const { sub } = await verify(jwt, env.secret);
+      const userUID = fromString(sub as string, SUB_TYPE_ID);
+      const maybeUser = await getUserByUID(getSuffix(userUID));
+
+      if (!maybeUser) {
+        throw new HTTPException(401, { message: `User not found` });
+      }
+
+      user = maybeUser;
+    } else if (supportsAnonymousLogin) {
+      // This is a temporary solution to allow users to login without a JWT
+      user = await createUserFromZuTicketId(1, crypto.randomUUID());
+      const origin = c.req.header("origin") ?? env.base;
+      const payload = constructJWTPayload(user);
+      const token = await sign(payload, env.secret);
+
+      const baseUrl = new URL(origin);
+      setCookie(c, "jwt", token, {
+        path: "/",
+        domain: baseUrl.hostname,
+        secure: baseUrl.protocol === "https:",
+        httpOnly: true,
+        maxAge: JWT_EXPIRATION_TIME,
+        sameSite: "Lax",
+      });
+    } else {
       throw new HTTPException(401, { message: `User not found` });
     }
 
     const { id: _id, name, ...rest } = user;
+
     return c.json({
       data: {
         ...rest,
@@ -53,6 +94,22 @@ app.get(
     });
 
     return c.json({ data: apiVotes });
+  },
+);
+
+const userCreateSchema = z.object({
+  zuTicketId: z.string(),
+  conferenceId: z.number(),
+});
+
+app.post(
+  `/api/v1/users`,
+  zValidator("json", userCreateSchema),
+  async (c) => {
+    const { zuTicketId, conferenceId } = c.req.valid("json");
+    const user = await createUserFromZuTicketId(conferenceId, zuTicketId);
+
+    return c.json({ data: user });
   },
 );
 

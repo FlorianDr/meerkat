@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -81,4 +82,9 @@ export const tickets = pgTable("tickets", {
     { onDelete: "cascade" },
   ),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const features = pgTable("features", {
+  name: text("name").primaryKey(),
+  active: boolean("active").notNull(),
 });

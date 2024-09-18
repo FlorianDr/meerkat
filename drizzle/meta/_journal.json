@@ -64,6 +64,13 @@
       "when": 1726599691070,
       "tag": "0008_clear_felicia_hardy",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1726635428743,
+      "tag": "0009_normal_logan",
+      "breakpoints": true
     }
   ]
 }

@@ -6,14 +6,17 @@ import { useVotes } from "../hooks/use-votes.ts";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import Card from "../components/Card/Card.tsx";
 import { useState } from "react";
+import { useUser } from "../hooks/use-user.ts";
 
 export function QnA({ uid }: { uid: string }) {
   const { data: event, mutate } = useEvent(uid);
+  const { data: user, isAuthenticated } = useUser();
   const { data: _update } = useEventUpdates(uid, {
     onUpdate: () => {
       mutate();
     },
   });
+
   const { data: votes } = useVotes();
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -44,7 +47,11 @@ export function QnA({ uid }: { uid: string }) {
           <TabPanels>
             <TabPanel className="tab-panel" padding={0}>
               <QuestionsSection event={event} votes={votes} />
-              <Footer event={event} />
+              <Footer
+                event={event}
+                user={user}
+                isAuthenticated={isAuthenticated}
+              />
             </TabPanel>
             <TabPanel padding={0}>
               <Card event={event} />
