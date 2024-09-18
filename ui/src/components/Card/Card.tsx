@@ -7,7 +7,7 @@ export const Card = ({ event }: { event: Event | undefined }) => {
     <div className="card">
       <div className="collect-card-text">
         <Heading as="h3" color="white" size="sm">
-          Event
+          Event Card
         </Heading>
       </div>
       <div className="collect-card-image">

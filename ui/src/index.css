@@ -7,9 +7,13 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+:root {
+  --max-header-height: 110px;
+}
+
 .layout {
   display: grid;
-  height: 100vh;
+  height: 100dvh;
   grid-template-rows: max-content 1fr;
   grid-template-columns: 1fr minmax(0, 512px) 1fr;
 }
@@ -27,7 +31,7 @@ body {
 }
 
 .title-section {
-  padding: 1.5rem 1rem 1.5rem 1rem;
+  padding: 1rem;
 }
 
 ol,
@@ -96,7 +100,7 @@ ul {
 
 .collect-card-layout {
   display: grid;
-  height: 100vh;
+  height: calc(100dvh - env(safe-area-inset-bottom));
   grid-template-rows: max-content 1fr;
   grid-template-columns: 1fr minmax(0, 512px) 1fr;
   margin: 0;
@@ -128,5 +132,5 @@ ul {
 .tab-panel {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 126px - 42px);
+  height: calc(100dvh - var(--max-header-height) - 42px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
 }
