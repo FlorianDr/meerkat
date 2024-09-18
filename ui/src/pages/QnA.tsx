@@ -7,13 +7,21 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import Card from "../components/Card/Card.tsx";
 import { useState } from "react";
 import { useUser } from "../hooks/use-user.ts";
+import { ReactionAnimation } from "../components/QnA/ReactionAnimation.tsx";
+import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 
 export function QnA({ uid }: { uid: string }) {
   const { data: event, mutate } = useEvent(uid);
   const { data: user, isAuthenticated } = useUser();
+  const [reactions, setReactions] = useState<{ id: number }[]>([]);
   const { data: _update } = useEventUpdates(uid, {
-    onUpdate: () => {
-      mutate();
+    onUpdate: (message) => {
+      const parsedMessage: { [key: string]: string } = JSON.parse(message);
+      if (parsedMessage.type === "reaction") {
+        setReactions([...reactions, { id: Date.now().valueOf() }]);
+      } else {
+        mutate();
+      }
     },
   });
 
@@ -27,10 +35,7 @@ export function QnA({ uid }: { uid: string }) {
   return (
     <div className="layout">
       <header className="header">
-        <Header
-          event={event}
-          actionButton={null}
-        />
+        <Header event={event} actionButton={null} />
       </header>
       <main className="content">
         <Tabs
@@ -58,6 +63,11 @@ export function QnA({ uid }: { uid: string }) {
             </TabPanel>
           </TabPanels>
         </Tabs>
+        <ReactionAnimation
+          icon={<HeartIcon />}
+          reactions={reactions}
+          setReactions={setReactions}
+        />
       </main>
     </div>
   );

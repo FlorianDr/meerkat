@@ -8,7 +8,7 @@ export async function createReaction(
     eventId: eventId,
     userId: userId,
     createdAt: new Date(),
-  }).execute();
+  }).returning().execute();
 
   return newReaction;
 }
