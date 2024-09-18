@@ -28,6 +28,7 @@ import { randomBigInt } from "../utils/random-bigint.ts";
 import { upgradeWebSocket } from "@hono/hono/deno";
 import { createMiddleware } from "@hono/hono/factory";
 import { broadcast, join, leave } from "../realtime.ts";
+import { createReaction } from "../models/reactions.ts";
 
 const app = new Hono();
 
@@ -72,19 +73,12 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
   return c.html(
     <Layout>
       <div className="top-questions-container">
-        <TopQuestions
-          questions={questions}
-          participants={participants}
-        />
+        <TopQuestions questions={questions} participants={participants} />
       </div>
       <div className="qr-container">
-        <QR
-          url={url}
-          event={event}
-          conferenceName={conference.name}
-        />
+        <QR url={url} event={event} conferenceName={conference.name} />
       </div>
-    </Layout>,
+    </Layout>
   );
 });
 
@@ -114,22 +108,22 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   const proofURL = generateProofURL(
     watermark,
     returnURL.toString(),
-    conference.zuAuthConfig,
+    conference.zuAuthConfig
   );
 
   // Strips out internal fields
   const { id: _id, conferenceId: _conferenceId, ...rest } = event;
-  const apiQuestions = questions.map((
-    { id: _id, eventId: _eventId, userId: _userId, user, ...rest },
-  ) => ({
-    ...rest,
-    user: user
-      ? {
-        uid: user?.uid,
-        name: user?.name ?? undefined,
-      }
-      : undefined,
-  }));
+  const apiQuestions = questions.map(
+    ({ id: _id, eventId: _eventId, userId: _userId, user, ...rest }) => ({
+      ...rest,
+      user: user
+        ? {
+            uid: user?.uid,
+            name: user?.name ?? undefined,
+          }
+        : undefined,
+    })
+  );
 
   const votes = questions.reduce((acc, question) => acc + question.votes, 0);
   const participants = await countParticipants(event.id);
@@ -163,7 +157,7 @@ app.get(
         leave(uid, ws);
       },
     };
-  }),
+  })
 );
 
 app.post(
@@ -202,13 +196,10 @@ app.post(
       userId: user.id,
     });
 
-    broadcast(
-      uid,
-      { op: "insert", type: "question", uid: question.uid },
-    );
+    broadcast(uid, { op: "insert", type: "question", uid: question.uid });
 
     return c.redirect(redirect.toString());
-  },
+  }
 );
 
 app.get("/api/v1/events/:uid/proof/:watermark", eventMiddleware, async (c) => {
@@ -286,5 +277,37 @@ app.get("/api/v1/events/:uid/proof/:watermark", eventMiddleware, async (c) => {
 
   return c.redirect(redirect.toString());
 });
+
+app.post(
+  "/api/v1/events/:uid/react",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  eventMiddleware,
+  async (c) => {
+    const payload = c.get("jwtPayload");
+    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
+    const user = await getUserByUID(getSuffix(userUID));
+
+    if (!user) {
+      throw new HTTPException(401, { message: `User not found` });
+    }
+
+    const event = c.get("event");
+
+    const reaction = await createReaction({
+      eventId: event.id,
+      userId: user.id,
+    });
+
+    broadcast(event.uid, {
+      op: "insert",
+      type: "reaction",
+      createdAt: reaction.createdAt,
+    });
+
+    const origin = c.req.header("origin") ?? env.base;
+    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
+    return c.redirect(redirect.toString());
+  }
+);
 
 export default app;

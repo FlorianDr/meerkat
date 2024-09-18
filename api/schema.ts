@@ -88,3 +88,15 @@ export const features = pgTable("features", {
   name: text("name").primaryKey(),
   active: boolean("active").notNull(),
 });
+
+export const reactions = pgTable("reactions", {
+  userId: integer("user_id").notNull().references(
+    () => users.id,
+    { onDelete: "cascade" },
+  ),
+  eventId: integer("event_id").notNull().references(
+    () => events.id,
+    { onDelete: "cascade" },
+  ),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

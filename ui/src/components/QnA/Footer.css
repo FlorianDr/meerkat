@@ -1,30 +1,48 @@
-.overlay-container { 
-	display: grid;
+.overlay-container {
+  display: grid;
 }
 
-.target, .overlay {
-	grid-area: 1 / 1 / 2 / 2;
+.target,
+.overlay {
+  grid-area: 1 / 1 / 2 / 2;
 }
 
 .login {
-	display: flex;
-	flex-flow: column;
-	color: white;
-	justify-content: center;
-	align-items: center;
-	padding: 0 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-flow: column;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   backdrop-filter: blur(3px);
-	-webkit-backdrop-filter: blur(3px);
-	gap: 8px;
+  -webkit-backdrop-filter: blur(3px);
+  gap: 8px;
 }
 
 .question-input {
-	padding: 0.5rem 0 1.5rem 0;
-	border-top: 2px solid rgba(255, 255, 255, 0.16);
+  padding: 0.5rem 0 1.5rem 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.16);
 }
 
 .signin-name {
-	display: block;
-	padding-top: 8px;
-	text-align: center;
+  display: block;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.reaction {
+  position: absolute;
+  bottom: 50px;
+  animation: floatUp 2s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-500px) scale(1.5);
+    opacity: 0;
+  }
 }
