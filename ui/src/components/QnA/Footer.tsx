@@ -12,6 +12,7 @@ import { Event } from "../../hooks/use-event.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
+import { useReact } from "../../hooks/use-react.ts";
 
 export function Footer({
   event,
@@ -23,6 +24,7 @@ export function Footer({
   user: User | undefined;
 }) {
   const { primaryPurple } = useThemeColors();
+  const { trigger } = useReact(event?.uid ?? "");
 
   const action = `/api/v1/events/${event?.uid}/questions`;
 
@@ -67,14 +69,7 @@ export function Footer({
           </InputGroup>
           <IconButton
             isDisabled={!isAuthenticated}
-            onClick={(e) => {
-              e.preventDefault();
-              if (isAuthenticated && event?.uid) {
-                fetch(`/api/v1/events/${event.uid}/react`, {
-                  method: "POST",
-                });
-              }
-            }}
+            onClick={() => trigger()}
             size="lg"
             colorScheme="purple"
             bg="#342749"

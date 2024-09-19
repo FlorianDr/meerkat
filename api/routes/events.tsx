@@ -304,9 +304,9 @@ app.post(
       createdAt: reaction.createdAt,
     });
 
-    const origin = c.req.header("origin") ?? env.base;
-    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
-    return c.redirect(redirect.toString());
+    return c.json({
+      data: { createdAt: reaction.createdAt },
+    });
   },
 );
 

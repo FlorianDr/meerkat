@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { HTTPError } from "./http-error.ts";
 import { fetcher } from "./fetcher.ts";
+import { useUser } from "./use-user.ts";
 
 export type Vote = {
   questionUid: number;
@@ -9,9 +10,11 @@ export type Vote = {
 };
 
 export function useVotes() {
+  const { isAuthenticated } = useUser();
+
   const { data, error, isLoading } = useSWR<{ data: Vote[] }, HTTPError>(
     `/api/v1/users/me/votes`,
-    fetcher,
+    isAuthenticated ? fetcher : null,
   );
 
   return { data: data?.data, error, isLoading };
