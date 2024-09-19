@@ -29,20 +29,3 @@
   padding-top: 8px;
   text-align: center;
 }
-
-.reaction {
-  position: absolute;
-  bottom: 50px;
-  animation: floatUp 2s ease-out forwards;
-}
-
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-500px) scale(1.5);
-    opacity: 0;
-  }
-}

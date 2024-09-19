@@ -7,7 +7,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import Card from "../components/Card/Card.tsx";
 import { useState } from "react";
 import { useUser } from "../hooks/use-user.ts";
-import { ReactionAnimation } from "../components/QnA/ReactionAnimation.tsx";
+import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 
 export function QnA({ uid }: { uid: string }) {
@@ -18,7 +18,10 @@ export function QnA({ uid }: { uid: string }) {
     onUpdate: (message) => {
       const parsedMessage: { [key: string]: string } = JSON.parse(message);
       if (parsedMessage.type === "reaction") {
-        setReactions([...reactions, { id: Date.now().valueOf() }]);
+        setReactions((prevReactions: { id: number }[]) => [
+          ...prevReactions,
+          { id: Date.now().valueOf() },
+        ]);
       } else {
         mutate();
       }
@@ -63,11 +66,15 @@ export function QnA({ uid }: { uid: string }) {
             </TabPanel>
           </TabPanels>
         </Tabs>
-        <ReactionAnimation
-          icon={<HeartIcon />}
-          reactions={reactions}
-          setReactions={setReactions}
-        />
+
+        {reactions.map((reaction: { id: number }) => (
+          <Reaction
+            key={reaction.id}
+            id={reaction.id}
+            icon={<HeartIcon />}
+            setReactions={setReactions}
+          />
+        ))}
       </main>
     </div>
   );

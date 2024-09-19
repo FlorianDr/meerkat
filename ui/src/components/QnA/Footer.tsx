@@ -29,7 +29,7 @@ export function Footer({
   return (
     <div className="overlay-container">
       <form className="target question-input" method="POST" action={action}>
-        <Flex gap={4} flexFlow="column" alignItems="center">
+        <Flex gap={2} flexFlow="row" alignItems="center">
           <InputGroup size="lg">
             <Input
               size="lg"
@@ -47,49 +47,47 @@ export function Footer({
               _placeholder={{ color: "white" }}
             />
             <InputRightElement width="auto" pr={2}>
-              <Flex gap={2}>
-                <IconButton
-                  isDisabled={!isAuthenticated}
-                  type="submit"
-                  h="1.75rem"
-                  size="sm"
-                  colorScheme="purple"
-                  icon={<SendIcon />}
-                  _hover={isAuthenticated
-                    ? {
-                      bg: primaryPurple,
-                      color: "white",
-                      opacity: 0.8,
-                    }
-                    : {}}
-                  aria-label="Submit question"
-                />
-                <IconButton
-                  isDisabled={!isAuthenticated}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (isAuthenticated && event?.uid) {
-                      fetch(`/api/v1/events/${event.uid}/react`, {
-                        method: "POST",
-                      });
-                    }
-                  }}
-                  h="1.75rem"
-                  size="sm"
-                  colorScheme="purple"
-                  icon={<HeartIcon />}
-                  _hover={isAuthenticated
-                    ? {
-                      bg: primaryPurple,
-                      color: "white",
-                      opacity: 0.8,
-                    }
-                    : {}}
-                  aria-label="React to event"
-                />
-              </Flex>
+              <IconButton
+                isDisabled={!isAuthenticated}
+                type="submit"
+                h="1.75rem"
+                size="sm"
+                colorScheme="purple"
+                icon={<SendIcon />}
+                _hover={isAuthenticated
+                  ? {
+                    bg: primaryPurple,
+                    color: "white",
+                    opacity: 0.8,
+                  }
+                  : {}}
+                aria-label="Submit question"
+              />
             </InputRightElement>
           </InputGroup>
+          <IconButton
+            isDisabled={!isAuthenticated}
+            onClick={(e) => {
+              e.preventDefault();
+              if (isAuthenticated && event?.uid) {
+                fetch(`/api/v1/events/${event.uid}/react`, {
+                  method: "POST",
+                });
+              }
+            }}
+            size="lg"
+            colorScheme="purple"
+            bg="#342749"
+            icon={<HeartIcon />}
+            _hover={isAuthenticated
+              ? {
+                bg: primaryPurple,
+                color: "white",
+                opacity: 0.8,
+              }
+              : {}}
+            aria-label="React to event"
+          />
         </Flex>
         <span className="signin-name">
           Signed as {user?.name ?? user?.uid ?? "Anonymous"}
