@@ -5,7 +5,11 @@ url.pathname = `/api/v1${url.pathname}/live`;
 
 const socket = new WebSocket(url);
 
-socket.onmessage = (_event) => {
-  console.info("Reloading page...");
-  globalThis.location.reload();
+const refreshModels = ["question"];
+
+socket.onmessage = (event) => {
+  if (refreshModels.includes(event.type)) {
+    console.info("Reloading page...");
+    globalThis.location.reload();
+  }
 };
