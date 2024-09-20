@@ -3,14 +3,17 @@ import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
 import { Footer } from "../components/QnA/Footer.tsx";
 import { Header } from "../components/Header/Header.tsx";
 import { useVotes } from "../hooks/use-votes.ts";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import Card from "../components/Card/Card.tsx";
 import { useRef, useState } from "react";
 import { useUser } from "../hooks/use-user.ts";
 import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
+import { Link as ReactRouterLink, useParams } from "react-router-dom";
+import { Flex, Link } from "@chakra-ui/react";
+import { remote } from "../routes.ts";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
-export function QnA({ uid }: { uid: string }) {
+export function QnA() {
+  const { uid } = useParams();
   const { data: event, mutate: refreshEvent } = useEvent(uid);
   const { data: votes, mutate: refreshVotes } = useVotes();
   const refresh = () => {
@@ -34,50 +37,34 @@ export function QnA({ uid }: { uid: string }) {
       }
     },
   });
-  const [tabIndex, setTabIndex] = useState(0);
-
-  const handleTabsChange = (index: number) => {
-    setTabIndex(index);
-  };
 
   return (
     <div className="layout">
       <header className="header">
-        <Header event={event} actionButton={null} />
+        <nav>
+          <Link as={ReactRouterLink} to={remote(uid)}>
+            <Flex
+              flexDirection="row"
+              gap="1"
+              alignItems="center"
+              padding="0.5rem 0 0 1rem"
+              minHeight="1rem"
+            >
+              <ArrowBackIcon /> <span>Controls</span>
+            </Flex>
+          </Link>
+        </nav>
+        <Header title={`QA: ${event?.title}`} subline={event?.speaker} />
       </header>
       <main className="content">
-        <Tabs
-          colorScheme="purple"
-          tabIndex={tabIndex}
-          isFitted={true}
-          onChange={handleTabsChange}
-        >
-          <TabList>
-            <Tab>Q&A</Tab>
-            <Tab>Info</Tab>
-          </TabList>
-
-          <TabPanels>
-            <TabPanel className="tab-panel" padding={0}>
-              <QuestionsSection
-                event={event}
-                votes={votes}
-                isAuthenticated={isAuthenticated}
-                refresh={refresh}
-              />
-              <Footer
-                event={event}
-                user={user}
-                isAuthenticated={isAuthenticated}
-                refresh={refresh}
-              />
-            </TabPanel>
-            <TabPanel padding={0}>
-              <Card event={event} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-
+        <QuestionsSection
+          event={event}
+          votes={votes}
+          refresh={refresh}
+          isAuthenticated={isAuthenticated}
+        />
+      </main>
+      <footer className="footer">
         {reactions.map((reaction: { id: number }) => (
           <Reaction
             key={reaction.id}
@@ -86,7 +73,13 @@ export function QnA({ uid }: { uid: string }) {
             setReactions={setReactions}
           />
         ))}
-      </main>
+        <Footer
+          event={event}
+          user={user}
+          isAuthenticated={isAuthenticated}
+          refresh={refresh}
+        />
+      </footer>
     </div>
   );
 }

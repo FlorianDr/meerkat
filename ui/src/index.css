@@ -5,6 +5,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Inter", sans-serif;
+  background-color: #0C021D;
 }
 
 :root {
@@ -14,7 +15,7 @@ body {
 .layout {
   display: grid;
   height: 100dvh;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: max-content 1fr max-content;
   grid-template-columns: 1fr minmax(0, 512px) 1fr;
 }
 
@@ -22,17 +23,26 @@ body {
   grid-row: 1;
   grid-column: 2;
   max-height: 126px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.16)
 }
 
 .content {
   position: relative;
+  overflow-y: auto;
   grid-row: 2;
   grid-column: 2;
   padding: 0 1rem 0 1rem;
 }
 
+.footer {
+  grid-row: 3;
+  grid-column: 2;
+  padding: 0 1rem;
+  position: relative;
+}
+
 .title-section {
-  padding: 1rem;
+  padding: 0 1rem 1rem 1rem;
 }
 
 ol,
@@ -58,7 +68,6 @@ ul {
 
 .question-list {
   padding: 1rem 0 1rem 0;
-  overflow-y: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -138,7 +147,7 @@ ul {
 
 .reaction {
   position: absolute;
-  bottom: 8rem;
+  top: 0;
   animation: floatUp 3s ease-out forwards;
 }
 

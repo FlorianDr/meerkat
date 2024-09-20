@@ -1,7 +1,9 @@
 import { Button, ButtonProps } from "@chakra-ui/react";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 
-export type PrimaryButtonProps = ButtonProps;
+export type PrimaryButtonProps = ButtonProps & {
+  children: React.ReactNode;
+};
 
 export function PrimaryButton(props: PrimaryButtonProps) {
   const { primaryPurple } = useThemeColors();

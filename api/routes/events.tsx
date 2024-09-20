@@ -65,7 +65,7 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
   }
 
   const origin = c.req.header("origin") ?? env.base;
-  const url = new URL(`/events/${uid}/qa`, origin);
+  const url = new URL(`/events/${uid}/remote`, origin);
 
   const questions = await getQuestions(event.id);
   const participants = await countParticipants(event.id);

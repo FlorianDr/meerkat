@@ -1,15 +1,10 @@
-import { Box, Flex, Heading, Link } from "@chakra-ui/react";
+import { Box, Flex, Link } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 export const Card = ({ event }: { event: Event | undefined }) => {
   return (
     <div className="card">
-      <div className="collect-card-text">
-        <Heading as="h3" color="white" size="sm">
-          Event Card
-        </Heading>
-      </div>
       <div className="collect-card-image">
         <img
           src={event?.cover ??

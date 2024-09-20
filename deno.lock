@@ -21,6 +21,7 @@
       "npm:hono@^4.5.3": "npm:hono@4.5.6",
       "npm:postgres@^3.4.4": "npm:postgres@3.4.4",
       "npm:react-dom@^18.3.1": "npm:react-dom@18.3.1_react@18.3.1",
+      "npm:react-router-dom@^6.26.2": "npm:react-router-dom@6.26.2_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:react@^18.3.1": "npm:react@18.3.1",
       "npm:swr@^2.2.5": "npm:swr@2.2.5_react@18.3.1",
       "npm:typeid-js@^1.0.0": "npm:typeid-js@1.0.0",
@@ -2170,6 +2171,10 @@
         "integrity": "sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==",
         "dependencies": {}
       },
+      "@remix-run/router@1.19.2": {
+        "integrity": "sha512-baiMx18+IMuD1yyvOGaHM9QrVUPGGG0jC+z+IPHnRJWUAUvaKuWKyE8gjDj2rzv3sz9zOGoRSPgeBVHRhZnBlA==",
+        "dependencies": {}
+      },
       "@rollup/rollup-android-arm-eabi@4.21.0": {
         "integrity": "sha512-WTWD8PfoSAJ+qL87lE7votj3syLavxunWhzCnx3XFxFiI/BA/r3X7MUM8dVrH8rb2r4AiO8jJsr3ZjdaftmnfA==",
         "dependencies": {}
@@ -3463,6 +3468,22 @@
           "use-sidecar": "use-sidecar@1.1.2_react@18.3.1"
         }
       },
+      "react-router-dom@6.26.2_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+        "integrity": "sha512-z7YkaEW0Dy35T3/QKPYB1LjMK2R1fxnHO8kWpUMTBdfVzZrWOiY9a7CtN8HqdWtDUWd5FY6Dl8HFsqVwH4uOtQ==",
+        "dependencies": {
+          "@remix-run/router": "@remix-run/router@1.19.2",
+          "react": "react@18.3.1",
+          "react-dom": "react-dom@18.3.1_react@18.3.1",
+          "react-router": "react-router@6.26.2_react@18.3.1"
+        }
+      },
+      "react-router@6.26.2_react@18.3.1": {
+        "integrity": "sha512-tvN1iuT03kHgOFnLPfLJ8V95eijteveqdOSk+srqfePtQvqCExB8eHOYnlilbOcyJyKnYkr1vJvf7YqotAJu1A==",
+        "dependencies": {
+          "@remix-run/router": "@remix-run/router@1.19.2",
+          "react": "react@18.3.1"
+        }
+      },
       "react-style-singleton@2.2.1_react@18.3.1": {
         "integrity": "sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==",
         "dependencies": {
@@ -3817,6 +3838,7 @@
           "npm:@parcnet-js/app-connector@^0.0.3",
           "npm:framer-motion@^11.3.28",
           "npm:react-dom@^18.3.1",
+          "npm:react-router-dom@^6.26.2",
           "npm:react@^18.3.1",
           "npm:swr@^2.2.5"
         ]

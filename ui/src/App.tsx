@@ -1,19 +1,29 @@
+import { EventCard } from "./pages/EventCard.tsx";
 import { QnA } from "./pages/QnA.tsx";
-import { parseUid } from "./utils/route.ts";
+import { Remote } from "./pages/Remote.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/events/:uid/remote",
+    element: <Remote />,
+  },
+  {
+    path: "/events/:uid/qa",
+    element: <QnA />,
+  },
+  {
+    path: "/events/:uid/event-card",
+    element: <EventCard />,
+  },
+]);
 
 function App() {
-  const uid = parseUid(
-    new URL(window.location.href),
-    /^\/events\/(?<uid>[^/]+)\/qa$/,
-  );
-
-  if (!uid) {
-    return <NotFound />;
-  }
-
-  return <QnA uid={uid} />;
+  return <RouterProvider router={router} fallbackElement={<Loader />} />;
 }
 
-const NotFound = () => <div>404 Not Found</div>;
+function Loader() {
+  return <div>Loading...</div>;
+}
 
 export default App;
