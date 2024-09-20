@@ -5,6 +5,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { User } from "../../types.ts";
@@ -32,7 +33,17 @@ export function Footer({
   const { primaryPurple } = useThemeColors();
   const { trigger } = useReact(event?.uid ?? "");
   const { login, isLoading } = useLogin();
-  const { onSubmit } = useAsyncFormSubmit({ onSuccess: refresh });
+  const toast = useToast();
+  const { onSubmit } = useAsyncFormSubmit({
+    onSuccess: () => {
+      toast({
+        title: "Question added 🎉",
+        status: "success",
+        duration: 2000,
+      });
+      refresh();
+    },
+  });
 
   const action = `/api/v1/events/${event?.uid}/questions`;
 

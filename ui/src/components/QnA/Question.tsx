@@ -1,4 +1,4 @@
-import { Heading } from "@chakra-ui/react";
+import { Heading, useToast } from "@chakra-ui/react";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
@@ -13,7 +13,17 @@ interface QuestionProps {
 export function Question(
   { isAuthenticated, question, voted, refresh }: QuestionProps,
 ) {
-  const { onSubmit } = useAsyncFormSubmit({ onSuccess: refresh });
+  const toast = useToast();
+  const { onSubmit } = useAsyncFormSubmit({
+    onSuccess: () => {
+      refresh();
+      toast({
+        title: "Voted submitted 🗳️",
+        status: "success",
+        duration: 1000,
+      });
+    },
+  });
 
   return (
     <li key={`${question.uid}-${question.question}`} className="bubble">
