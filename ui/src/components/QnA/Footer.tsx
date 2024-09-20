@@ -7,12 +7,13 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { User } from "../../hooks/use-user.ts";
+import { User } from "../../types.ts";
 import { Event } from "../../hooks/use-event.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
 import { useReact } from "../../hooks/use-react.ts";
+import { useLogin } from "../../hooks/use-login.ts";
 
 export function Footer({
   event,
@@ -25,6 +26,7 @@ export function Footer({
 }) {
   const { primaryPurple } = useThemeColors();
   const { trigger } = useReact(event?.uid ?? "");
+  const { login, isLoading } = useLogin();
 
   const action = `/api/v1/events/${event?.uid}/questions`;
 
@@ -88,18 +90,28 @@ export function Footer({
           Signed as {user?.name ?? user?.uid ?? "Anonymous"}
         </span>
       </form>
-      {!isAuthenticated && <LoginOverlay event={event}></LoginOverlay>}
+      {!isAuthenticated && (
+        <LoginOverlay>
+          <PrimaryButton
+            isLoading={isLoading}
+            loadingText="Connecting..."
+            onClick={() => login()}
+          >
+            Login with Zupass <ExternalLinkIcon />
+          </PrimaryButton>
+        </LoginOverlay>
+      )}
     </div>
   );
 }
 
-function LoginOverlay({ event }: { event?: Event }) {
+function LoginOverlay(
+  { children }: { children?: React.ReactNode },
+) {
   return (
     <div className="overlay login">
       <span>To participate:</span>
-      <PrimaryButton as="a" href={event?.proofURL}>
-        Login with Zupass <ExternalLinkIcon />
-      </PrimaryButton>
+      {children}
     </div>
   );
 }

@@ -1,24 +1,26 @@
 import useSWR from "swr";
+import { useContext } from "react";
 import { HTTPError } from "./http-error.ts";
 import { fetcher } from "./fetcher.ts";
-
-// TDOO: Get interface from api
-export type User = {
-  uid: string;
-  createdAt: Date;
-  name?: string | undefined;
-};
+import { User } from "../types.ts";
+import { UserContext } from "../context/user.tsx";
 
 export const useUser = () => {
-  const { data, error, isLoading } = useSWR<{ data: User }, HTTPError>(
+  const { user, setUser } = useContext(UserContext);
+  const { error, isLoading } = useSWR<{ data: User }, HTTPError>(
     "/api/v1/users/me",
     fetcher,
+    {
+      onSuccess: (data) => {
+        setUser(data.data);
+      },
+    },
   );
 
   return {
-    data: data?.data,
+    data: user,
     error,
     isLoading,
-    isAuthenticated: !isLoading && !!data,
+    isAuthenticated: !isLoading && !!user,
   };
 };

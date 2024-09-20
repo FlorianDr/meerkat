@@ -5,6 +5,7 @@ import conferences from "./routes/conferences.ts";
 import users from "./routes/users.ts";
 import events from "./routes/events.tsx";
 import questions from "./routes/questions.ts";
+import env from "./env.ts";
 
 const app = new Hono();
 
@@ -20,5 +21,11 @@ app.get("/assets/*", serveStatic({ root: "./ui/dist/" }));
 
 app.get("/index.css", serveStatic({ path: "./api/components/index.css" }));
 app.get("/index.js", serveStatic({ path: "./api/components/index.js" }));
+app.get("/config", (c) => {
+  return c.json({
+    zupassUrl: env.zupassUrl,
+    zappName: env.zappName,
+  });
+});
 
 export default app;

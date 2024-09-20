@@ -7,6 +7,7 @@ import {
   serial,
   text,
   timestamp,
+  unique,
 } from "drizzle-orm/pg-core";
 
 export const conferences = pgTable("conferences", {
@@ -69,6 +70,17 @@ export const users = pgTable("users", {
   name: text("name").unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const accounts = pgTable("accounts", {
+  userId: integer("user_id").notNull().references(
+    () => users.id,
+    { onDelete: "cascade" },
+  ),
+  provider: text("provider").notNull(),
+  id: text("id").notNull(),
+}, (table) => ({
+  providerId: unique("provider_id_uniq").on(table.provider, table.id),
+}));
 
 export const tickets = pgTable("tickets", {
   id: serial("id").primaryKey(),

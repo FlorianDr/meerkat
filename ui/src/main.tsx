@@ -6,6 +6,11 @@ import {
   extendTheme,
   withDefaultColorScheme,
 } from "@chakra-ui/react";
+import { ZAPIProvider } from "./zapi/context.tsx";
+import { Zapp } from "@parcnet-js/app-connector";
+import { UserProvider } from "./context/user.tsx";
+
+const config = await fetch("/config").then((res) => res.json());
 
 const theme = extendTheme(
   withDefaultColorScheme({ colorScheme: "purple" }),
@@ -28,10 +33,20 @@ const theme = extendTheme(
   },
 );
 
+const zapp: Zapp = {
+  name: config.zappName,
+};
+
+const zupassUrl = config.zupassUrl;
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <App />
+      <ZAPIProvider zapp={zapp} zupassUrl={zupassUrl}>
+        <UserProvider>
+          <App />
+        </UserProvider>
+      </ZAPIProvider>
     </ChakraProvider>
   </React.StrictMode>,
 );

@@ -10,6 +10,7 @@ import {
 } from "../utils/jwt.ts";
 import {
   createUserFromZuTicketId,
+  getUserByProvider,
   getUserByUID,
   User,
 } from "../models/user.ts";
@@ -18,6 +19,7 @@ import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "@hono/hono/cookie";
 import { getFeatures } from "../models/features.ts";
+import { createUserFromAccount } from "../models/user.ts";
 
 const app = new Hono();
 
@@ -97,19 +99,40 @@ app.get(
   },
 );
 
-const userCreateSchema = z.object({
-  zuTicketId: z.string(),
-  conferenceId: z.number(),
+const usersLoginScheme = z.object({
+  publicKey: z.string(),
 });
 
 app.post(
-  `/api/v1/users`,
-  zValidator("json", userCreateSchema),
+  "/api/v1/users/login",
+  zValidator("json", usersLoginScheme),
   async (c) => {
-    const { zuTicketId, conferenceId } = c.req.valid("json");
-    const user = await createUserFromZuTicketId(conferenceId, zuTicketId);
+    const { publicKey } = c.req.valid("json");
 
-    return c.json({ data: user });
+    let user = await getUserByProvider("zupass", publicKey);
+
+    if (!user) {
+      user = await createUserFromAccount({
+        provider: "zupass",
+        id: publicKey,
+      });
+    }
+
+    const origin = c.req.header("origin") ?? env.base;
+    const payload = constructJWTPayload(user);
+    const token = await sign(payload, env.secret);
+
+    const baseUrl = new URL(origin);
+    setCookie(c, "jwt", token, {
+      path: "/",
+      domain: baseUrl.hostname,
+      secure: baseUrl.protocol === "https:",
+      httpOnly: true,
+      maxAge: JWT_EXPIRATION_TIME,
+      sameSite: "Lax",
+    });
+
+    return c.json({ data: { user } });
   },
 );
 
