@@ -2,6 +2,7 @@ import { Heading } from "@chakra-ui/react";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useUser } from "../../hooks/use-user.ts";
+import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 
 interface QuestionProps {
   question: QuestionModel;
@@ -10,6 +11,8 @@ interface QuestionProps {
 
 export function Question({ question, voted }: QuestionProps) {
   const { isAuthenticated } = useUser();
+  const { onSubmit } = useAsyncFormSubmit();
+
   return (
     <li key={`${question.uid}-${question.question}`} className="bubble">
       <Heading as="h3" color="white" size="sm" mb={2}>
@@ -23,6 +26,7 @@ export function Question({ question, voted }: QuestionProps) {
           </div>
           <form
             method="POST"
+            onSubmit={onSubmit}
             action={`/api/v1/questions/${question.uid}/upvote`}
           >
             <UpVoteButton hasVoted={voted} isDisabled={!isAuthenticated} />

@@ -14,6 +14,7 @@ import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
 import { useReact } from "../../hooks/use-react.ts";
 import { useLogin } from "../../hooks/use-login.ts";
+import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 
 export function Footer({
   event,
@@ -27,12 +28,18 @@ export function Footer({
   const { primaryPurple } = useThemeColors();
   const { trigger } = useReact(event?.uid ?? "");
   const { login, isLoading } = useLogin();
+  const { onSubmit } = useAsyncFormSubmit();
 
   const action = `/api/v1/events/${event?.uid}/questions`;
 
   return (
     <div className="overlay-container">
-      <form className="target question-input" method="POST" action={action}>
+      <form
+        className="target question-input"
+        onSubmit={onSubmit}
+        method="POST"
+        action={action}
+      >
         <Flex gap={2} flexFlow="row" alignItems="center">
           <InputGroup size="lg">
             <Input
