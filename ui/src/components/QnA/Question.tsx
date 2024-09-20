@@ -18,7 +18,7 @@ export function Question(
     onSuccess: () => {
       refresh();
       toast({
-        title: "Voted submitted 🗳️",
+        title: "Vote recorded 🗳️",
         status: "success",
         duration: 1000,
       });
