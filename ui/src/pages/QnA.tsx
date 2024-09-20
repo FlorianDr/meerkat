@@ -11,7 +11,12 @@ import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 
 export function QnA({ uid }: { uid: string }) {
-  const { data: event, mutate } = useEvent(uid);
+  const { data: event, mutate: refreshEvent } = useEvent(uid);
+  const { data: votes, mutate: refreshVotes } = useVotes();
+  const refresh = () => {
+    refreshEvent();
+    refreshVotes();
+  };
   const { data: user, isAuthenticated } = useUser();
   const [reactions, setReactions] = useState<{ id: number }[]>([]);
   const ref = useRef(0);
@@ -25,12 +30,10 @@ export function QnA({ uid }: { uid: string }) {
         ]);
         ref.current += 1;
       } else {
-        mutate();
+        refresh();
       }
     },
   });
-
-  const { data: votes } = useVotes();
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabsChange = (index: number) => {
@@ -56,11 +59,17 @@ export function QnA({ uid }: { uid: string }) {
 
           <TabPanels>
             <TabPanel className="tab-panel" padding={0}>
-              <QuestionsSection event={event} votes={votes} />
+              <QuestionsSection
+                event={event}
+                votes={votes}
+                isAuthenticated={isAuthenticated}
+                refresh={refresh}
+              />
               <Footer
                 event={event}
                 user={user}
                 isAuthenticated={isAuthenticated}
+                refresh={refresh}
               />
             </TabPanel>
             <TabPanel padding={0}>

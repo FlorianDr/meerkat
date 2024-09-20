@@ -16,19 +16,23 @@ import { useReact } from "../../hooks/use-react.ts";
 import { useLogin } from "../../hooks/use-login.ts";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 
+export type FooterProps = {
+  event: Event | undefined;
+  isAuthenticated: boolean;
+  user: User | undefined;
+  refresh: () => void;
+};
+
 export function Footer({
   event,
   isAuthenticated,
   user,
-}: {
-  event: Event | undefined;
-  isAuthenticated: boolean;
-  user: User | undefined;
-}) {
+  refresh,
+}: FooterProps) {
   const { primaryPurple } = useThemeColors();
   const { trigger } = useReact(event?.uid ?? "");
   const { login, isLoading } = useLogin();
-  const { onSubmit } = useAsyncFormSubmit();
+  const { onSubmit } = useAsyncFormSubmit({ onSuccess: refresh });
 
   const action = `/api/v1/events/${event?.uid}/questions`;
 

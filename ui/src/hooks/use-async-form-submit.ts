@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-export const useAsyncFormSubmit = () => {
+export type AsyncFormSubmitProps = {
+  onSuccess?: () => void;
+};
+
+export const useAsyncFormSubmit = (
+  props?: AsyncFormSubmitProps | undefined,
+) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
 
@@ -12,10 +18,15 @@ export const useAsyncFormSubmit = () => {
     const method = form.method;
     setIsLoading(true);
     try {
-      await fetch(url, {
+      const response = await fetch(url, {
         method,
         body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error(`${response.status} - ${await response.text()}`);
+      }
+      props?.onSuccess?.();
     } catch (error) {
       setError(error);
     } finally {

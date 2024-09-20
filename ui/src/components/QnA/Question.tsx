@@ -1,17 +1,19 @@
 import { Heading } from "@chakra-ui/react";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
-import { useUser } from "../../hooks/use-user.ts";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 
 interface QuestionProps {
+  isAuthenticated: boolean;
   question: QuestionModel;
   voted: boolean;
+  refresh: () => void;
 }
 
-export function Question({ question, voted }: QuestionProps) {
-  const { isAuthenticated } = useUser();
-  const { onSubmit } = useAsyncFormSubmit();
+export function Question(
+  { isAuthenticated, question, voted, refresh }: QuestionProps,
+) {
+  const { onSubmit } = useAsyncFormSubmit({ onSuccess: refresh });
 
   return (
     <li key={`${question.uid}-${question.question}`} className="bubble">

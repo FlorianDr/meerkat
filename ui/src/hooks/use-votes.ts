@@ -12,10 +12,13 @@ export type Vote = {
 export function useVotes() {
   const { isAuthenticated } = useUser();
 
-  const { data, error, isLoading } = useSWR<{ data: Vote[] }, HTTPError>(
+  const { data, error, isLoading, mutate } = useSWR<
+    { data: Vote[] },
+    HTTPError
+  >(
     `/api/v1/users/me/votes`,
     isAuthenticated ? fetcher : null,
   );
 
-  return { data: data?.data, error, isLoading };
+  return { data: data?.data, error, isLoading, mutate };
 }

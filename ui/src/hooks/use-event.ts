@@ -56,7 +56,6 @@ export const useEventUpdates = (
       const socket = new WebSocket(key);
       socket.addEventListener("message", (event) => {
         onUpdate(event.data);
-        console.log("Received message", event.data);
         next(null, event.data);
       });
       socket.addEventListener("error", (event) => next((event as any).error));
