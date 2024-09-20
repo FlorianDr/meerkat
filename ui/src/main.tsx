@@ -10,7 +10,7 @@ import { ZAPIProvider } from "./zapi/context.tsx";
 import { Zapp } from "@parcnet-js/app-connector";
 import { UserProvider } from "./context/user.tsx";
 
-const config = await fetch("/config").then((res) => res.json());
+const config = await fetch("/api/v1/config").then((res) => res.json());
 
 const theme = extendTheme(
   withDefaultColorScheme({ colorScheme: "purple" }),

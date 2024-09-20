@@ -16,12 +16,12 @@ app.route("/", users);
 app.route("/", events);
 app.route("/", questions);
 
-app.get("/events/:uid/qa", serveStatic({ path: "./ui/dist/index.html" }));
+app.get("/events/:uid/*", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/assets/*", serveStatic({ root: "./ui/dist/" }));
 
 app.get("/index.css", serveStatic({ path: "./api/components/index.css" }));
 app.get("/index.js", serveStatic({ path: "./api/components/index.js" }));
-app.get("/config", (c) => {
+app.get("/api/v1/config", (c) => {
   return c.json({
     zupassUrl: env.zupassUrl,
     zappName: env.zappName,
