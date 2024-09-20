@@ -5,7 +5,7 @@ import { Header } from "../components/Header/Header.tsx";
 import { useVotes } from "../hooks/use-votes.ts";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import Card from "../components/Card/Card.tsx";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useUser } from "../hooks/use-user.ts";
 import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
@@ -14,14 +14,16 @@ export function QnA({ uid }: { uid: string }) {
   const { data: event, mutate } = useEvent(uid);
   const { data: user, isAuthenticated } = useUser();
   const [reactions, setReactions] = useState<{ id: number }[]>([]);
+  const ref = useRef(0);
   const { data: _update } = useEventUpdates(uid, {
     onUpdate: (message) => {
       const parsedMessage: { [key: string]: string } = JSON.parse(message);
       if (parsedMessage.type === "reaction") {
         setReactions((prevReactions: { id: number }[]) => [
           ...prevReactions,
-          { id: Date.now().valueOf() },
+          { id: ref.current },
         ]);
+        ref.current += 1;
       } else {
         mutate();
       }
@@ -71,7 +73,7 @@ export function QnA({ uid }: { uid: string }) {
           <Reaction
             key={reaction.id}
             id={reaction.id}
-            icon={<HeartIcon />}
+            icon={reaction.id % 5 === 0 ? <>🐸</> : <HeartIcon />}
             setReactions={setReactions}
           />
         ))}
