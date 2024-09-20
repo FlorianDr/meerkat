@@ -29,7 +29,7 @@ export function EventCard() {
         <Header title={`Card: ${event?.title}`} subline={event?.speaker} />
       </header>
       <main className="content">
-        <Card event={event} />;
+        <Card event={event} />
       </main>
     </div>
   );

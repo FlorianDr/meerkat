@@ -161,3 +161,7 @@ ul {
     opacity: 0;
   }
 }
+
+.flex {
+  display: flex;
+}

@@ -56,7 +56,7 @@ export function QnA() {
         </nav>
         <Header title={`QA: ${event?.title}`} subline={event?.speaker} />
       </header>
-      <main className="content">
+      <main className="content flex">
         <QuestionsSection
           event={event}
           votes={votes}

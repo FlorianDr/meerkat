@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { type Event } from "../../hooks/use-event.ts";
 import { type Vote } from "../../hooks/use-votes.ts";
 import { Question } from "./Question.tsx";
+import { Flex } from "@chakra-ui/react";
 
 export type QuestionsSectionProps = {
   event: Event | undefined;
@@ -20,17 +21,29 @@ export function QuestionsSection(
     }, new Set());
   }, [votes, event]);
 
+  const hasQuestions = !!event?.questions?.length;
+
   return (
-    <ol className="question-list">
-      {event?.questions.map((question) => (
-        <Question
-          key={question.uid}
-          question={question}
-          isAuthenticated={isAuthenticated}
-          refresh={refresh}
-          voted={questionLookup?.has(question.uid)}
-        />
-      ))}
-    </ol>
+    <>
+      {hasQuestions
+        ? (
+          <ol className="question-list">
+            {event?.questions.map((question) => (
+              <Question
+                key={question.uid}
+                question={question}
+                isAuthenticated={isAuthenticated}
+                refresh={refresh}
+                voted={questionLookup?.has(question.uid)}
+              />
+            ))}
+          </ol>
+        )
+        : (
+          <Flex alignItems="center" justifyContent="center" flex="1">
+            <span>No questions, yet. Be first to ask!</span>
+          </Flex>
+        )}
+    </>
   );
 }
