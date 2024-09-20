@@ -3,6 +3,9 @@ import react from "npm:@vitejs/plugin-react@^4.2.1";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    target: "esnext",
+  },
   plugins: [react()],
   server: {
     proxy: {
