@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fromArray } from "../../../../../../Library/Caches/deno/npm/registry.npmjs.org/ffjavascript/0.3.0/src/scalar.js";
 
 export type AsyncFormSubmitProps = {
   onSuccess?: () => void;
@@ -26,6 +27,7 @@ export const useAsyncFormSubmit = (
       if (!response.ok) {
         throw new Error(`${response.status} - ${await response.text()}`);
       }
+      form.reset();
       props?.onSuccess?.();
     } catch (error) {
       setError(error);
