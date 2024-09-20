@@ -63,6 +63,7 @@ ul {
   margin: 2rem;
   height: 38rem;
   width: 100%;
+  position: relative;
 }
 /* TopQuestions - Header */
 
@@ -117,6 +118,10 @@ ul {
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
+
+  & > h2 {
+    margin: 0;
+  }
 }
 
 /* QR */
@@ -202,4 +207,21 @@ ul {
   right: 0;
   border-bottom: 0.6rem solid black;
   border-right: 0.6rem solid black;
+}
+
+.reaction {
+  position: absolute;
+  bottom: 1.8rem;
+  animation: floatUp 3s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40dvh) scale(2);
+    opacity: 0;
+  }
 }
