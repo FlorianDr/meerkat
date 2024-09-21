@@ -26,12 +26,9 @@ const HEART_ICON = `
 `;
 
 function createReactionElement(icon) {
-  const right = Math.random() + 0.5;
   const reactionElement = document.createElement("div");
   reactionElement.className = "reaction";
-  reactionElement.style.right = `${right}%`;
-  reactionElement.innerHTML =
-    `<div className="reaction" style={{ right: ${right}% }}></div>`;
+  reactionElement.style.right = `${Math.random() * 0.5 - 0.25}rem`;
   reactionElement.innerHTML = icon;
 
   return reactionElement;
