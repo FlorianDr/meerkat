@@ -1,17 +1,30 @@
-import { Heading, useToast } from "@chakra-ui/react";
+import {
+  Heading,
+  Icon,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useToast,
+} from "@chakra-ui/react";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
+import { NotAllowedIcon } from "@chakra-ui/icons";
+import { MdMoreHoriz } from "react-icons/md";
+import { useBlockUser } from "../../hooks/use-block-user.ts";
 
 interface QuestionProps {
-  isAuthenticated: boolean;
+  canVote: boolean;
+  canModerate: boolean;
   question: QuestionModel;
   voted: boolean;
   refresh: () => void;
 }
 
 export function Question(
-  { isAuthenticated, question, voted, refresh }: QuestionProps,
+  { canVote, canModerate, question, voted, refresh }: QuestionProps,
 ) {
   const toast = useToast();
   const { onSubmit } = useAsyncFormSubmit({
@@ -24,26 +37,56 @@ export function Question(
       });
     },
   });
+  const { trigger: block } = useBlockUser(question.user?.uid ?? "");
+
+  const handleBlock = async () => {
+    await block();
+    refresh();
+    toast({
+      title: "User blocked 🚫",
+      status: "success",
+      duration: 1000,
+    });
+  };
 
   return (
     <li key={`${question.uid}-${question.question}`} className="bubble">
-      <Heading as="h3" color="white" size="sm" mb={2}>
+      <Heading as="h3" color="white" size="sm" mb={2} flex="1">
         {question.question}
       </Heading>
-      <div className="upvote-section">
+      {canModerate
+        ? (
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              size="md"
+              aria-label="Options"
+              icon={<Icon as={MdMoreHoriz} />}
+              variant="ghost"
+              justifySelf="flex-end"
+            />
+            <MenuList>
+              <MenuItem onClick={handleBlock} icon={<NotAllowedIcon />}>
+                Block User
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )
+        : <div />}
+      <span className="author">
         {question.user?.name ?? question.user?.uid}
-        <div className="upvote">
-          <div className={`upvote-count ${voted && "voted"}`}>
-            {question.votes}
-          </div>
-          <form
-            method="POST"
-            onSubmit={onSubmit}
-            action={`/api/v1/questions/${question.uid}/upvote`}
-          >
-            <UpVoteButton hasVoted={voted} isDisabled={!isAuthenticated} />
-          </form>
+      </span>
+      <div className="upvote">
+        <div className={`upvote-count ${voted && "voted"}`}>
+          {question.votes}
         </div>
+        <form
+          method="POST"
+          onSubmit={onSubmit}
+          action={`/api/v1/questions/${question.uid}/upvote`}
+        >
+          <UpVoteButton hasVoted={voted} isDisabled={!canVote} />
+        </form>
       </div>
     </li>
   );

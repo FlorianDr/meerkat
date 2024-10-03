@@ -12,7 +12,7 @@ if (!secret || !meerkatApiBaseUrl) {
 }
 
 export async function createConference(conference: ConferenceCreate) {
-  const reponse = await fetch(`${meerkatApiBaseUrl}/api/v1/conferences`, {
+  const response = await fetch(`${meerkatApiBaseUrl}/api/v1/conferences`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,13 +21,14 @@ export async function createConference(conference: ConferenceCreate) {
     body: JSON.stringify(conference),
   });
 
-  if (!reponse.ok) {
+  if (!response.ok) {
     throw new Error(
-      `Failed to create conference: ${reponse.status} ${await reponse.text()}`,
+      `Failed to create conference: ${response.status} ${await response
+        .text()}`,
     );
   }
 
-  const { data } = await reponse.json();
+  const { data } = await response.json();
   return data;
 }
 

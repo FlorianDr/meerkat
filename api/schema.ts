@@ -2,6 +2,7 @@ import {
   boolean,
   integer,
   jsonb,
+  pgEnum,
   pgTable,
   primaryKey,
   serial,
@@ -64,10 +65,14 @@ export const votes = pgTable("votes", {
   pk: primaryKey({ columns: [table.questionId, table.userId] }),
 }));
 
+export const roleEnum = pgEnum("role", ["anonymous", "attendee", "organizer"]);
+
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   uid: text("uid").notNull().unique(),
   name: text("name").unique(),
+  blocked: boolean("blocked").notNull().default(false),
+  role: roleEnum("role").notNull().default("anonymous"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

@@ -31,7 +31,11 @@ app.post(
     ]);
 
     if (!user) {
-      throw new HTTPException(404, { message: `User ${userUID} not found` });
+      throw new HTTPException(401, { message: `User ${userUID} not found` });
+    }
+
+    if (user.blocked) {
+      throw new HTTPException(403, { message: `User is blocked` });
     }
 
     if (!question) {

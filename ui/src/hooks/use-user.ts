@@ -22,5 +22,6 @@ export const useUser = () => {
     error,
     isLoading,
     isAuthenticated: !isLoading && !!user,
+    isBlocked: !isLoading && error?.status === 403,
   };
 };

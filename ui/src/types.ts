@@ -2,5 +2,6 @@
 export type User = {
   uid: string;
   createdAt: Date;
+  role: "anonymous" | "attendee" | "organizer";
   name?: string | undefined;
 };

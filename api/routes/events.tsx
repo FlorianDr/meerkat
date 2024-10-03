@@ -194,6 +194,10 @@ app.post(
       throw new HTTPException(401, { message: `User not found` });
     }
 
+    if (user.blocked) {
+      throw new HTTPException(403, { message: `User is blocked` });
+    }
+
     const question = await createQuestion({
       eventId: event.id,
       question: questionText,

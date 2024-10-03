@@ -15,9 +15,9 @@ export function UpVoteButton({ hasVoted, isDisabled }: UpVoteButtonProps) {
       isDisabled={isDisabled}
       variant="ghost"
       color={color}
+      size="md"
       icon={<TriangleUpIcon />}
       aria-label="Vote for this question"
-      fontSize="20px"
     />
   );
 }

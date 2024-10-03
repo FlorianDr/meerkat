@@ -95,4 +95,10 @@ export async function getUserByProvider(provider: string, id: string) {
   return result.length === 1 ? result[0].users : null;
 }
 
+export async function markUserAsBlocked(userId: number) {
+  await db.update(users).set({ blocked: true }).where(
+    eq(users.id, userId),
+  ).execute();
+}
+
 export type User = typeof users.$inferSelect;

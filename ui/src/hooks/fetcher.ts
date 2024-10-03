@@ -11,3 +11,13 @@ export const fetcher = async (endpoint: string) => {
   }
   return res.json();
 };
+
+export const poster = async (endpoint: string) => {
+  const res = await fetch(endpoint, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new HTTPError(res);
+  }
+  return res.json();
+};

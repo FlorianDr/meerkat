@@ -21,6 +21,7 @@
       "npm:hono@^4.5.3": "npm:hono@4.5.6",
       "npm:postgres@^3.4.4": "npm:postgres@3.4.4",
       "npm:react-dom@^18.3.1": "npm:react-dom@18.3.1_react@18.3.1",
+      "npm:react-icons@^5.3.0": "npm:react-icons@5.3.0_react@18.3.1",
       "npm:react-router-dom@^6.26.2": "npm:react-router-dom@6.26.2_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:react@^18.3.1": "npm:react@18.3.1",
       "npm:swr@^2.2.5": "npm:swr@2.2.5_react@18.3.1",
@@ -3441,6 +3442,12 @@
           "use-sidecar": "use-sidecar@1.1.2_react@18.3.1"
         }
       },
+      "react-icons@5.3.0_react@18.3.1": {
+        "integrity": "sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==",
+        "dependencies": {
+          "react": "react@18.3.1"
+        }
+      },
       "react-is@16.13.1": {
         "integrity": "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==",
         "dependencies": {}
@@ -3838,6 +3845,7 @@
           "npm:@parcnet-js/app-connector@^0.0.3",
           "npm:framer-motion@^11.3.28",
           "npm:react-dom@^18.3.1",
+          "npm:react-icons@^5.3.0",
           "npm:react-router-dom@^6.26.2",
           "npm:react@^18.3.1",
           "npm:swr@^2.2.5"

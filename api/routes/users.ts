@@ -20,6 +20,7 @@ import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "@hono/hono/cookie";
 import { getFeatures } from "../models/features.ts";
 import { createUserFromAccount } from "../models/user.ts";
+import { markUserAsBlocked } from "../models/user.ts";
 
 const app = new Hono();
 
@@ -40,6 +41,10 @@ app.get(
 
       if (!maybeUser) {
         throw new HTTPException(401, { message: `User not found` });
+      }
+
+      if (maybeUser.blocked) {
+        throw new HTTPException(403, { message: `User is blocked` });
       }
 
       user = maybeUser;
@@ -63,7 +68,7 @@ app.get(
       throw new HTTPException(401, { message: `User not found` });
     }
 
-    const { id: _id, name, ...rest } = user;
+    const { id: _id, blocked: _blocked, name, ...rest } = user;
 
     return c.json({
       data: {
@@ -133,6 +138,38 @@ app.post(
     });
 
     return c.json({ data: { user } });
+  },
+);
+
+app.post(
+  "/api/v1/users/:uid/block",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const uid = c.req.param("uid");
+
+    const payload = c.get("jwtPayload");
+    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
+
+    const user = await getUserByUID(getSuffix(userUID));
+    const blockedUser = await getUserByUID(uid);
+
+    if (!user) {
+      throw new HTTPException(404, { message: `User ${userUID} not found` });
+    }
+
+    if (user.role !== "organizer") {
+      throw new HTTPException(403, { message: `Unauthorized` });
+    }
+
+    if (!blockedUser) {
+      throw new HTTPException(404, {
+        message: `Blocked User ${uid} not found`,
+      });
+    }
+
+    await markUserAsBlocked(blockedUser.id);
+
+    return c.json({ data: {} });
   },
 );
 

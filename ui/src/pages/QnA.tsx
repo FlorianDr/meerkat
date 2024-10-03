@@ -8,7 +8,15 @@ import { useUser } from "../hooks/use-user.ts";
 import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
-import { Flex, Link } from "@chakra-ui/react";
+import {
+  Flex,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/react";
 import { remote } from "../routes.ts";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 
@@ -20,7 +28,8 @@ export function QnA() {
     refreshEvent();
     refreshVotes();
   };
-  const { data: user, isAuthenticated } = useUser();
+
+  const { data: user, isAuthenticated, isBlocked } = useUser();
   const [reactions, setReactions] = useState<{ id: number }[]>([]);
   const ref = useRef(0);
   const { data: _update } = useEventUpdates(uid, {
@@ -60,9 +69,25 @@ export function QnA() {
         <QuestionsSection
           event={event}
           votes={votes}
+          user={user}
           refresh={refresh}
           isAuthenticated={isAuthenticated}
         />
+        {isBlocked && (
+          <Modal size="xs" isOpen={true} onClose={() => {}}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Blocked</ModalHeader>
+              <ModalBody>
+                <p>
+                  You have been blocked from asking questions in this event. If
+                  you believe this is a mistake, please contact the event
+                  organizer.
+                </p>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        )}
       </main>
       <footer className="footer">
         {reactions.map((reaction: { id: number }) => (
