@@ -29,6 +29,7 @@ import { upgradeWebSocket } from "@hono/hono/deno";
 import { createMiddleware } from "@hono/hono/factory";
 import { broadcast, join, leave } from "../realtime.ts";
 import { createReaction } from "../models/reactions.ts";
+import Document from "../components/Document.tsx";
 
 const app = new Hono();
 
@@ -71,14 +72,17 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
   const participants = await countParticipants(event.id);
 
   return c.html(
-    <Layout>
-      <div className="top-questions-container">
-        <TopQuestions questions={questions} participants={participants} />
-      </div>
-      <div className="qr-container">
-        <QR url={url} event={event} conferenceName={conference.name} />
-      </div>
-    </Layout>,
+    <Document>
+      <Layout>
+        <div className="top-questions-container">
+          <TopQuestions questions={questions} participants={participants} />
+        </div>
+        <div className="qr-container">
+          <QR url={url} event={event} conferenceName={conference.name} />
+        </div>
+      </Layout>
+      <script src="/index.js" type="module"></script>
+    </Document>,
   );
 });
 
