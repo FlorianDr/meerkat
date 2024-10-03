@@ -158,7 +158,7 @@ app.post(
     }
 
     if (user.role !== "organizer") {
-      throw new HTTPException(403, { message: `Unauthorized` });
+      throw new HTTPException(403, { message: `User is not an organizer` });
     }
 
     if (!blockedUser) {

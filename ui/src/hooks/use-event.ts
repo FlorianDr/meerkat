@@ -28,6 +28,7 @@ export type Question = {
   votes: number;
   question: string;
   createdAt: Date;
+  answeredAt?: Date | undefined;
   user?: {
     uid: string;
     name?: string | undefined;

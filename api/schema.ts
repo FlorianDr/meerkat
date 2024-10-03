@@ -49,6 +49,7 @@ export const questions = pgTable("questions", {
     { onDelete: "cascade" },
   ),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  answeredAt: timestamp("answered_at"),
 });
 
 export const votes = pgTable("votes", {

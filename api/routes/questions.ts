@@ -5,7 +5,7 @@ import { fromString, getSuffix } from "typeid-js";
 import env from "../env.ts";
 import { getEventById } from "../models/events.ts";
 import { getUserByUID } from "../models/user.ts";
-import { getQuestionByUID } from "../models/questions.ts";
+import { getQuestionByUID, markAsAnswered } from "../models/questions.ts";
 import {
   createVote,
   deleteVote,
@@ -62,6 +62,55 @@ app.post(
     } else {
       await createVote(question.id, user.id);
     }
+
+    broadcast(
+      event.uid,
+      { op: "update", type: "question", uid: question.uid },
+    );
+
+    const origin = c.req.header("origin") ?? env.base;
+    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
+    return c.redirect(redirect.toString());
+  },
+);
+
+app.post(
+  "/api/v1/questions/:uid/mark-as-answered",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const uid = c.req.param("uid");
+
+    const payload = c.get("jwtPayload");
+    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
+
+    const [user, question] = await Promise.all([
+      getUserByUID(getSuffix(userUID)),
+      getQuestionByUID(uid),
+    ]);
+
+    if (!user) {
+      throw new HTTPException(401, { message: `User ${userUID} not found` });
+    }
+
+    if (user.role !== "organizer") {
+      throw new HTTPException(403, { message: `User is not an organizer` });
+    }
+
+    if (!question) {
+      throw new HTTPException(404, {
+        message: `Question ${uid} not found`,
+      });
+    }
+
+    const event = await getEventById(question.eventId);
+
+    if (!event) {
+      throw new HTTPException(404, {
+        message: `Event ${question.eventId} not found`,
+      });
+    }
+
+    await markAsAnswered(question.id);
 
     broadcast(
       event.uid,

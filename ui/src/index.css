@@ -86,6 +86,10 @@ ul {
   gap: 0.5rem;
 }
 
+.bubble.answered {
+  opacity: 0.6;
+}
+
 .upvote-section {
   display: flex;
   align-items: center;

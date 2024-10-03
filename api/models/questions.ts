@@ -14,6 +14,7 @@ const questionsPreparedStatement = db
     eventId: questions.eventId,
     question: questions.question,
     createdAt: questions.createdAt,
+    answeredAt: questions.answeredAt,
     userId: questions.userId,
     user: users,
     votes: votesSnippet,
@@ -28,7 +29,11 @@ const questionsPreparedStatement = db
     ),
   )
   .groupBy(questions.id, users.id)
-  .orderBy(desc(votesSnippet), asc(questions.createdAt))
+  .orderBy(
+    sql`${questions.answeredAt} DESC NULLs FIRST`,
+    desc(votesSnippet),
+    asc(questions.createdAt),
+  )
   .prepare("questions_with_votes_by_event_id");
 
 export async function getQuestions(
@@ -42,7 +47,7 @@ export async function getQuestions(
 }
 
 export async function createQuestion(
-  question: Omit<Question, "uid" | "createdAt" | "id">,
+  question: Omit<Question, "uid" | "createdAt" | "id" | "answeredAt">,
 ) {
   const result = await db.insert(questions).values({
     ...question,
@@ -64,6 +69,16 @@ export async function getQuestionByUID(uid: string) {
   const result = await getQuestionByUIDPreparedStatement.execute({ uid });
 
   return result.length === 1 ? result[0] : null;
+}
+
+export async function markAsAnswered(
+  id: number,
+) {
+  await db.update(questions).set({
+    answeredAt: new Date(),
+  }).where(
+    eq(questions.id, id),
+  ).execute();
 }
 
 export type Question = typeof questions.$inferSelect;

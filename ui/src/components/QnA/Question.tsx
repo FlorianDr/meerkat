@@ -11,9 +11,10 @@ import {
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
-import { NotAllowedIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { MdMoreHoriz } from "react-icons/md";
 import { useBlockUser } from "../../hooks/use-block-user.ts";
+import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
 
 interface QuestionProps {
   canVote: boolean;
@@ -38,6 +39,7 @@ export function Question(
     },
   });
   const { trigger: block } = useBlockUser(question.user?.uid ?? "");
+  const { trigger: markAsAnswered } = useMarkAsAnswered(question.uid);
 
   const handleBlock = async () => {
     await block();
@@ -49,8 +51,22 @@ export function Question(
     });
   };
 
+  const handleAnswered = async () => {
+    await markAsAnswered();
+    toast({
+      title: "Question marked as answered ✅",
+      status: "success",
+      duration: 1000,
+    });
+  };
+
+  const isAnswered = !!question.answeredAt;
+
   return (
-    <li key={`${question.uid}-${question.question}`} className="bubble">
+    <li
+      key={`${question.uid}-${question.question}`}
+      className={`bubble${isAnswered ? " answered" : ""}`}
+    >
       <Heading as="h3" color="white" size="sm" mb={2} flex="1">
         {question.question}
       </Heading>
@@ -66,6 +82,9 @@ export function Question(
               justifySelf="flex-end"
             />
             <MenuList>
+              <MenuItem onClick={handleAnswered} icon={<CheckCircleIcon />}>
+                Mark as Answered
+              </MenuItem>
               <MenuItem onClick={handleBlock} icon={<NotAllowedIcon />}>
                 Block User
               </MenuItem>
@@ -85,7 +104,7 @@ export function Question(
           onSubmit={onSubmit}
           action={`/api/v1/questions/${question.uid}/upvote`}
         >
-          <UpVoteButton hasVoted={voted} isDisabled={!canVote} />
+          <UpVoteButton hasVoted={voted} isDisabled={!canVote || isAnswered} />
         </form>
       </div>
     </li>
