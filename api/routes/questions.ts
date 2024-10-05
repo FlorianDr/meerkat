@@ -13,6 +13,7 @@ import {
 } from "../models/votes.ts";
 import { SUB_TYPE_ID } from "../utils/jwt.ts";
 import { broadcast } from "../realtime.ts";
+import { getConferenceRolesForConference } from "../models/roles.ts";
 
 const app = new Hono();
 
@@ -92,10 +93,6 @@ app.post(
       throw new HTTPException(401, { message: `User ${userUID} not found` });
     }
 
-    if (user.role !== "organizer") {
-      throw new HTTPException(403, { message: `User is not an organizer` });
-    }
-
     if (!question) {
       throw new HTTPException(404, {
         message: `Question ${uid} not found`,
@@ -108,6 +105,16 @@ app.post(
       throw new HTTPException(404, {
         message: `Event ${question.eventId} not found`,
       });
+    }
+
+    const roles = await getConferenceRolesForConference(
+      user.id,
+      event.conferenceId,
+    );
+    const isOrganizer = roles.some((role) => role.role === "organizer");
+
+    if (!isOrganizer) {
+      throw new HTTPException(403, { message: `User is not an organizer` });
     }
 
     await markAsAnswered(question.id);

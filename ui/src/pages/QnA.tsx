@@ -19,11 +19,13 @@ import {
 } from "@chakra-ui/react";
 import { remote } from "../routes.ts";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
 
 export function QnA() {
   const { uid } = useParams();
   const { data: event, mutate: refreshEvent } = useEvent(uid);
   const { data: votes, mutate: refreshVotes } = useVotes();
+  const { data: roles } = useConferenceRoles();
   const refresh = () => {
     refreshEvent();
     refreshVotes();
@@ -47,6 +49,11 @@ export function QnA() {
     },
   });
 
+  const isOrganizer =
+    roles?.some((role) =>
+      role.role === "organizer" && role.conferenceId === event?.conferenceId
+    ) ?? false;
+
   return (
     <div className="layout">
       <header className="header">
@@ -69,7 +76,7 @@ export function QnA() {
         <QuestionsSection
           event={event}
           votes={votes}
-          user={user}
+          isOrganizer={isOrganizer}
           refresh={refresh}
           isAuthenticated={isAuthenticated}
         />

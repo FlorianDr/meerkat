@@ -6,6 +6,7 @@ import { fetcher } from "./fetcher.ts";
 // TODO: Get interface from api
 export type Event = {
   uid: string;
+  conferenceId: number;
   code: string;
   title: string;
   submissionType: string;

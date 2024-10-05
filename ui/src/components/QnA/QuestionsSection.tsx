@@ -3,18 +3,18 @@ import { type Event } from "../../hooks/use-event.ts";
 import { type Vote } from "../../hooks/use-votes.ts";
 import { Question } from "./Question.tsx";
 import { Flex } from "@chakra-ui/react";
-import { type User } from "../../types.ts";
 
 export type QuestionsSectionProps = {
-  user: User | undefined;
   event: Event | undefined;
   votes: Vote[] | undefined;
   isAuthenticated: boolean;
+  isOrganizer: boolean;
   refresh: () => void;
 };
 
 export function QuestionsSection(
-  { user, event, votes, isAuthenticated, refresh }: QuestionsSectionProps,
+  { event, votes, isAuthenticated, isOrganizer, refresh }:
+    QuestionsSectionProps,
 ) {
   const questionLookup = useMemo(() => {
     return votes?.reduce((acc, vote) => {
@@ -34,7 +34,7 @@ export function QuestionsSection(
               <Question
                 key={question.uid}
                 question={question}
-                canModerate={user?.role === "organizer"}
+                canModerate={isOrganizer}
                 canVote={isAuthenticated}
                 refresh={refresh}
                 voted={questionLookup?.has(question.uid)}

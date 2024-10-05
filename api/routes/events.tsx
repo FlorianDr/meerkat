@@ -116,7 +116,7 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   );
 
   // Strips out internal fields
-  const { id: _id, conferenceId: _conferenceId, ...rest } = event;
+  const { id: _id, ...rest } = event;
   const apiQuestions = questions.map(
     ({ id: _id, eventId: _eventId, userId: _userId, user, ...rest }) => ({
       ...rest,
