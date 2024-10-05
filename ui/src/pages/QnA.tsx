@@ -55,63 +55,65 @@ export function QnA() {
     ) ?? false;
 
   return (
-    <div className="layout">
-      <header className="header">
-        <nav>
-          <Link as={ReactRouterLink} to={remote(uid)}>
-            <Flex
-              flexDirection="row"
-              gap="1"
-              alignItems="center"
-              padding="0.5rem 0 0 1rem"
-              minHeight="1rem"
-            >
-              <ArrowBackIcon /> <span>Controls</span>
-            </Flex>
-          </Link>
-        </nav>
-        <Header title={`QA: ${event?.title}`} subline={event?.speaker} />
-      </header>
-      <main className="content flex">
-        <QuestionsSection
-          event={event}
-          votes={votes}
-          isOrganizer={isOrganizer}
-          refresh={refresh}
-          isAuthenticated={isAuthenticated}
-        />
-        {isBlocked && (
-          <Modal size="xs" isOpen={true} onClose={() => {}}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Blocked</ModalHeader>
-              <ModalBody>
-                <p>
-                  You have been blocked from asking questions in this event. If
-                  you believe this is a mistake, please contact the event
-                  organizer.
-                </p>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-        )}
-      </main>
-      <footer className="footer">
-        {reactions.map((reaction: { id: number }) => (
-          <Reaction
-            key={reaction.id}
-            id={reaction.id}
-            icon={reaction.id % 5 === 0 ? <>🐸</> : <HeartIcon />}
-            setReactions={setReactions}
+    <>
+      <div className="layout">
+        <header className="header">
+          <nav>
+            <Link as={ReactRouterLink} to={remote(uid)}>
+              <Flex
+                flexDirection="row"
+                gap="1"
+                alignItems="center"
+                padding="0.5rem 0 0 1rem"
+                minHeight="1rem"
+              >
+                <ArrowBackIcon /> <span>Controls</span>
+              </Flex>
+            </Link>
+          </nav>
+          <Header title={`QA: ${event?.title}`} subline={event?.speaker} />
+        </header>
+        <main className="content flex">
+          <QuestionsSection
+            event={event}
+            votes={votes}
+            isOrganizer={isOrganizer}
+            refresh={refresh}
+            isAuthenticated={isAuthenticated}
           />
-        ))}
-        <Footer
-          event={event}
-          user={user}
-          isAuthenticated={isAuthenticated}
-          refresh={refresh}
-        />
-      </footer>
-    </div>
+        </main>
+        <footer className="footer">
+          {reactions.map((reaction: { id: number }) => (
+            <Reaction
+              key={reaction.id}
+              id={reaction.id}
+              icon={reaction.id % 5 === 0 ? <>🐸</> : <HeartIcon />}
+              setReactions={setReactions}
+            />
+          ))}
+          <Footer
+            event={event}
+            user={user}
+            isAuthenticated={isAuthenticated}
+            refresh={refresh}
+          />
+        </footer>
+      </div>
+      {isBlocked && (
+        <Modal size="xs" isOpen={true} onClose={() => {}}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Blocked</ModalHeader>
+            <ModalBody>
+              <p>
+                You have been blocked from asking questions in this event. If
+                you believe this is a mistake, please contact the event
+                organizer.
+              </p>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 }
