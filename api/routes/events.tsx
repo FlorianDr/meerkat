@@ -18,13 +18,12 @@ import {
   getUserByZuTicketId,
 } from "../models/user.ts";
 import { createQuestion, getQuestions } from "../models/questions.ts";
-import { checkProof, generateProofURL, getZupassAddPCDURL } from "../zupass.ts";
+import { checkProof, getZupassAddPCDURL } from "../zupass.ts";
 import {
   constructJWTPayload,
   JWT_EXPIRATION_TIME,
   SUB_TYPE_ID,
 } from "../utils/jwt.ts";
-import { randomBigInt } from "../utils/random-bigint.ts";
 import { upgradeWebSocket } from "@hono/hono/deno";
 import { createMiddleware } from "@hono/hono/factory";
 import { broadcast, join, leave } from "../realtime.ts";
@@ -89,7 +88,6 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
 
 app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
-  const uid = event.uid;
   const [conference, questions, participants] = await Promise.all([
     getConferenceById(event.conferenceId),
     getQuestions(event.id),
@@ -109,14 +107,6 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
     event,
     origin,
   });
-
-  const watermark = randomBigInt();
-  const returnURL = new URL(`/api/v1/events/${uid}/proof/${watermark}`, origin);
-  const proofURL = generateProofURL(
-    watermark,
-    returnURL.toString(),
-    conference.zuAuthConfig,
-  );
 
   // Strips out internal fields
   const { id: _id, ...rest } = event;
@@ -139,7 +129,6 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
       ...rest,
       questions: apiQuestions,
       collectURL,
-      proofURL,
       votes,
       participants,
     },

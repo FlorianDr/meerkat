@@ -18,7 +18,6 @@ export type Event = {
   cover: string | null;
   questions: Question[];
   collectURL: string;
-  proofURL: string;
   votes: number;
   participants: number;
   speaker: string;
