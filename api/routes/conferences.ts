@@ -10,6 +10,7 @@ import {
 import { createEvents, Event, getEvents } from "../models/events.ts";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "@hono/hono/http-exception";
+import { accepts } from "@hono/hono/accepts";
 
 const app = new Hono();
 
@@ -36,6 +37,11 @@ app.post(
   },
 );
 
+const FORMATS = {
+  csv: "text/csv",
+  json: "application/json",
+} as const;
+
 app.get(
   "/api/v1/conferences/:id/events",
   bearerAuth({ token: env.adminToken }),
@@ -55,15 +61,15 @@ app.get(
       });
     }
 
-    const format = c.req.query("format");
-
-    if (format && format !== "csv") {
-      throw new HTTPException(400, { message: `Supported formats: csv` });
-    }
+    const format = accepts(c, {
+      header: "Accept",
+      supports: [FORMATS.csv, FORMATS.json],
+      default: FORMATS.csv,
+    });
 
     const events = await getEvents(conferenceId);
 
-    if (format === "csv") {
+    if (format === FORMATS.csv) {
       c.header("Content-Type", "text/csv");
       c.header(
         "Content-Disposition",
@@ -72,8 +78,13 @@ app.get(
       const origin = c.req.header("origin");
       const responseText = createCsvResponse(origin ?? env.base, events);
       return c.text(responseText);
+    } else if (format === FORMATS.json) {
+      return c.json({ data: events });
+    } else {
+      throw new HTTPException(406, {
+        message: `Supported formats: ${Object.values(FORMATS).join(", ")}`,
+      });
     }
-    return c.json({ data: events });
   },
 );
 
