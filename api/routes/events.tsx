@@ -57,7 +57,11 @@ const eventMiddleware = createMiddleware<Env>(async (c, next) => {
 app.get("/events/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
   const uid = event.uid;
-  const conference = await getConferenceById(event.conferenceId);
+  const [conference, questions, participants] = await Promise.all([
+    getConferenceById(event.conferenceId),
+    getQuestions(event.id),
+    countParticipants(event.id),
+  ]);
 
   if (!conference) {
     throw new HTTPException(404, {
@@ -67,9 +71,6 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
 
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/events/${uid}/remote`, origin);
-
-  const questions = await getQuestions(event.id);
-  const participants = await countParticipants(event.id);
 
   return c.html(
     <Document>
@@ -89,15 +90,17 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
 app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
   const uid = event.uid;
-  const conference = await getConferenceById(event.conferenceId);
+  const [conference, questions, participants] = await Promise.all([
+    getConferenceById(event.conferenceId),
+    getQuestions(event.id),
+    countParticipants(event.id),
+  ]);
 
   if (!conference) {
     throw new HTTPException(404, {
       message: `Conference ${event.conferenceId} not found`,
     });
   }
-
-  const questions = await getQuestions(event.id);
 
   const origin = c.req.header("origin") ?? env.base;
 
@@ -130,7 +133,6 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   );
 
   const votes = questions.reduce((acc, question) => acc + question.votes, 0);
-  const participants = await countParticipants(event.id);
 
   return c.json({
     data: {

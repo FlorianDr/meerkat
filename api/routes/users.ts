@@ -93,7 +93,7 @@ app.get(
     const apiVotes = votes.map((vote) => {
       return {
         questionUid: vote.question.uid,
-        userUid: vote.user.uid,
+        userUid: user.uid,
         createdAt: vote.createdAt,
       };
     });
