@@ -1,8 +1,7 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import { typeid } from "typeid-js";
-import { accounts, users } from "../schema.ts";
 import db from "../db.ts";
-import { tickets } from "../schema.ts";
+import { accounts, questions, tickets, users } from "../schema.ts";
 import { generateUsername } from "../usernames.ts";
 
 export async function createUserFromZuTicketId(
@@ -99,6 +98,42 @@ export async function markUserAsBlocked(id: number) {
   await db.update(users).set({ blocked: true }).where(
     eq(users.id, id),
   ).execute();
+}
+
+export async function getUserPostCountAfterDate(
+  userId: number,
+  date: Date,
+): Promise<number> {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(questions)
+    .where(
+      and(
+        eq(questions.userId, userId),
+        gt(questions.createdAt, date),
+      ),
+    )
+    .execute();
+
+  return Number(result[0].count);
+}
+
+export async function getUserPostCountPerTalk(
+  userId: number,
+  eventId: number,
+): Promise<number> {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(questions)
+    .where(
+      and(
+        eq(questions.userId, userId),
+        eq(questions.eventId, eventId),
+      ),
+    )
+    .execute();
+
+  return Number(result[0].count);
 }
 
 export type User = typeof users.$inferSelect;
