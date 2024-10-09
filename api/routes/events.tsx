@@ -28,6 +28,7 @@ import {
   getUserPostCountPerTalk,
 } from "../models/user.ts";
 import { broadcast, join, leave } from "../realtime.ts";
+import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import {
   constructJWTPayload,
   JWT_EXPIRATION_TIME,
@@ -185,14 +186,14 @@ app.post(
     const user = await getUserByUID(getSuffix(userUID));
 
     if (!user) {
-      throw new HTTPException(401, { message: `User not found` });
+      throw new HTTPException(401, { message: "User not found" });
     }
 
     if (user.blocked) {
-      throw new HTTPException(403, { message: `User is blocked` });
+      throw new HTTPException(403, { message: "User is blocked" });
     }
 
-    const minuteAgo = new Date(Date.now() - 60 * 1000);
+    const minuteAgo = dateDeductedMinutes(1);
     const lastMinuteActivityPromise = getUserPostCountAfterDate(
       user.id,
       minuteAgo,
@@ -204,11 +205,11 @@ app.post(
     ]);
 
     if (lastMinuteActivity >= 3 || talkActivity >= 5) {
-      throw new HTTPException(403, { message: `User has too many posts` });
+      throw new HTTPException(403, { message: "User has too many posts" });
     }
 
     if (questionText.length > 200) {
-      throw new HTTPException(400, { message: `Question is too long` });
+      throw new HTTPException(400, { message: "Question is too long" });
     }
 
     const question = await createQuestion({
@@ -318,7 +319,7 @@ app.post(
 
     const event = c.get("event");
 
-    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+    const thirtySecondsAgo = dateDeductedMinutes(0.5);
     const thirtySecondsActivity = await getUserReactionCountAfterDate(
       user.id,
       thirtySecondsAgo,
