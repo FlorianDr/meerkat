@@ -1,25 +1,18 @@
-import { useEvent, useEventUpdates } from "../hooks/use-event.ts";
-import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
-import { Footer } from "../components/QnA/Footer.tsx";
-import { Header } from "../components/Header/Header.tsx";
-import { useVotes } from "../hooks/use-votes.ts";
-import { useRef, useState } from "react";
-import { useUser } from "../hooks/use-user.ts";
-import { Reaction } from "../components/QnA/Reaction.tsx";
-import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
-import { Link as ReactRouterLink, useParams } from "react-router-dom";
-import {
-  Flex,
-  Link,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
-import { remote } from "../routes.ts";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import { Flex, Link } from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { Link as ReactRouterLink, useParams } from "react-router-dom";
+import { Header } from "../components/Header/Header.tsx";
+import { Modal } from "../components/Modal/Modal.tsx";
+import { Footer } from "../components/QnA/Footer.tsx";
+import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
+import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
+import { Reaction } from "../components/QnA/Reaction.tsx";
 import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
+import { useEvent, useEventUpdates } from "../hooks/use-event.ts";
+import { useUser } from "../hooks/use-user.ts";
+import { useVotes } from "../hooks/use-votes.ts";
+import { remote } from "../routes.ts";
 
 export function QnA() {
   const { uid } = useParams();
@@ -100,18 +93,16 @@ export function QnA() {
         </footer>
       </div>
       {isBlocked && (
-        <Modal size="xs" isOpen={true} onClose={() => {}}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Blocked</ModalHeader>
-            <ModalBody>
-              <p>
-                You have been blocked from asking questions in this event. If
-                you believe this is a mistake, please contact the event
-                organizer.
-              </p>
-            </ModalBody>
-          </ModalContent>
+        <Modal
+          isOpen={true}
+          onClose={() => {}}
+          title="Blocked"
+          lockFocusAcrossFrames
+        >
+          <p>
+            You have been blocked from asking questions in this event. If you
+            believe this is a mistake, please contact the event organizer.
+          </p>
         </Modal>
       )}
     </>

@@ -1,34 +1,36 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
 import { setCookie } from "@hono/hono/cookie";
+import { upgradeWebSocket } from "@hono/hono/deno";
+import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt, sign } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
 import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { fromString, getSuffix } from "typeid-js";
+import Document from "../components/Document.tsx";
 import Layout from "../components/Layout.tsx";
 import QR from "../components/QR.tsx";
 import TopQuestions from "../components/TopQuestions.tsx";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { countParticipants, getEventByUID } from "../models/events.ts";
+import { createQuestion, getQuestions } from "../models/questions.ts";
+import { createReaction } from "../models/reactions.ts";
 import {
   createUserFromZuTicketId,
   getUserByUID,
   getUserByZuTicketId,
+  getUserPostCountAfterDate,
+  getUserPostCountPerTalk,
 } from "../models/user.ts";
-import { createQuestion, getQuestions } from "../models/questions.ts";
-import { checkProof, getZupassAddPCDURL } from "../zupass.ts";
+import { broadcast, join, leave } from "../realtime.ts";
 import {
   constructJWTPayload,
   JWT_EXPIRATION_TIME,
   SUB_TYPE_ID,
 } from "../utils/jwt.ts";
-import { upgradeWebSocket } from "@hono/hono/deno";
-import { createMiddleware } from "@hono/hono/factory";
-import { broadcast, join, leave } from "../realtime.ts";
-import { createReaction } from "../models/reactions.ts";
-import Document from "../components/Document.tsx";
+import { checkProof, getZupassAddPCDURL } from "../zupass.ts";
 
 const app = new Hono();
 
@@ -178,8 +180,6 @@ app.post(
     const payload = c.get("jwtPayload");
     const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
     const user = await getUserByUID(getSuffix(userUID));
-    const origin = c.req.header("origin") ?? env.base;
-    const redirect = new URL(`/events/${uid}/qa`, origin);
 
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });
@@ -187,6 +187,21 @@ app.post(
 
     if (user.blocked) {
       throw new HTTPException(403, { message: `User is blocked` });
+    }
+
+    const minuteAgo = new Date(Date.now() - 60 * 1000);
+    const lastMinuteActivityPromise = getUserPostCountAfterDate(
+      user.id,
+      minuteAgo,
+    );
+    const talkActivityPromise = getUserPostCountPerTalk(user.id, event.id);
+    const [lastMinuteActivity, talkActivity] = await Promise.all([
+      lastMinuteActivityPromise,
+      talkActivityPromise,
+    ]);
+
+    if (lastMinuteActivity >= 3 || talkActivity >= 5) {
+      throw new HTTPException(403, { message: `User has too many posts` });
     }
 
     const question = await createQuestion({
@@ -197,7 +212,11 @@ app.post(
 
     broadcast(uid, { op: "insert", type: "question", uid: question.uid });
 
-    return c.redirect(redirect.toString());
+    return c.json({
+      data: {
+        createdAt: question.createdAt,
+      },
+    });
   },
 );
 
