@@ -4,16 +4,18 @@ import { jwt } from "@hono/hono/jwt";
 import { fromString, getSuffix } from "typeid-js";
 import env from "../env.ts";
 import { getEventById } from "../models/events.ts";
-import { getUserByUID } from "../models/user.ts";
 import { getQuestionByUID, markAsAnswered } from "../models/questions.ts";
+import { getConferenceRolesForConference } from "../models/roles.ts";
+import { getUserByUID } from "../models/user.ts";
 import {
   createVote,
   deleteVote,
+  getUserVoteCountAfterDate,
   getVotesByQuestionIdAndUserId,
 } from "../models/votes.ts";
-import { SUB_TYPE_ID } from "../utils/jwt.ts";
 import { broadcast } from "../realtime.ts";
-import { getConferenceRolesForConference } from "../models/roles.ts";
+import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
+import { SUB_TYPE_ID } from "../utils/jwt.ts";
 
 const app = new Hono();
 
@@ -51,6 +53,17 @@ app.post(
       throw new HTTPException(404, {
         message: `Event ${question.eventId} not found`,
       });
+    }
+
+    const minuteAgo = dateDeductedMinutes(1);
+    const voteCount = await getUserVoteCountAfterDate(
+      user.id,
+      event.id,
+      minuteAgo,
+    );
+
+    if (voteCount >= 3) {
+      throw new HTTPException(403, { message: "User has too many votes" });
     }
 
     const hasVoted = await getVotesByQuestionIdAndUserId({

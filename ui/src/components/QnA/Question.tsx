@@ -1,3 +1,4 @@
+import { CheckCircleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import {
   Heading,
   Icon,
@@ -8,13 +9,13 @@ import {
   MenuList,
   useToast,
 } from "@chakra-ui/react";
-import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
-import { Question as QuestionModel } from "../../hooks/use-event.ts";
-import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
-import { CheckCircleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { MdMoreHoriz } from "react-icons/md";
+import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 import { useBlockUser } from "../../hooks/use-block-user.ts";
+import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
+import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
+import { Modal } from "../Modal/Modal.tsx";
 
 interface QuestionProps {
   canVote: boolean;
@@ -28,7 +29,7 @@ export function Question(
   { canVote, canModerate, question, voted, refresh }: QuestionProps,
 ) {
   const toast = useToast();
-  const { onSubmit } = useAsyncFormSubmit({
+  const { onSubmit, isOnCooldown } = useAsyncFormSubmit({
     onSuccess: () => {
       refresh();
       toast({
@@ -63,50 +64,69 @@ export function Question(
   const isAnswered = !!question.answeredAt;
 
   return (
-    <li
-      key={`${question.uid}-${question.question}`}
-      className={`bubble${isAnswered ? " answered" : ""}`}
-    >
-      <Heading as="h3" color="white" size="sm" mb={2} flex="1">
-        {question.question}
-      </Heading>
-      {canModerate
-        ? (
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              size="md"
-              aria-label="Options"
-              icon={<Icon as={MdMoreHoriz} />}
-              variant="ghost"
-              justifySelf="flex-end"
+    <>
+      <li
+        key={`${question.uid}-${question.question}`}
+        className={`bubble${isAnswered ? " answered" : ""}`}
+      >
+        <Heading as="h3" color="white" size="sm" mb={2} flex="1">
+          {question.question}
+        </Heading>
+        {canModerate
+          ? (
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                size="md"
+                aria-label="Options"
+                icon={<Icon as={MdMoreHoriz} />}
+                variant="ghost"
+                justifySelf="flex-end"
+              />
+              <MenuList>
+                <MenuItem onClick={handleAnswered} icon={<CheckCircleIcon />}>
+                  Mark as Answered
+                </MenuItem>
+                <MenuItem onClick={handleBlock} icon={<NotAllowedIcon />}>
+                  Block User
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )
+          : <div />}
+        <span className="author">
+          {question.user?.name ?? question.user?.uid}
+        </span>
+        <div className="upvote">
+          <div className={`upvote-count ${voted && "voted"}`}>
+            {question.votes}
+          </div>
+          <form
+            method="POST"
+            onSubmit={onSubmit}
+            action={`/api/v1/questions/${question.uid}/upvote`}
+          >
+            <UpVoteButton
+              hasVoted={voted}
+              isDisabled={!canVote || isAnswered}
             />
-            <MenuList>
-              <MenuItem onClick={handleAnswered} icon={<CheckCircleIcon />}>
-                Mark as Answered
-              </MenuItem>
-              <MenuItem onClick={handleBlock} icon={<NotAllowedIcon />}>
-                Block User
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        )
-        : <div />}
-      <span className="author">
-        {question.user?.name ?? question.user?.uid}
-      </span>
-      <div className="upvote">
-        <div className={`upvote-count ${voted && "voted"}`}>
-          {question.votes}
+          </form>
         </div>
-        <form
-          method="POST"
-          onSubmit={onSubmit}
-          action={`/api/v1/questions/${question.uid}/upvote`}
-        >
-          <UpVoteButton hasVoted={voted} isDisabled={!canVote || isAnswered} />
-        </form>
-      </div>
-    </li>
+      </li>
+      {isOnCooldown
+        ? (
+          <Modal
+            isOpen={true}
+            onClose={() => {}}
+            title="Cooldown"
+            lockFocusAcrossFrames
+          >
+            <p>
+              You are on cooldown. Please, try again later.
+            </p>
+          </Modal>
+        )
+        : null}
+    </>
   );
 }
