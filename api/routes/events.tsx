@@ -207,6 +207,10 @@ app.post(
       throw new HTTPException(403, { message: `User has too many posts` });
     }
 
+    if (questionText.length > 200) {
+      throw new HTTPException(400, { message: `Question is too long` });
+    }
+
     const question = await createQuestion({
       eventId: event.id,
       question: questionText,
