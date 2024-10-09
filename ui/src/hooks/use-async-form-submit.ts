@@ -8,6 +8,7 @@ type AsyncFormSubmitReturnType = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
+  isOnCooldown: boolean;
 };
 
 export const useAsyncFormSubmit = (
@@ -15,6 +16,7 @@ export const useAsyncFormSubmit = (
 ): AsyncFormSubmitReturnType => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [isOnCooldown, setIsOnCooldown] = useState<boolean>(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,14 +30,10 @@ export const useAsyncFormSubmit = (
         method,
         body: formData,
       });
-
-      if (response.status === 403) {
-        throw new Error(`${response.status} - ${await response.text()}`, {
-          cause: "cooldown",
-        });
-      }
-
       if (!response.ok) {
+        if (response.status === 403) {
+          setIsOnCooldown(true);
+        }
         throw new Error(`${response.status} - ${await response.text()}`);
       }
       form.reset();
@@ -47,5 +45,5 @@ export const useAsyncFormSubmit = (
     }
   };
 
-  return { onSubmit, isLoading, error };
+  return { onSubmit, isLoading, error, isOnCooldown };
 };
