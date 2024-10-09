@@ -16,7 +16,10 @@ import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { countParticipants, getEventByUID } from "../models/events.ts";
 import { createQuestion, getQuestions } from "../models/questions.ts";
-import { createReaction } from "../models/reactions.ts";
+import {
+  createReaction,
+  getUserReactionCountAfterDate,
+} from "../models/reactions.ts";
 import {
   createUserFromZuTicketId,
   getUserByUID,
@@ -310,6 +313,16 @@ app.post(
     }
 
     const event = c.get("event");
+
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+    const thirtySecondsActivity = await getUserReactionCountAfterDate(
+      user.id,
+      thirtySecondsAgo,
+    );
+
+    if (thirtySecondsActivity > 15) {
+      throw new HTTPException(403, { message: `User has too many reactions` });
+    }
 
     const reaction = await createReaction({
       eventId: event.id,
