@@ -180,8 +180,6 @@ app.post(
     const payload = c.get("jwtPayload");
     const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
     const user = await getUserByUID(getSuffix(userUID));
-    const origin = c.req.header("origin") ?? env.base;
-    const redirect = new URL(`/events/${uid}/qa`, origin);
 
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });
@@ -214,7 +212,11 @@ app.post(
 
     broadcast(uid, { op: "insert", type: "question", uid: question.uid });
 
-    return c.redirect(redirect.toString());
+    return c.json({
+      data: {
+        createdAt: question.createdAt,
+      },
+    });
   },
 );
 

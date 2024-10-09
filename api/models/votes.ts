@@ -1,8 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
-import { questions, votes } from "../schema.ts";
 import db from "../db.ts";
+import { questions, votes } from "../schema.ts";
 import { Question } from "./questions.ts";
-import { User } from "./user.ts";
 
 export async function createVote(
   questionId: number,
