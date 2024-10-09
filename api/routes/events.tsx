@@ -194,13 +194,13 @@ app.post(
       user.id,
       minuteAgo,
     );
-    const talkCountPromise = getUserPostCountPerTalk(user.id, event.id);
-    const [lastMinuteActivity, talkCount] = await Promise.all([
+    const talkActivityPromise = getUserPostCountPerTalk(user.id, event.id);
+    const [lastMinuteActivity, talkActivity] = await Promise.all([
       lastMinuteActivityPromise,
-      talkCountPromise,
+      talkActivityPromise,
     ]);
 
-    if (lastMinuteActivity > 3 || talkCount > 5) {
+    if (lastMinuteActivity >= 3 || talkActivity >= 5) {
       throw new HTTPException(403, { message: `User has too many posts` });
     }
 
