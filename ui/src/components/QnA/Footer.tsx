@@ -32,10 +32,12 @@ export function Footer({
   refresh,
 }: FooterProps) {
   const { primaryPurple } = useThemeColors();
-  const { trigger } = useReact(event?.uid ?? "");
+  const { trigger, isOnCooldown: isReactOnCooldown } = useReact(
+    event?.uid ?? "",
+  );
   const { login, isLoading } = useLogin();
   const toast = useToast();
-  const { onSubmit, error } = useAsyncFormSubmit({
+  const { onSubmit, isOnCooldown: isQuestionOnCooldown } = useAsyncFormSubmit({
     onSuccess: () => {
       toast({
         title: "Question added 🎉",
@@ -108,6 +110,7 @@ export function Footer({
                 }
                 : {}}
               aria-label="React to event"
+              type="button"
             />
           </Flex>
           <span className="signin-name">
@@ -126,18 +129,20 @@ export function Footer({
           </LoginOverlay>
         )}
       </div>
-      {error?.cause === "cooldown" && (
-        <Modal
-          isOpen={true}
-          onClose={() => {}}
-          title="Cooldown"
-          lockFocusAcrossFrames
-        >
-          <p>
-            You are on cooldown. Please, try again later.
-          </p>
-        </Modal>
-      )}
+      {isReactOnCooldown || isQuestionOnCooldown
+        ? (
+          <Modal
+            isOpen={true}
+            onClose={() => {}}
+            title="Cooldown"
+            lockFocusAcrossFrames
+          >
+            <p>
+              You are on cooldown. Please, try again later.
+            </p>
+          </Modal>
+        )
+        : null}
     </>
   );
 }
