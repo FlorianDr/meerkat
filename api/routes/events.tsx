@@ -12,6 +12,12 @@ import Document from "../components/Document.tsx";
 import Layout from "../components/Layout.tsx";
 import QR from "../components/QR.tsx";
 import TopQuestions from "../components/TopQuestions.tsx";
+import {
+  MAX_CHARS_PER_QUESTION,
+  MAX_QUESTIONS_PER_EVENT,
+  MAX_QUESTIONS_PER_INTERVAL,
+  MAX_REACTIONS_PER_INTERVAL,
+} from "../constants.ts";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { countParticipants, getEventByUID } from "../models/events.ts";
@@ -204,11 +210,14 @@ app.post(
       talkActivityPromise,
     ]);
 
-    if (lastMinuteActivity >= 3 || talkActivity >= 5) {
+    if (
+      lastMinuteActivity >= MAX_QUESTIONS_PER_INTERVAL ||
+      talkActivity >= MAX_QUESTIONS_PER_EVENT
+    ) {
       throw new HTTPException(403, { message: "User has too many posts" });
     }
 
-    if (questionText.length > 200) {
+    if (questionText.length > MAX_CHARS_PER_QUESTION) {
       throw new HTTPException(400, { message: "Question is too long" });
     }
 
@@ -325,7 +334,7 @@ app.post(
       thirtySecondsAgo,
     );
 
-    if (thirtySecondsActivity > 15) {
+    if (thirtySecondsActivity > MAX_REACTIONS_PER_INTERVAL) {
       throw new HTTPException(403, { message: `User has too many reactions` });
     }
 

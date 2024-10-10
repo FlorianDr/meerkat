@@ -2,6 +2,7 @@ import { Hono } from "@hono/hono";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
 import { fromString, getSuffix } from "typeid-js";
+import { MAX_VOTES_PER_EVENT } from "../constants.ts";
 import env from "../env.ts";
 import { getEventById } from "../models/events.ts";
 import { getQuestionByUID, markAsAnswered } from "../models/questions.ts";
@@ -62,7 +63,7 @@ app.post(
       minuteAgo,
     );
 
-    if (voteCount >= 3) {
+    if (voteCount >= MAX_VOTES_PER_EVENT) {
       throw new HTTPException(403, { message: "User has too many votes" });
     }
 
