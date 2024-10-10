@@ -18,6 +18,8 @@ import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 import { Modal } from "../Modal/Modal.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
 
+const MAX_QUESTION_LENGTH = 200;
+
 export type FooterProps = {
   event: Event | undefined;
   isAuthenticated: boolean;
@@ -48,6 +50,7 @@ export function Footer({
     },
   });
 
+  const isOnCooldown = isReactOnCooldown || isQuestionOnCooldown;
   const action = `/api/v1/events/${event?.uid}/questions`;
 
   return (
@@ -73,8 +76,9 @@ export function Footer({
                 borderColor={primaryPurple}
                 border="none"
                 borderRadius="md"
-                p={4}
+                p="4 4 10 4"
                 _placeholder={{ color: "white" }}
+                maxLength={MAX_QUESTION_LENGTH}
               />
               <InputRightElement width="auto" pr={2}>
                 <IconButton
@@ -129,7 +133,7 @@ export function Footer({
           </LoginOverlay>
         )}
       </div>
-      {isReactOnCooldown || isQuestionOnCooldown
+      {isOnCooldown
         ? (
           <Modal
             isOpen={true}
