@@ -6,7 +6,7 @@ data.
 
 ### Prerequisites
 
-- [Deno](https://deno.land/)
+- [Deno v2](https://deno.land/)
 - [Docker](https://www.docker.com/)
 
 ## Get Started

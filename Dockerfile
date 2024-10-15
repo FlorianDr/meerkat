@@ -1,4 +1,4 @@
-FROM denoland/deno:1.45.5 AS builder
+FROM denoland/deno:2.0.0 AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY . .
 RUN deno task ui:cache && \
 	deno task ui:build
 
-FROM denoland/deno:1.45.5
+FROM denoland/deno:2.0.0
 
 WORKDIR /app
 
