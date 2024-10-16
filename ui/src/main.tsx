@@ -35,6 +35,9 @@ const theme = extendTheme(
 
 const zapp: Zapp = {
   name: config.zappName,
+  permissions: {
+    READ_PUBLIC_IDENTIFIERS: {},
+  },
 };
 
 const zupassUrl = config.zupassUrl;
