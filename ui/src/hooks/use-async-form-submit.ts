@@ -36,6 +36,7 @@ export const useAsyncFormSubmit = (
         }
         throw new Error(`${response.status} - ${await response.text()}`);
       }
+      setIsOnCooldown(false);
       form.reset();
       props?.onSuccess?.();
     } catch (error) {

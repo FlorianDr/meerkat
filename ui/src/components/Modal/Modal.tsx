@@ -2,12 +2,14 @@ import {
   Modal as ChakraModal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   ModalProps as ChakraModalProps,
 } from "@chakra-ui/react";
+import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
-type ModalProps = ChakraModalProps & {
+export type ModalProps = ChakraModalProps & {
   title: string;
   isOpen: boolean;
   onClose: () => void;
@@ -18,15 +20,26 @@ export function Modal(
   { isOpen, onClose, title, children, ...props }: ModalProps,
 ) {
   return (
-    <ChakraModal isOpen={isOpen} onClose={onClose} {...props} isCentered>
+    <ChakraModal
+      isOpen={isOpen}
+      {...props}
+      onClose={onClose}
+      closeOnOverlayClick={false}
+      isCentered
+    >
       <ModalOverlay />
-      <ModalContent bg="#342749" p="1rem">
+      <ModalContent bg="#342749" p="1rem" minHeight="15rem">
         <ModalHeader fontSize="1.5rem" color="white">
           {title}
         </ModalHeader>
         <ModalBody fontWeight="bold">
           {children}
         </ModalBody>
+        <ModalFooter mx="auto">
+          <PrimaryButton type="submit" onClick={onClose}>
+            Close
+          </PrimaryButton>
+        </ModalFooter>
       </ModalContent>
     </ChakraModal>
   );

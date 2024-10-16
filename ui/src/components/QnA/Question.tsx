@@ -15,7 +15,7 @@ import { useBlockUser } from "../../hooks/use-block-user.ts";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
-import { Modal } from "../Modal/Modal.tsx";
+import { Cooldown } from "./Cooldown.tsx";
 
 interface QuestionProps {
   canVote: boolean;
@@ -113,20 +113,7 @@ export function Question(
           </form>
         </div>
       </li>
-      {isOnCooldown
-        ? (
-          <Modal
-            isOpen={true}
-            onClose={() => {}}
-            title="Cooldown"
-            lockFocusAcrossFrames
-          >
-            <p>
-              You are on cooldown. Please, try again later.
-            </p>
-          </Modal>
-        )
-        : null}
+      <Cooldown isOnCooldown={isOnCooldown} />
     </>
   );
 }

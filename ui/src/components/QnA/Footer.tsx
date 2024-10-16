@@ -15,7 +15,7 @@ import { useReact } from "../../hooks/use-react.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { User } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
-import { Modal } from "../Modal/Modal.tsx";
+import { Cooldown } from "./Cooldown.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
 
 const MAX_QUESTION_LENGTH = 200;
@@ -133,20 +133,7 @@ export function Footer({
           </LoginOverlay>
         )}
       </div>
-      {isOnCooldown
-        ? (
-          <Modal
-            isOpen={true}
-            onClose={() => {}}
-            title="Cooldown"
-            lockFocusAcrossFrames
-          >
-            <p>
-              You are on cooldown. Please, try again later.
-            </p>
-          </Modal>
-        )
-        : null}
+      <Cooldown isOnCooldown={isOnCooldown} />
     </>
   );
 }

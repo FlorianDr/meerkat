@@ -9,17 +9,16 @@ type ReactReturnType = {
 
 export function useReact(uid: string): ReactReturnType {
   const [isOnCooldown, setIsOnCooldown] = useState<boolean>(false);
-  const { trigger } = useSWRMutation(
-    `/api/v1/events/${uid}/react`,
-    poster,
-    {
-      onError: (error) => {
-        if (error.status === 403) {
-          setIsOnCooldown(true);
-        }
-      },
+  const { trigger } = useSWRMutation(`/api/v1/events/${uid}/react`, poster, {
+    onError: (error) => {
+      if (error.status === 403) {
+        setIsOnCooldown(true);
+      }
     },
-  );
+    onSuccess: () => {
+      setIsOnCooldown(false);
+    },
+  });
 
   return { trigger, isOnCooldown };
 }
