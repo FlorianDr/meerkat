@@ -14,7 +14,7 @@ export function Remote() {
             dangerouslySetInnerHTML={{ __html: eth_berlin_logo }}
           />
         </div>
-        <Stack spacing={2} flexDirection="column" alignItems="center" pt={5}>
+        <Stack spacing={2} flexDirection="column" alignItems="center">
           <Heading as="h1" color="white" size="lg" mb={1.5}>
             Ethereum meetup Berlin
           </Heading>
