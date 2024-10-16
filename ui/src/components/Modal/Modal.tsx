@@ -18,11 +18,13 @@ export function Modal(
   { isOpen, onClose, title, children, ...props }: ModalProps,
 ) {
   return (
-    <ChakraModal isOpen={isOpen} onClose={onClose} {...props}>
+    <ChakraModal isOpen={isOpen} onClose={onClose} {...props} isCentered>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{title}</ModalHeader>
-        <ModalBody>
+      <ModalContent bg="#342749" p="1rem">
+        <ModalHeader fontSize="1.5rem" color="white">
+          {title}
+        </ModalHeader>
+        <ModalBody fontWeight="bold">
           {children}
         </ModalBody>
       </ModalContent>
