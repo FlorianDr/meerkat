@@ -28,7 +28,7 @@ export function Modal(
       isCentered
     >
       <ModalOverlay />
-      <ModalContent bg="#342749" p="1rem" minHeight="15rem">
+      <ModalContent bg="#342749" p="1rem" minHeight="15rem" mx="1rem">
         <ModalHeader fontSize="1.5rem" color="white">
           {title}
         </ModalHeader>
