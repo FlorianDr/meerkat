@@ -1,6 +1,6 @@
 import { Button, Grid, Heading, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
-import logo from "../assets/ethereum_berlin.png";
+import { eth_berlin_logo } from "../assets/ethereum_berlin.ts";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 
 export function Remote() {
@@ -9,12 +9,11 @@ export function Remote() {
   return (
     <Stack height="100vh" justifyContent="center">
       <Grid templateRows="max-content 200px max-content" gap="2rem">
-        <img
-          src={logo}
-          alt="Ordinary Card"
-          width="200px"
-          style={{ margin: "auto" }}
-        />
+        <div style={{ margin: "auto" }}>
+          <div
+            dangerouslySetInnerHTML={{ __html: eth_berlin_logo }}
+          />
+        </div>
         <Stack spacing={2} flexDirection="column" alignItems="center" pt={5}>
           <Heading as="h1" color="white" size="lg" mb={1.5}>
             Ethereum meetup Berlin
