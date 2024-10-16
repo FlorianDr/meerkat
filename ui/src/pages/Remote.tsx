@@ -1,44 +1,44 @@
+import { Button, Grid, Heading, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
-import { useEvent } from "../hooks/use-event.ts";
-import { Header } from "../components/Header/Header.tsx";
+import logo from "../assets/ethereum_berlin.png";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
-import { Button, Flex, Stack } from "@chakra-ui/react";
 
 export function Remote() {
   const { uid } = useParams();
-  const { data: event } = useEvent(uid);
 
   return (
-    <div className="layout">
-      <header className="header">
-        <nav>
-          <Flex
-            flexDirection="row"
-            gap="1"
-            alignItems="center"
-            padding="0.5rem 0 0 1rem"
-            minHeight="32px"
-          />
-        </nav>
-        <Header title={event?.title} subline={event?.speaker} />
-      </header>
-      <main className="content">
-        <Flex justifyContent="center" paddingTop="10">
-          <Stack spacing={4}>
-            <PrimaryButton as={Link} to={`/events/${uid}/qa`}>
-              Join Q&A
-            </PrimaryButton>
-            <Button
-              variant="outline"
-              as={Link}
-              to={`/events/${uid}/event-card`}
-              py={6}
-            >
-              View Event Info
-            </Button>
-          </Stack>
-        </Flex>
-      </main>
-    </div>
+    <Stack height="100vh" justifyContent="center">
+      <Grid templateRows="max-content 200px max-content" gap="2rem">
+        <img
+          src={logo}
+          alt="Ordinary Card"
+          width="200px"
+          style={{ margin: "auto" }}
+        />
+        <Stack spacing={2} flexDirection="column" alignItems="center" pt={5}>
+          <Heading as="h1" color="white" size="lg" mb={1.5}>
+            Ethereum meetup Berlin
+          </Heading>
+          <Heading as="h2" size="md" fontWeight="thin">
+            Meerkat Team
+          </Heading>
+        </Stack>
+        <Stack spacing={4} flexDirection="column" alignItems="center">
+          <PrimaryButton as={Link} to={`/events/${uid}/qa`}>
+            Join Q&A
+          </PrimaryButton>
+          <Button
+            variant="outline"
+            as={Link}
+            to={`/events/${uid}/event-card`}
+            width="16rem"
+            fontWeight="bold"
+            py={6}
+          >
+            Collect
+          </Button>
+        </Stack>
+      </Grid>
+    </Stack>
   );
 }
