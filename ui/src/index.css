@@ -5,7 +5,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Inter", sans-serif;
-  background-color: #0C021D;
+  background-color: #0c021d;
 }
 
 :root {
@@ -23,7 +23,7 @@ body {
   grid-row: 1;
   grid-column: 2;
   max-height: 126px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.16)
+  border-bottom: 2px solid rgba(255, 255, 255, 0.16);
 }
 
 .content {
@@ -54,7 +54,6 @@ ul {
     padding: 0;
   }
 }
-
 
 ol,
 ul {
@@ -108,10 +107,10 @@ ul {
 .upvote-count {
   display: inline;
   margin-right: 0.25rem;
-  color: #AFA5C0;
+  color: #afa5c0;
 }
 
-.upvote-count.voted { 
+.upvote-count.voted {
   color: white;
 }
 
@@ -151,7 +150,10 @@ ul {
 .tab-panel {
   display: flex;
   flex-direction: column;
-  height: calc(100dvh - var(--max-header-height) - 42px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+  height: calc(
+    100dvh - var(--max-header-height) - 42px - env(safe-area-inset-bottom)
+      - env(safe-area-inset-top)
+  );
 }
 
 .reaction {
