@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../context/user.tsx";
 
 export type AsyncFormSubmitProps = {
   onSuccess?: () => void;
@@ -8,7 +9,6 @@ type AsyncFormSubmitReturnType = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
-  isOnCooldown: boolean;
 };
 
 export const useAsyncFormSubmit = (
@@ -16,7 +16,7 @@ export const useAsyncFormSubmit = (
 ): AsyncFormSubmitReturnType => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [isOnCooldown, setIsOnCooldown] = useState<boolean>(false);
+  const { setIsOnCooldown } = useContext(UserContext);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,7 +36,6 @@ export const useAsyncFormSubmit = (
         }
         throw new Error(`${response.status} - ${await response.text()}`);
       }
-      setIsOnCooldown(false);
       form.reset();
       props?.onSuccess?.();
     } catch (error) {
@@ -46,5 +45,5 @@ export const useAsyncFormSubmit = (
     }
   };
 
-  return { onSubmit, isLoading, error, isOnCooldown };
+  return { onSubmit, isLoading, error };
 };

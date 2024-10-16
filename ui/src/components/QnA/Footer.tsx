@@ -15,7 +15,6 @@ import { useReact } from "../../hooks/use-react.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { User } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
-import { Cooldown } from "./Cooldown.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
 
 const MAX_QUESTION_LENGTH = 200;
@@ -34,12 +33,12 @@ export function Footer({
   refresh,
 }: FooterProps) {
   const { primaryPurple } = useThemeColors();
-  const { trigger, isOnCooldown: isReactOnCooldown } = useReact(
+  const { trigger } = useReact(
     event?.uid ?? "",
   );
   const { login, isLoading } = useLogin();
   const toast = useToast();
-  const { onSubmit, isOnCooldown: isQuestionOnCooldown } = useAsyncFormSubmit({
+  const { onSubmit } = useAsyncFormSubmit({
     onSuccess: () => {
       toast({
         title: "Question added 🎉",
@@ -50,7 +49,6 @@ export function Footer({
     },
   });
 
-  const isOnCooldown = isReactOnCooldown || isQuestionOnCooldown;
   const action = `/api/v1/events/${event?.uid}/questions`;
 
   return (
@@ -133,7 +131,6 @@ export function Footer({
           </LoginOverlay>
         )}
       </div>
-      <Cooldown isOnCooldown={isOnCooldown} />
     </>
   );
 }

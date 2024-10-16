@@ -15,7 +15,6 @@ import { useBlockUser } from "../../hooks/use-block-user.ts";
 import { Question as QuestionModel } from "../../hooks/use-event.ts";
 import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
-import { Cooldown } from "./Cooldown.tsx";
 
 interface QuestionProps {
   canVote: boolean;
@@ -29,7 +28,7 @@ export function Question(
   { canVote, canModerate, question, voted, refresh }: QuestionProps,
 ) {
   const toast = useToast();
-  const { onSubmit, isOnCooldown } = useAsyncFormSubmit({
+  const { onSubmit } = useAsyncFormSubmit({
     onSuccess: () => {
       refresh();
       toast({
@@ -113,7 +112,6 @@ export function Question(
           </form>
         </div>
       </li>
-      <Cooldown isOnCooldown={isOnCooldown} />
     </>
   );
 }

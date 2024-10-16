@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
 import { Header } from "../components/Header/Header.tsx";
 import { Modal } from "../components/Modal/Modal.tsx";
+import { CooldownModal } from "../components/QnA/CooldownModal.tsx";
 import { Footer } from "../components/QnA/Footer.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
@@ -105,6 +106,7 @@ export function QnA() {
           </p>
         </Modal>
       )}
+      <CooldownModal />
     </>
   );
 }
