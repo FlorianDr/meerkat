@@ -7,8 +7,8 @@ export function Remote() {
   const { uid } = useParams();
 
   return (
-    <Stack height="100vh" justifyContent="center">
-      <Grid templateRows="max-content 200px max-content" gap="2rem">
+    <Stack height="100dvh" justifyContent="center">
+      <Grid templateRows="max-content 150px max-content" gap="2rem">
         <div style={{ margin: "auto" }}>
           <div
             dangerouslySetInnerHTML={{ __html: eth_berlin_logo }}
