@@ -5,15 +5,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
-    path: "/events/:uid/remote",
+    path: "/e/:uid/remote",
     element: <Remote />,
   },
   {
-    path: "/events/:uid/qa",
+    path: "/e/:uid/qa",
     element: <QnA />,
   },
   {
-    path: "/events/:uid/event-card",
+    path: "/e/:uid/card",
     element: <EventCard />,
   },
 ]);

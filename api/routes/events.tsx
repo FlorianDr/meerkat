@@ -57,7 +57,7 @@ const eventMiddleware = createMiddleware<Env>(async (c, next) => {
   await next();
 });
 
-app.get("/events/:uid", eventMiddleware, async (c) => {
+app.get("/e/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
   const uid = event.uid;
   const [conference, questions, participants] = await Promise.all([
@@ -73,7 +73,7 @@ app.get("/events/:uid", eventMiddleware, async (c) => {
   }
 
   const origin = c.req.header("origin") ?? env.base;
-  const url = new URL(`/events/${uid}/remote`, origin);
+  const url = new URL(`/e/${uid}/remote`, origin);
 
   return c.html(
     <Document>

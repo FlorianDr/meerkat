@@ -2,6 +2,8 @@ import { Button, Grid, Heading, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useEvent } from "../hooks/use-event.ts";
+import { qa } from "../routes.ts";
+import { card } from "../routes.ts";
 
 export function Remote() {
   const { uid } = useParams();
@@ -27,13 +29,13 @@ export function Remote() {
           </Heading>
         </Stack>
         <Stack spacing={4} flexDirection="column" alignItems="center">
-          <PrimaryButton as={Link} to={`/events/${uid}/qa`}>
+          <PrimaryButton as={Link} to={qa(uid)}>
             Join Q&A
           </PrimaryButton>
           <Button
             variant="outline"
             as={Link}
-            to={`/events/${uid}/event-card`}
+            to={card(uid)}
             width="16rem"
             fontWeight="bold"
             py={6}
