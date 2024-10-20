@@ -1,6 +1,5 @@
 {
   "tasks": {
-    "api:cache": "DENO_DIR=./.cache deno cache ./api/dev.ts",
     "api:patch:mac": "DENO_DIR=./.cache ./scripts/patch-dependencies-mac.sh",
     "api:patch:linux": "DENO_DIR=./.cache ./scripts/patch-dependencies-linux.sh",
     "api:dev": "DENO_DIR=./.cache deno run --allow-env --allow-sys --allow-read --allow-net --watch ./api/dev.ts",
@@ -9,7 +8,6 @@
     "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate",
     "db:seed": "./scripts/seed.sh",
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
-    "ui:cache": "deno cache --node-modules-dir ./ui/src/main.tsx",
     "ui:dev": "deno run -A --node-modules-dir npm:vite ui",
     "ui:build": "deno run -A --node-modules-dir npm:vite build ui",
     "fmt": "deno fmt --ignore=.cache,ui/.vite,drizzle",
