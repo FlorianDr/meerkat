@@ -1,12 +1,10 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
-import { setCookie } from "@hono/hono/cookie";
 import { upgradeWebSocket } from "@hono/hono/deno";
 import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
-import { jwt, sign } from "@hono/hono/jwt";
+import { jwt } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
-import type { ZKEdDSAEventTicketPCD } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { fromString, getSuffix } from "typeid-js";
 import Document from "../components/Document.tsx";
 import Layout from "../components/Layout.tsx";
@@ -27,20 +25,14 @@ import {
   getUserReactionCountAfterDate,
 } from "../models/reactions.ts";
 import {
-  createUserFromZuTicketId,
   getUserByUID,
-  getUserByZuTicketId,
   getUserPostCountAfterDate,
   getUserPostCountPerTalk,
 } from "../models/user.ts";
 import { broadcast, join, leave } from "../realtime.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
-import {
-  constructJWTPayload,
-  JWT_EXPIRATION_TIME,
-  SUB_TYPE_ID,
-} from "../utils/jwt.ts";
-import { checkProof, getZupassAddPCDURL } from "../zupass.ts";
+import { SUB_TYPE_ID } from "../utils/jwt.ts";
+import { getZupassAddPCDURL } from "../zupass.ts";
 
 const app = new Hono();
 
@@ -236,82 +228,6 @@ app.post(
     });
   },
 );
-
-app.get("/api/v1/events/:uid/proof/:watermark", eventMiddleware, async (c) => {
-  const watermark = c.req.param("watermark");
-
-  if (!watermark) {
-    throw new HTTPException(400, { message: `Watermark is required` });
-  }
-
-  const event = c.get("event");
-  const uid = event.uid;
-
-  if (!event) {
-    throw new HTTPException(404, { message: `Event ${uid} not found` });
-  }
-
-  const conference = await getConferenceById(event.conferenceId);
-
-  if (!conference) {
-    throw new HTTPException(404, {
-      message: `Conference ${event.conferenceId} not found`,
-    });
-  }
-
-  const proofString = c.req.query("proof");
-
-  if (!proofString) {
-    throw new HTTPException(400, { message: `Proof is required` });
-  }
-
-  const finished = c.req.query("finished");
-
-  if (finished !== "true") {
-    throw new HTTPException(400, { message: `Proof not finished` });
-  }
-
-  let ticketPCD: ZKEdDSAEventTicketPCD;
-  try {
-    ticketPCD = await checkProof(proofString, BigInt(watermark), conference);
-  } catch (error) {
-    console.error(`Failed to authenticate: ${error}`);
-    throw new HTTPException(400, {
-      message: `Failed to authenticate`,
-      cause: error,
-    });
-  }
-
-  const ticketId = ticketPCD.claim.partialTicket.ticketId;
-
-  if (!ticketId) {
-    throw new HTTPException(400, { message: `Ticket ID not found` });
-  }
-
-  let user = await getUserByZuTicketId(ticketId);
-
-  if (!user) {
-    user = await createUserFromZuTicketId(conference.id, ticketId);
-  }
-
-  const origin = c.req.header("origin") ?? env.base;
-  const payload = constructJWTPayload(user);
-  const token = await sign(payload, env.secret);
-
-  const baseUrl = new URL(origin);
-  setCookie(c, "jwt", token, {
-    path: "/",
-    domain: baseUrl.hostname,
-    secure: baseUrl.protocol === "https:",
-    httpOnly: true,
-    maxAge: JWT_EXPIRATION_TIME,
-    sameSite: "Lax",
-  });
-
-  const redirect = new URL(`/events/${uid}/qa`, origin);
-
-  return c.redirect(redirect.toString());
-});
 
 app.post(
   "/api/v1/events/:uid/react",

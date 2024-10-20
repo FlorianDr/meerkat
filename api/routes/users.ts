@@ -9,7 +9,7 @@ import {
   SUB_TYPE_ID,
 } from "../utils/jwt.ts";
 import {
-  createUserFromZuTicketId,
+  createUser,
   getUserByProvider,
   getUserByUID,
   User,
@@ -49,7 +49,7 @@ app.get("/api/v1/users/me", async (c) => {
     user = maybeUser;
   } else if (supportsAnonymousLogin) {
     // This is a temporary solution to allow users to login without a JWT
-    user = await createUserFromZuTicketId(1, crypto.randomUUID());
+    user = await createUser();
     const origin = c.req.header("origin") ?? env.base;
     const payload = constructJWTPayload(user);
     const token = await sign(payload, env.secret);

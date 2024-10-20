@@ -1,4 +1,3 @@
-import { type PipelineEdDSATicketZuAuthConfig } from "@pcd/passport-interface";
 import { eq, sql } from "drizzle-orm";
 import { conferences } from "../schema.ts";
 import db from "../db.ts";
@@ -11,12 +10,12 @@ export async function getConferenceById(
   id: number,
 ): Promise<Conference | null> {
   const conferences = await conferenceById.execute({ id });
-  return conferences.length === 1 ? toConference(conferences[0]) : null;
+  return conferences.length === 1 ? conferences[0] : null;
 }
 
 export async function getConferences(): Promise<Conference[]> {
   const result = await db.select().from(conferences).execute();
-  return result.map(toConference);
+  return result;
 }
 
 export async function createConference(
@@ -29,20 +28,7 @@ export async function createConference(
     throw new Error("Failed to create conference");
   }
 
-  return toConference(result[0]);
+  return result[0];
 }
 
-const toConference = (
-  conference: typeof conferences.$inferSelect,
-): Conference => {
-  return {
-    ...conference,
-    zuAuthConfig: conference.zuAuthConfig as PipelineEdDSATicketZuAuthConfig[],
-  };
-};
-
-export type Conference =
-  & Omit<typeof conferences.$inferSelect, "zuAuthConfig">
-  & {
-    zuAuthConfig: PipelineEdDSATicketZuAuthConfig[];
-  };
+export type Conference = typeof conferences.$inferSelect;

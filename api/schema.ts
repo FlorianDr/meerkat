@@ -2,7 +2,6 @@ import {
   boolean,
   index,
   integer,
-  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -15,7 +14,6 @@ import {
 export const conferences = pgTable("conferences", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  zuAuthConfig: jsonb("zu_auth_config"),
 });
 
 export const events = pgTable("events", {
@@ -72,8 +70,6 @@ export const votes = pgTable(
   }),
 );
 
-export const roleEnum = pgEnum("role", ["anonymous", "attendee", "organizer"]);
-
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   uid: text("uid").notNull().unique(),
@@ -81,6 +77,8 @@ export const users = pgTable("users", {
   blocked: boolean("blocked").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const roleEnum = pgEnum("role", ["attendee", "organizer"]);
 
 export const conferenceRole = pgTable(
   "conference_role",
@@ -91,7 +89,7 @@ export const conferenceRole = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    role: roleEnum("role").notNull(),
+    role: roleEnum("role").default("attendee").notNull(),
     grantedAt: timestamp("granted_at").defaultNow().notNull(),
   },
   (table) => ({
@@ -113,18 +111,6 @@ export const accounts = pgTable(
     providerId: unique("provider_id_uniq").on(table.provider, table.id),
   }),
 );
-
-export const tickets = pgTable("tickets", {
-  id: serial("id").primaryKey(),
-  zuTicketId: text("zu_ticket_id").notNull().unique(),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  conferenceId: integer("conference_id")
-    .notNull()
-    .references(() => conferences.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
 
 export const features = pgTable("features", {
   name: text("name").primaryKey(),
