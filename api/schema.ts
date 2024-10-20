@@ -14,6 +14,7 @@ import {
 export const conferences = pgTable("conferences", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  logoUrl: text("logo_url"),
 });
 
 export const events = pgTable("events", {

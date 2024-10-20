@@ -135,6 +135,7 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
       collectURL,
       votes,
       participants,
+      conference,
     },
   });
 });

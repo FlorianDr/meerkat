@@ -2,9 +2,10 @@ ALTER SEQUENCE conferences_id_seq RESTART WITH 1;
 ALTER SEQUENCE events_id_seq RESTART WITH 1;
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE questions_id_seq RESTART WITH 1;
-INSERT INTO conferences (name)
+INSERT INTO conferences (name, logo_url)
 VALUES (
-		'Devcon 6'
+		'Devcon 6',
+		'https://devcon.org/_next/static/media/logo.7e5ebfaf.png'
 	) ON CONFLICT DO NOTHING;
 INSERT INTO events (
 		conference_id,

@@ -4,10 +4,15 @@ import { HTTPError } from "./http-error.ts";
 import { fetcher } from "./fetcher.ts";
 
 // TODO: Get interface from api
+export type Conference = {
+  id: number;
+  name: string;
+  logoUrl: string | null;
+};
+
 export type Event = {
   uid: string;
   conferenceId: number;
-  code: string;
   title: string;
   submissionType: string;
   start: Date;
@@ -21,6 +26,7 @@ export type Event = {
   votes: number;
   participants: number;
   speaker: string;
+  conference: Conference;
 };
 
 export type Question = {

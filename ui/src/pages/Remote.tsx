@@ -1,25 +1,29 @@
 import { Button, Grid, Heading, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
-import { eth_berlin_logo } from "../assets/ethereum_berlin.ts";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
+import { useEvent } from "../hooks/use-event.ts";
 
 export function Remote() {
   const { uid } = useParams();
+  const { data: event } = useEvent(uid);
 
   return (
     <Stack height="100dvh" justifyContent="center">
-      <Grid templateRows="max-content 150px max-content" gap="2rem">
+      <Grid templateRows="max-content max-content 1fr" gap="2rem">
         <div style={{ margin: "auto" }}>
-          <div
-            dangerouslySetInnerHTML={{ __html: eth_berlin_logo }}
-          />
+          {event?.conference.logoUrl
+            ? (
+              <img
+                style={{ maxHeight: 300 }}
+                src={event.conference.logoUrl}
+                alt={event.conference.name}
+              />
+            )
+            : null}
         </div>
         <Stack spacing={2} flexDirection="column" alignItems="center">
           <Heading as="h1" color="white" size="lg" mb={1.5}>
-            Ethereum meetup Berlin
-          </Heading>
-          <Heading as="h2" size="md" fontWeight="thin">
-            Meerkat Team
+            {event?.conference.name ?? "Conference"}
           </Heading>
         </Stack>
         <Stack spacing={4} flexDirection="column" alignItems="center">
