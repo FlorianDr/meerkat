@@ -1,6 +1,5 @@
 import { eq, sql } from "drizzle-orm";
 import { union } from "drizzle-orm/pg-core";
-import { typeid } from "typeid-js";
 import db from "../db.ts";
 import { events, questions, votes } from "../schema.ts";
 
@@ -9,13 +8,12 @@ const FALLBACK_COVER =
 
 export async function createEvents(
   conferenceId: number,
-  newEvents: Omit<Event, "id" | "uid" | "conferenceId" | "createAt">[],
+  newEvents: Omit<Event, "id" | "conferenceId" | "createAt">[],
 ) {
   const results = await db.insert(events).values(
     newEvents.map((event) => ({
       ...event,
       conferenceId,
-      uid: typeid().getSuffix(),
     })),
   ).returning().execute();
   return results;

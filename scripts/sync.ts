@@ -22,7 +22,7 @@ for (const events of eventSlices) {
 
 function mapSessionToEvent(session: Session): EventCreate {
   return {
-    code: session.id,
+    uid: session.sourceId,
     title: session.title,
     submissionType: session.type,
     start: new Date(session.slot_start),

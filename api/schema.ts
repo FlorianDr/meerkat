@@ -24,7 +24,6 @@ export const events = pgTable("events", {
     .notNull()
     .references(() => conferences.id, { onDelete: "cascade" }),
   uid: text("uid").notNull().unique(),
-  code: text("code").notNull().unique(),
   title: text("title").notNull(),
   submissionType: text("submission_type").notNull(),
   start: timestamp("start").notNull(),

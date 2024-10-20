@@ -89,7 +89,7 @@ app.get(
 );
 
 const eventCreateSchema = zod.object({
-  code: zod.string(),
+  uid: zod.string(),
   title: zod.string(),
   submissionType: zod.string(),
   start: zod.string().refine((v) => new Date(v).toString() !== "Invalid Date")
@@ -150,7 +150,7 @@ function createCsvResponse(origin: string, events: Event[]) {
 
   events.forEach((event) => {
     responseText +=
-      `${event.code},"${event.title}",${event.start.toISOString()},${event.end.toISOString()},${
+      `${event.uid},"${event.title}",${event.start.toISOString()},${event.end.toISOString()},${
         getEventUrl(event, origin)
       }\n`;
   });
