@@ -1,13 +1,12 @@
-FROM denoland/deno:2.0.0 AS builder
+FROM denoland/deno:2.0.2 AS builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN deno task ui:cache && \
-	deno task ui:build
+RUN deno install && deno task ui:build
 
-FROM denoland/deno:2.0.0
+FROM denoland/deno:2.0.2
 
 WORKDIR /app
 
@@ -19,8 +18,7 @@ ENV DENO_DIR=/app/.cache
 
 COPY . .
 
-RUN deno task api:cache && \
-		deno task api:patch:linux 
+RUN deno install &&
 
 COPY --from=builder /app/ui/dist /app/ui/dist
 

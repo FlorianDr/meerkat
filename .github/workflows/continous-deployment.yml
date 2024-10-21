@@ -1,15 +1,35 @@
 # See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
-
-name: Fly Deploy
+name: Continuous Deployment
 on:
   push:
     branches:
       - master
+  release:
+    types:
+      - created
+
 jobs:
+  set-env:
+    name: Set Environment Variable
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_env: ${{ steps.set-env.outputs.ENVIRONMENT }}
+    steps:
+      - name: Determine Environment
+        id: set-env
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            ENVIRONMENT=prod
+          elif [ "${{ github.event_name }}" == "push" ]; then
+            ENVIRONMENT=dev
+          fi
+          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_OUTPUT
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
+    needs: set-env
     concurrency: deploy-group # optional: ensure only one action runs at a time
+    environment: ${{ needs.set-env.outputs.deploy_env }}
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
