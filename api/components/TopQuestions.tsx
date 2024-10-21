@@ -29,17 +29,18 @@ const TopQuestions: FC<TopQuestionsProps> = (
           </p>
         )}
         <ol>
-          {questions.sort((a, b) => b.votes - a.votes).map((question) => (
-            <li key={question.uid} className="bubble">
-              <h2>
-                {question.question}
-              </h2>
-              <div className="upvote-section">
-                <div className="upvote-count">{question.votes ?? 0}</div>
-                <div dangerouslySetInnerHTML={{ __html: ArrowUpIcon }} />
-              </div>
-            </li>
-          ))}
+          {questions
+            .filter((question) => question.answeredAt === null)
+            .sort((a, b) => b.votes - a.votes)
+            .map((question) => (
+              <li key={question.uid} className="bubble">
+                <h2>{question.question}</h2>
+                <div className="upvote-section">
+                  <div className="upvote-count">{question.votes ?? 0}</div>
+                  <div dangerouslySetInnerHTML={{ __html: ArrowUpIcon }} />
+                </div>
+              </li>
+            ))}
         </ol>
       </main>
       <footer className="top-questions-footer">
