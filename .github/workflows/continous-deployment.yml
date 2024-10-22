@@ -32,6 +32,9 @@ jobs:
     environment: ${{ needs.set-env.outputs.deploy_env }}
     steps:
       - uses: actions/checkout@v4
+      - name: Print Environment Variable
+        run: |
+          echo "Deploying to environment: ${{ needs.set-env.outputs.deploy_env }}"
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: envsubst < fly.template.toml > fly.toml
         env:
