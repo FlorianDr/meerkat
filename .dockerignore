@@ -3,6 +3,7 @@
 .vscode
 drizzle
 node_modules
+.cache
 ui/dist
 .env
 .env.example

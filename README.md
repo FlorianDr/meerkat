@@ -25,3 +25,9 @@ data.
 Open your browser and visit
 [http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t](http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t)
 to view the app.
+
+## FAQ
+
+### How to generate secrets?
+
+To generate a 32 bytes secret, you can run `openssl rand -hex 32`.
