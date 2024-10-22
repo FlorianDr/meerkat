@@ -43,6 +43,7 @@ jobs:
           ZUPASS_URL: ${{ secrets.ZUPASS_URL }}
           ZUPASS_ZAPP_NAME: ${{ secrets.ZUPASS_ZAPP_NAME }}
           PRIMARY_REGION: ${{ secrets.PRIMARY_REGION }}
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy -a ${{ vars.APP_NAME }} --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          LOG_LEVEL: debug
