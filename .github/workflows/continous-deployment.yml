@@ -38,7 +38,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: envsubst < fly.template.toml > fly.toml
         env:
-          APP_NAME: ${{ secrets.APP_NAME }}
+          APP_NAME: ${{ vars.APP_NAME }}
           BASE_URL: ${{ secrets.BASE_URL }}
           ZUPASS_URL: ${{ secrets.ZUPASS_URL }}
           ZUPASS_ZAPP_NAME: ${{ secrets.ZUPASS_ZAPP_NAME }}
