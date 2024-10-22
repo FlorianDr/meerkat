@@ -207,7 +207,7 @@ app.post(
       lastMinuteActivity >= MAX_QUESTIONS_PER_INTERVAL ||
       talkActivity >= MAX_QUESTIONS_PER_EVENT
     ) {
-      throw new HTTPException(403, { message: "User has too many posts" });
+      throw new HTTPException(429, { message: "User has too many posts" });
     }
 
     if (questionText.length > MAX_CHARS_PER_QUESTION) {
@@ -252,7 +252,7 @@ app.post(
     );
 
     if (thirtySecondsActivity > MAX_REACTIONS_PER_INTERVAL) {
-      throw new HTTPException(403, { message: `User has too many reactions` });
+      throw new HTTPException(429, { message: `User has too many reactions` });
     }
 
     const reaction = await createReaction({

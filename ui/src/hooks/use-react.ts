@@ -11,7 +11,7 @@ export function useReact(uid: string): ReactReturnType {
   const { setIsOnCooldown } = useContext(UserContext);
   const { trigger } = useSWRMutation(`/api/v1/events/${uid}/react`, poster, {
     onError: (error) => {
-      if (error.status === 403) {
+      if (error.status === 429) {
         setIsOnCooldown(true);
       }
     },

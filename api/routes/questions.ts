@@ -64,7 +64,7 @@ app.post(
     );
 
     if (voteCount >= MAX_VOTES_PER_EVENT) {
-      throw new HTTPException(403, { message: "User has too many votes" });
+      throw new HTTPException(429, { message: "User has too many votes" });
     }
 
     const hasVoted = await getVotesByQuestionIdAndUserId({

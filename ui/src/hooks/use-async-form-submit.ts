@@ -31,7 +31,7 @@ export const useAsyncFormSubmit = (
         body: formData,
       });
       if (!response.ok) {
-        if (response.status === 403) {
+        if (response.status === 429) {
           setIsOnCooldown(true);
         }
         throw new Error(`${response.status} - ${await response.text()}`);
