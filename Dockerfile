@@ -18,7 +18,7 @@ ENV DENO_DIR=/app/.cache
 
 COPY . .
 
-RUN deno install
+RUN deno install && deno task api:cache
 
 COPY --from=builder /app/ui/dist /app/ui/dist
 

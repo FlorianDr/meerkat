@@ -1,8 +1,7 @@
 {
   "tasks": {
-    "api:patch:mac": "DENO_DIR=./.cache ./scripts/patch-dependencies-mac.sh",
-    "api:patch:linux": "DENO_DIR=./.cache ./scripts/patch-dependencies-linux.sh",
-    "api:dev": "DENO_DIR=./.cache deno run --allow-env --allow-sys --allow-read --allow-net --watch ./api/dev.ts",
+    "api:cache": "deno cache ./api/main.ts",
+    "api:dev": "deno run --allow-env --allow-sys --allow-read --allow-net --watch ./api/dev.ts",
     "api:start": "deno run --allow-read --allow-env --allow-sys --allow-net ./api/main.ts",
     "api:sync": "deno run -A ./scripts/sync.ts",
     "db:migrate": "deno run -A --node-modules-dir npm:drizzle-kit migrate",
@@ -13,7 +12,6 @@
     "fmt": "deno fmt --ignore=.cache,ui/.vite,drizzle",
     "setup": "cp ./scripts/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
   },
-
   "workspace": [
     "ui",
     "api"
