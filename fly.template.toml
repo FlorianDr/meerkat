@@ -11,6 +11,7 @@ primary_region = '$PRIMARY_REGION'
 [env]
 PORT = '8000'
 BASE_URL = '$BASE_URL'
+ZUPASS_ZAPP_NAME = '$ZUPASS_ZAPP_NAME'
 ZUPASS_URL = '$ZUPASS_URL'
 
 [processes]

@@ -61,7 +61,7 @@ app.get("/api/v1/users/me", async (c) => {
       secure: baseUrl.protocol === "https:",
       httpOnly: true,
       maxAge: JWT_EXPIRATION_TIME,
-      sameSite: "Lax",
+      sameSite: "strict",
     });
   } else {
     throw new HTTPException(401, { message: `User not found` });
