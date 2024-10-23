@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Card from "../components/Card/Card.tsx";
 import { useEvent } from "../hooks/use-event.ts";
 import { Header } from "../components/Header/Header.tsx";
@@ -9,7 +9,10 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 
 export function EventCard() {
   const { uid } = useParams();
+  const [searchParams] = useSearchParams();
   const { data: event } = useEvent(uid);
+  const secret = searchParams.get("secret");
+
   return (
     <div className="layout">
       <header className="header">
@@ -29,7 +32,7 @@ export function EventCard() {
         <Header title={`Card: ${event?.title}`} subline={event?.speaker} />
       </header>
       <main className="content">
-        <Card event={event} />
+        <Card event={event} canCollect={!!secret} />
       </main>
     </div>
   );

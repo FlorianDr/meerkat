@@ -1,8 +1,13 @@
-import { Box, Flex, Link } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Event } from "../../hooks/use-event.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
-export const Card = ({ event }: { event: Event | undefined }) => {
+export type CardProps = {
+  event: Event | undefined;
+  canCollect?: boolean;
+};
+
+export const Card = ({ event, canCollect = false }: CardProps) => {
   return (
     <div className="card">
       <div className="collect-card-image">
@@ -13,21 +18,23 @@ export const Card = ({ event }: { event: Event | undefined }) => {
         />
       </div>
       <Flex direction="column" align="center">
-        <PrimaryButton as="a" href={event?.collectURL} target="_blank">
-          Collect
-        </PrimaryButton>
+        {canCollect
+          ? (
+            <PrimaryButton
+              as="a"
+              href={event?.collectURL}
+              target="_blank"
+              disabled={!canCollect}
+            >
+              Collect
+            </PrimaryButton>
+          )
+          : (
+            <p>
+              Find the secret QR in the venue to collect this card.
+            </p>
+          )}
       </Flex>
-      <Box m="19px">
-        <p>
-          Taking notes? Contribute to collective notes on{" "}
-          <Link
-            href="https://docs.fileverse.io/document/4A8cBKBXTf7zhhUWENxD2t"
-            target="_blank"
-          >
-            Fileverse.
-          </Link>
-        </p>
-      </Box>
     </div>
   );
 };

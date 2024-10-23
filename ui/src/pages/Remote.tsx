@@ -4,6 +4,7 @@ import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useEvent } from "../hooks/use-event.ts";
 import { qa } from "../routes.ts";
 import { card } from "../routes.ts";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 export function Remote() {
   const { uid } = useParams();
@@ -41,6 +42,19 @@ export function Remote() {
             py={6}
           >
             Collect
+          </Button>
+          <Button
+            variant="outline"
+            as={Link}
+            width="16rem"
+            fontWeight="bold"
+            py={6}
+            to={"https://docs.fileverse.io/document/4A8cBKBXTf7zhhUWENxD2t"}
+            target="_blank"
+            display="flex"
+            gap="4px"
+          >
+            Contribute <ExternalLinkIcon />
           </Button>
         </Stack>
       </Grid>
