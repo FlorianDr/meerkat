@@ -1,4 +1,3 @@
-import { useRef, useState } from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Flex,
@@ -10,14 +9,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
-import { Event, useEventUpdates } from "../../hooks/use-event.ts";
+import { Event } from "../../hooks/use-event.ts";
 import { useLogin } from "../../hooks/use-login.ts";
-import { useReact } from "../../hooks/use-react.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { User } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
-import { Reaction } from "./Reaction.tsx";
 
 const MAX_QUESTION_LENGTH = 200;
 
@@ -26,6 +23,7 @@ export type FooterProps = {
   isAuthenticated: boolean;
   user: User | undefined;
   refresh: () => void;
+  onReactClick: () => void;
 };
 
 export function Footer({
@@ -33,11 +31,9 @@ export function Footer({
   isAuthenticated,
   user,
   refresh,
+  onReactClick,
 }: FooterProps) {
   const { primaryPurple } = useThemeColors();
-  const { trigger } = useReact(
-    event?.uid ?? "",
-  );
   const { login, isLoading } = useLogin();
   const toast = useToast();
   const { onSubmit } = useAsyncFormSubmit({
@@ -50,46 +46,11 @@ export function Footer({
       refresh();
     },
   });
-  const [reactions, setReactions] = useState<{ id: number }[]>([]);
-  const ref = useRef(0);
-
-  const addReaction = () => {
-    setReactions((prevReactions: { id: number }[]) => [
-      ...prevReactions,
-      { id: ref.current },
-    ]);
-    ref.current += 1;
-  };
-
-  const { data: _update } = useEventUpdates(event?.uid, {
-    onUpdate: (message) => {
-      const parsedMessage = JSON.parse(message);
-      if (
-        parsedMessage.type === "reaction" &&
-        parsedMessage.initiator?.uid !== user?.uid
-      ) {
-        addReaction();
-      }
-    },
-  });
-
-  const onReactClick = () => {
-    addReaction();
-    trigger();
-  };
 
   const action = `/api/v1/events/${event?.uid}/questions`;
 
   return (
     <>
-      {reactions.map((reaction: { id: number }) => (
-        <Reaction
-          key={reaction.id}
-          id={reaction.id}
-          icon={<HeartIcon />}
-          setReactions={setReactions}
-        />
-      ))}
       <div className="overlay-container">
         <form
           className="target question-input"

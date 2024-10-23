@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Flex, Link } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
@@ -11,6 +12,9 @@ import { useEvent, useEventUpdates } from "../hooks/use-event.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { useVotes } from "../hooks/use-votes.ts";
 import { remote } from "../routes.ts";
+import { useReact } from "../hooks/use-react.ts";
+import { Reaction } from "../components/QnA/Reaction.tsx";
+import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 
 export function QnA() {
   const { uid } = useParams();
@@ -22,11 +26,36 @@ export function QnA() {
     refreshVotes();
   };
 
+  const { trigger } = useReact(
+    event?.uid ?? "",
+  );
+
+  const [reactions, setReactions] = useState<{ id: number }[]>([]);
+  const ref = useRef(0);
+
+  const addReaction = () => {
+    setReactions((prevReactions: { id: number }[]) => [
+      ...prevReactions,
+      { id: ref.current },
+    ]);
+    ref.current += 1;
+  };
+
+  const onReactClick = () => {
+    // addReaction();
+    trigger();
+  };
+
   const { data: user, isAuthenticated, isBlocked } = useUser();
+
   const { data: _update } = useEventUpdates(uid, {
-    onUpdate: (message) => {
-      const parsedMessage: { [key: string]: string } = JSON.parse(message);
-      if (parsedMessage.type !== "reaction") {
+    onUpdate: (message: string) => {
+      const parsedMessage = JSON.parse(message);
+      if (
+        parsedMessage.type === "reaction"
+      ) {
+        addReaction();
+      } else {
         refresh();
       }
     },
@@ -66,10 +95,19 @@ export function QnA() {
           />
         </main>
         <footer className="footer">
+          {reactions.map((reaction: { id: number }) => (
+            <Reaction
+              key={reaction.id}
+              id={reaction.id}
+              icon={<HeartIcon />}
+              setReactions={setReactions}
+            />
+          ))}
           <Footer
             event={event}
             user={user}
             isAuthenticated={isAuthenticated}
+            onReactClick={onReactClick}
             refresh={refresh}
           />
         </footer>

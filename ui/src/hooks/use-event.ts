@@ -58,7 +58,7 @@ export const useEventUpdates = (
   url.protocol = url.protocol.replace("http", "ws");
 
   const { data, error } = useSWRSubscription(
-    url.toString(),
+    uid ? url.toString() : undefined,
     (key, { next }) => {
       const socket = new SturdyWebsocket(key);
       socket.onMessage((message) => {
