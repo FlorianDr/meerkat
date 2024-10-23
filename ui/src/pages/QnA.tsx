@@ -81,7 +81,7 @@ export function QnA() {
             <Reaction
               key={reaction.id}
               id={reaction.id}
-              icon={reaction.id % 5 === 0 ? <>🐸</> : <HeartIcon />}
+              icon={<HeartIcon />}
               setReactions={setReactions}
             />
           ))}
