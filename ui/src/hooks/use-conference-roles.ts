@@ -11,11 +11,10 @@ export type ConferenceRole = {
 
 export function useConferenceRoles() {
   const { isAuthenticated } = useUser();
-
   const { data, error, isLoading, mutate } = useSWR<
     { data: ConferenceRole[] },
     HTTPError
-  >(`/api/v1/users/me/roles`, isAuthenticated ? fetcher : null);
+  >(isAuthenticated ? `/api/v1/users/me/roles` : undefined, fetcher);
 
   return { data: data?.data, error, isLoading, mutate };
 }

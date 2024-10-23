@@ -16,8 +16,8 @@ export function useVotes() {
     { data: Vote[] },
     HTTPError
   >(
-    `/api/v1/users/me/votes`,
-    isAuthenticated ? fetcher : null,
+    isAuthenticated ? `/api/v1/users/me/votes` : undefined,
+    fetcher,
   );
 
   return { data: data?.data, error, isLoading, mutate };
