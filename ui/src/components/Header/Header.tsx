@@ -8,7 +8,7 @@ interface HeaderProps {
 export function Header({ title, subline }: HeaderProps) {
   return (
     <div className="title-section">
-      <Heading as="h1" color="white" size="md" mb={1.5}>
+      <Heading as="h1" className="two-lines" color="white" size="md" mb={1.5}>
         {title ?? "Loading..."}
       </Heading>
       <Flex justifyContent="space-between">
