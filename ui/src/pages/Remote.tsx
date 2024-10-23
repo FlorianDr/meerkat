@@ -43,19 +43,12 @@ export function Remote() {
           >
             Collect
           </Button>
-          <Button
-            variant="outline"
-            as={Link}
-            width="16rem"
-            fontWeight="bold"
-            py={6}
+          <Link
             to={"https://docs.fileverse.io/document/4A8cBKBXTf7zhhUWENxD2t"}
             target="_blank"
-            display="flex"
-            gap="4px"
           >
-            Contribute <ExternalLinkIcon />
-          </Button>
+            Contribute on Fileverse <ExternalLinkIcon />
+          </Link>
         </Stack>
       </Grid>
     </Stack>
