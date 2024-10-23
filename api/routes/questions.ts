@@ -80,7 +80,14 @@ app.post(
 
     broadcast(
       event.uid,
-      { op: "update", type: "question", uid: question.uid },
+      {
+        op: "update",
+        type: "question",
+        uid: question.uid,
+        initiator: {
+          uid: user.uid,
+        },
+      },
     );
 
     const origin = c.req.header("origin") ?? env.base;
@@ -135,7 +142,14 @@ app.post(
 
     broadcast(
       event.uid,
-      { op: "update", type: "question", uid: question.uid },
+      {
+        op: "update",
+        type: "question",
+        uid: question.uid,
+        initiator: {
+          uid: user.uid,
+        },
+      },
     );
 
     const origin = c.req.header("origin") ?? env.base;

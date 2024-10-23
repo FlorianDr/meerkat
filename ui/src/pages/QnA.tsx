@@ -1,14 +1,11 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Flex, Link } from "@chakra-ui/react";
-import { useRef, useState } from "react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
 import { Header } from "../components/Header/Header.tsx";
 import { Modal } from "../components/Modal/Modal.tsx";
 import { CooldownModal } from "../components/QnA/CooldownModal.tsx";
 import { Footer } from "../components/QnA/Footer.tsx";
-import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
-import { Reaction } from "../components/QnA/Reaction.tsx";
 import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
 import { useEvent, useEventUpdates } from "../hooks/use-event.ts";
 import { useUser } from "../hooks/use-user.ts";
@@ -26,18 +23,10 @@ export function QnA() {
   };
 
   const { data: user, isAuthenticated, isBlocked } = useUser();
-  const [reactions, setReactions] = useState<{ id: number }[]>([]);
-  const ref = useRef(0);
   const { data: _update } = useEventUpdates(uid, {
     onUpdate: (message) => {
       const parsedMessage: { [key: string]: string } = JSON.parse(message);
-      if (parsedMessage.type === "reaction") {
-        setReactions((prevReactions: { id: number }[]) => [
-          ...prevReactions,
-          { id: ref.current },
-        ]);
-        ref.current += 1;
-      } else {
+      if (parsedMessage.type !== "reaction") {
         refresh();
       }
     },
@@ -77,14 +66,6 @@ export function QnA() {
           />
         </main>
         <footer className="footer">
-          {reactions.map((reaction: { id: number }) => (
-            <Reaction
-              key={reaction.id}
-              id={reaction.id}
-              icon={<HeartIcon />}
-              setReactions={setReactions}
-            />
-          ))}
           <Footer
             event={event}
             user={user}

@@ -247,7 +247,14 @@ app.post(
       userId: user.id,
     });
 
-    broadcast(uid, { op: "insert", type: "question", uid: question.uid });
+    broadcast(uid, {
+      op: "insert",
+      type: "question",
+      uid: question.uid,
+      initiator: {
+        uid: user.uid,
+      },
+    });
 
     return c.json({
       data: {
@@ -291,6 +298,9 @@ app.post(
       op: "insert",
       type: "reaction",
       createdAt: reaction.createdAt,
+      initiator: {
+        uid: user.uid,
+      },
     });
 
     return c.json({

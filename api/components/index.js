@@ -124,7 +124,6 @@ socket.onMessage((data) => {
   }
 });
 
-
 // Extra safety measure
 setTimeout(() => {
   socket.close();
