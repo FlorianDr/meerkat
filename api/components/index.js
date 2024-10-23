@@ -123,3 +123,10 @@ socket.onMessage((data) => {
     parent.appendChild(reactionElement);
   }
 });
+
+
+// Extra safety measure
+setTimeout(() => {
+  socket.close();
+  globalThis.location.reload();
+}, 60_000);
