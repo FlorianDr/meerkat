@@ -28,6 +28,7 @@ body {
 
 .content {
   position: relative;
+  max-width: 100dvw;
   overflow-y: auto;
   grid-row: 2;
   grid-column: 2;
@@ -83,6 +84,7 @@ ul {
   grid-template-rows: 1fr max-content;
   align-items: center;
   gap: 0.5rem;
+  word-break: break-all;
 }
 
 .bubble.answered {
