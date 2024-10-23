@@ -60,12 +60,13 @@ export const useEventUpdates = (
   const { data, error } = useSWRSubscription(
     url.toString(),
     (key, { next }) => {
-      const socket = new WebSocket(key);
-      socket.addEventListener("message", (event) => {
-        onUpdate(event.data);
-        next(null, event.data);
+      const socket = new SturdyWebsocket(key);
+      socket.onMessage((message) => {
+        onUpdate(message);
+        next(null, message);
       });
-      socket.addEventListener("error", (event) => next((event as any).error));
+      socket.onError((error) => next(error));
+      socket.connect();
       return () => socket.close();
     },
   );
@@ -75,3 +76,76 @@ export const useEventUpdates = (
     error,
   };
 };
+
+export class SturdyWebsocket {
+  socket: WebSocket | undefined;
+  heartbeatInterval: number | undefined;
+  reconnectOnClose = true;
+  onMessageCallbacks: ((message: string) => void)[] = [];
+  onErrorCallbacks: ((error: any) => void)[] = [];
+  awaitingPong = false;
+  static PING_INTERVAL = 10_000;
+
+  constructor(private url: string) {}
+
+  connect() {
+    this.socket = new WebSocket(this.url);
+    this.socket.addEventListener("open", this._onOpen.bind(this));
+    this.socket.addEventListener("close", this._onClose.bind(this));
+    this.socket.addEventListener("error", this._onError.bind(this));
+    this.socket.addEventListener("message", this._onMessage.bind(this));
+    this.reconnectOnClose = true;
+  }
+
+  close() {
+    this.socket?.close();
+    this.reconnectOnClose = false;
+    this._onClose();
+  }
+
+  onMessage(handler: (mesage: string) => void) {
+    this.onMessageCallbacks.push(handler);
+  }
+
+  onError(handler: (error: any) => void) {
+    this.onErrorCallbacks.push(handler);
+  }
+
+  private _onOpen() {
+    this.heartbeatInterval = setInterval(() => {
+      if (this.awaitingPong) {
+        this.close();
+        this.connect();
+        return;
+      }
+      this.socket?.send("ping");
+      this.awaitingPong = true;
+    }, SturdyWebsocket.PING_INTERVAL);
+  }
+
+  private _onError(e: any) {
+    this.onErrorCallbacks.forEach((cb) => cb(e));
+  }
+
+  private _onMessage(event: MessageEvent<any>) {
+    if (event.data === "pong") {
+      this.awaitingPong = false;
+      return;
+    }
+
+    if (event.data === "ping") {
+      this.socket?.send("pong");
+      return;
+    }
+
+    this.onMessageCallbacks.forEach((cb) => cb(event.data));
+  }
+
+  private _onClose() {
+    clearInterval(this.heartbeatInterval);
+
+    if (this.reconnectOnClose) {
+      this.connect();
+    }
+  }
+}

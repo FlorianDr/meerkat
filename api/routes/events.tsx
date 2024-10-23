@@ -140,17 +140,44 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   });
 });
 
+const PING_INTERVAL = 15_000;
+
 app.get(
   "/api/v1/events/:uid/live",
   eventMiddleware,
   upgradeWebSocket((c) => {
     const event = c.get("event");
     const uid = event.uid;
+    let awaitPong = false;
     return {
-      onMessage: (event) => {
+      onMessage: (event, ws) => {
+        if (event.data === "ping") {
+          ws.send("pong");
+          return;
+        }
+        if (event.data === "pong") {
+          awaitPong = false;
+          return;
+        }
         console.log("Received unexpected message from client", event.data);
       },
       onOpen: (_event, ws) => {
+        const intervalId = setInterval(() => {
+          if (ws.readyState !== 1) {
+            clearInterval(intervalId);
+            return;
+          }
+
+          if (awaitPong) {
+            awaitPong = false;
+            ws.close();
+            leave(uid, ws);
+            return;
+          }
+
+          ws.send("ping");
+          awaitPong = true;
+        }, PING_INTERVAL);
         join(uid, ws);
       },
       onClose: (_event, ws) => {

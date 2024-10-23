@@ -1,10 +1,3 @@
-const url = new URL(globalThis.location.href);
-
-url.protocol = url.protocol.replace("http", "ws");
-url.pathname = `/api/v1${url.pathname}/live`;
-
-const socket = new WebSocket(url);
-
 const refreshModels = {
   question: "question",
   reaction: "reaction",
@@ -34,8 +27,93 @@ function createReactionElement(icon) {
   return reactionElement;
 }
 
-socket.onmessage = (event) => {
-  const parsedData = JSON.parse(event.data);
+class SturdyWebsocket {
+  socket;
+  heartbeatInterval;
+  reconnectOnClose = true;
+  onMessageCallbacks = [];
+  onErrorCallbacks = [];
+  awaitingPong = false;
+  static PING_INTERVAL = 10_000;
+
+  constructor(url) {
+    this.url = url;
+  }
+
+  connect() {
+    this.socket = new WebSocket(this.url);
+    this.socket.addEventListener("open", this._onOpen.bind(this));
+    this.socket.addEventListener("close", this._onClose.bind(this));
+    this.socket.addEventListener("error", this._onError.bind(this));
+    this.socket.addEventListener("message", this._onMessage.bind(this));
+    this.reconnectOnClose = true;
+  }
+
+  close() {
+    this.socket?.close();
+    this.reconnectOnClose = false;
+    this._onClose();
+  }
+
+  onMessage(handler) {
+    this.onMessageCallbacks.push(handler);
+  }
+
+  onError(handler) {
+    this.onErrorCallbacks.push(handler);
+  }
+
+  _onOpen() {
+    this.heartbeatInterval = setInterval(() => {
+      if (this.awaitingPong) {
+        this.close();
+        this.connect();
+        return;
+      }
+      this.socket?.send("ping");
+      this.awaitingPong = true;
+    }, SturdyWebsocket.PING_INTERVAL);
+  }
+
+  _onError(e) {
+    this.onErrorCallbacks.forEach((cb) => cb(e));
+  }
+
+  _onMessage(event) {
+    if (event.data === "pong") {
+      this.awaitingPong = false;
+      return;
+    }
+
+    if (event.data === "ping") {
+      this.socket?.send("pong");
+      return;
+    }
+
+    this.onMessageCallbacks.forEach((cb) => cb(event.data));
+  }
+
+  _onClose() {
+    clearInterval(this.heartbeatInterval);
+
+    if (this.reconnectOnClose) {
+      this.connect();
+    }
+  }
+}
+
+const url = new URL(globalThis.location.href);
+const eventId = url.pathname.split("/").pop();
+
+url.protocol = url.protocol.replace("http", "ws");
+url.pathname = `/api/v1/events/${eventId}/live`;
+
+const socket = new SturdyWebsocket(url);
+
+socket.connect();
+
+socket.onMessage((data) => {
+  const parsedData = JSON.parse(data);
   if (parsedData.type === refreshModels.question) {
     console.info("Reloading page...");
     globalThis.location.reload();
@@ -44,4 +122,4 @@ socket.onmessage = (event) => {
     const parent = document.querySelector(".heart-icon-container");
     parent.appendChild(reactionElement);
   }
-};
+});
