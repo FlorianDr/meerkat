@@ -3,7 +3,7 @@ import { User } from "../models/user.ts";
 
 export const SUB_TYPE_ID = "user" as const;
 
-export const JWT_EXPIRATION_TIME = 60 * 60; // 1 hour
+export const JWT_EXPIRATION_TIME = 6 * 60 * 60; // 6 hour
 
 /**
  * Constructs a JWT payload for the given user.
