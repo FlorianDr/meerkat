@@ -85,6 +85,7 @@ export class SturdyWebsocket {
   onErrorCallbacks: ((error: any) => void)[] = [];
   awaitingPong = false;
   static PING_INTERVAL = 10_000;
+  retries = 0;
 
   constructor(private url: string) {}
 
@@ -144,8 +145,9 @@ export class SturdyWebsocket {
   private _onClose() {
     clearInterval(this.heartbeatInterval);
 
-    if (this.reconnectOnClose) {
+    if (this.reconnectOnClose && this.retries < 10) {
       this.connect();
+      this.retries++;
     }
   }
 }

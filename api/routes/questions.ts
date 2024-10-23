@@ -89,10 +89,9 @@ app.post(
         },
       },
     );
+    const { id: _id, userId: _userId, ...rest } = question;
 
-    const origin = c.req.header("origin") ?? env.base;
-    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
-    return c.redirect(redirect.toString());
+    return c.json({ data: rest });
   },
 );
 
@@ -138,7 +137,11 @@ app.post(
       throw new HTTPException(403, { message: `User is not an organizer` });
     }
 
-    await markAsAnswered(question.id);
+    const result = await markAsAnswered(question.id);
+
+    if (!result) {
+      throw new HTTPException(500, { message: `Failed to mark as answered` });
+    }
 
     broadcast(
       event.uid,
@@ -151,10 +154,9 @@ app.post(
         },
       },
     );
+    const { id: _id, userId: _userId, ...rest } = result;
 
-    const origin = c.req.header("origin") ?? env.base;
-    const redirect = new URL(`/events/${event?.uid}/qa`, origin);
-    return c.redirect(redirect.toString());
+    return c.json({ data: rest });
   },
 );
 

@@ -74,11 +74,13 @@ export async function getQuestionByUID(uid: string) {
 export async function markAsAnswered(
   id: number,
 ) {
-  await db.update(questions).set({
+  const results = await db.update(questions).set({
     answeredAt: new Date(),
   }).where(
     eq(questions.id, id),
-  ).execute();
+  ).returning().execute();
+
+  return results.length === 1 ? results[0] : null;
 }
 
 export type Question = typeof questions.$inferSelect;
