@@ -17,6 +17,7 @@ app.route("/", events);
 app.route("/", questions);
 
 app.get("/e/:uid/*", serveStatic({ path: "./ui/dist/index.html" }));
+app.get("/login", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/assets/*", serveStatic({ root: "./ui/dist/" }));
 
 app.get("/index.css", serveStatic({ path: "./api/components/index.css" }));

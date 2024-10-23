@@ -1,4 +1,5 @@
 import { EventCard } from "./pages/EventCard.tsx";
+import { Login } from "./pages/Login.tsx";
 import { QnA } from "./pages/QnA.tsx";
 import { Remote } from "./pages/Remote.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/e/:uid/card",
     element: <EventCard />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
