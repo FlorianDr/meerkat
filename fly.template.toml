@@ -32,6 +32,6 @@ timeout = "5s"
 path = "/api/v1/conferences"
 
 [[vm]]
-memory = '1gb'
-cpu_kind = 'shared'
+memory = '2gb'
+cpu_kind = 'performance'
 cpus = 1
