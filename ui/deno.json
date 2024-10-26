@@ -6,6 +6,7 @@
     "@emotion/styled": "npm:@emotion/styled@^11.13.0",
     "@parcnet-js/app-connector": "npm:@parcnet-js/app-connector@^1.1.7",
     "@parcnet-js/ticket-spec": "npm:@parcnet-js/ticket-spec@^1.1.5",
+    "@pcd/gpc": "npm:@pcd/gpc@^0.3.0",
     "framer-motion": "npm:framer-motion@^11.3.28",
     "posthog-js": "npm:posthog-js@^1.176.0",
     "react": "npm:react@^18.3.1",

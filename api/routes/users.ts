@@ -22,6 +22,15 @@ import { getFeatures } from "../models/features.ts";
 import { createUserFromAccount } from "../models/user.ts";
 import { markUserAsBlocked } from "../models/user.ts";
 import { getConferenceRoles } from "../models/roles.ts";
+import {
+  boundConfigFromJSON,
+  gpcVerify,
+  proofConfigFromJSON,
+  revealedClaimsFromJSON,
+} from "@pcd/gpc";
+import { fromFileUrl } from "@std/path/from-file-url";
+import { join } from "@std/path/join";
+import { dirname } from "@std/path/dirname";
 
 const app = new Hono();
 
@@ -133,6 +142,66 @@ app.post(
   zValidator("json", usersLoginScheme),
   async (c) => {
     const { publicKey } = c.req.valid("json");
+
+    let user = await getUserByProvider("zupass", publicKey);
+
+    if (!user) {
+      user = await createUserFromAccount({
+        provider: "zupass",
+        id: publicKey,
+      });
+    }
+
+    const origin = c.req.header("origin") ?? env.base;
+    const payload = constructJWTPayload(user);
+    const token = await sign(payload, env.secret);
+
+    const baseUrl = new URL(origin);
+    setCookie(c, "jwt", token, {
+      path: "/",
+      domain: baseUrl.hostname,
+      secure: baseUrl.protocol === "https:",
+      httpOnly: true,
+      maxAge: JWT_EXPIRATION_TIME,
+      sameSite: "Lax",
+    });
+
+    return c.json({ data: { user } });
+  },
+);
+
+// TODO: Use correct ticket proof scheme
+const proofScheme = z.any();
+
+const currentDir = dirname(fromFileUrl(import.meta.url));
+const artifactsPath = join(
+  currentDir,
+  "../../.cache/npm/registry.npmjs.org/@pcd/proto-pod-gpc-artifacts/0.11.0",
+);
+
+app.post(
+  "/api/v1/users/prove",
+  zValidator("json", proofScheme),
+  async (c) => {
+    const ticketProof = c.req.valid("json");
+
+    const proofConfig = proofConfigFromJSON(ticketProof.proof);
+    const boundConfig = boundConfigFromJSON(ticketProof.boundConfig);
+    const revealedClaims = revealedClaimsFromJSON(ticketProof.revealedClaims);
+
+    const verified = await gpcVerify(
+      proofConfig,
+      boundConfig,
+      revealedClaims,
+      artifactsPath,
+    );
+
+    if (!verified) {
+      throw new HTTPException(401, { message: `Proof not valid` });
+    }
+
+    // TODO: Get public key from revealed claims
+    const publicKey = "";
 
     let user = await getUserByProvider("zupass", publicKey);
 
