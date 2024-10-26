@@ -9,8 +9,16 @@ import {
 import { ZAPIProvider } from "./zapi/context.tsx";
 import { Zapp } from "@parcnet-js/app-connector";
 import { UserProvider } from "./context/user.tsx";
+import { posthog } from "posthog-js";
 
 const config = await fetch("/api/v1/config").then((res) => res.json());
+
+if (config.posthogToken) {
+  posthog.init(config.posthogToken, {
+    api_host: "https://eu.i.posthog.com",
+    person_profiles: "identified_only",
+  });
+}
 
 const theme = extendTheme(
   withDefaultColorScheme({ colorScheme: "purple" }),
@@ -36,16 +44,15 @@ const theme = extendTheme(
 const zapp: Zapp = {
   name: config.zappName,
   permissions: {
+    REQUEST_PROOF: { collections: ["Devcon SEA"] },
     READ_PUBLIC_IDENTIFIERS: {},
   },
 };
 
-const zupassUrl = config.zupassUrl;
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <ZAPIProvider zapp={zapp} zupassUrl={zupassUrl}>
+      <ZAPIProvider zapp={zapp} zupassUrl={config.zupassUrl}>
         <UserProvider>
           <App />
         </UserProvider>

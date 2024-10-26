@@ -26,6 +26,7 @@ if (!secret) {
 const zupassUrl = Deno.env.get("ZUPASS_URL") ?? "https://zupass.org";
 const zappName = Deno.env.get("ZUPASS_ZAPP_NAME") ?? "meerkat-local";
 const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
+const posthogToken = Deno.env.get("POSTHOG_TOKEN");
 
 console.info(`Env - zupassUrl: ${zupassUrl}, base: ${base}`);
 
@@ -37,4 +38,5 @@ export default {
   privateKey,
   zupassUrl,
   zappName,
+  posthogToken,
 };

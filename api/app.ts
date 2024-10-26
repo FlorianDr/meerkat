@@ -26,6 +26,7 @@ app.get("/api/v1/config", (c) => {
   return c.json({
     zupassUrl: env.zupassUrl,
     zappName: env.zappName,
+    posthogToken: env.posthogToken,
   });
 });
 
