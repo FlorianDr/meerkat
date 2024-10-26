@@ -9,3 +9,5 @@ node_modules
 .secrets
 dist
 fly.toml
+fly.dev.toml
+fly.prod.toml
