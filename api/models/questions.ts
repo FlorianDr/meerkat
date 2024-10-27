@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, sql } from "drizzle-orm";
-import { typeid } from "typeid-js";
+import { uuidv7 } from "uuidv7";
 import { questions, users, votes } from "../schema.ts";
 import db from "../db.ts";
 
@@ -80,7 +80,7 @@ export async function createQuestion(
 ) {
   const result = await db.insert(questions).values({
     ...question,
-    uid: typeid().getSuffix(),
+    uid: uuidv7(),
   }).returning().execute();
 
   if (result.length !== 1) {

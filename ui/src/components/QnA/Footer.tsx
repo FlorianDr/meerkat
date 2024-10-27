@@ -82,7 +82,6 @@ export function Footer({
               border="none"
               borderRadius="md"
               paddingTop="12px"
-              _placeholder={{ color: "white" }}
               maxLength={MAX_QUESTION_LENGTH}
             />
             <IconButton

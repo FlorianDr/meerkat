@@ -1,7 +1,4 @@
-import { typeid } from "typeid-js";
 import { User } from "../models/user.ts";
-
-export const SUB_TYPE_ID = "user" as const;
 
 export const JWT_EXPIRATION_TIME = 6 * 60 * 60; // 6 hour
 
@@ -23,7 +20,7 @@ export function constructJWTPayload(
 ) {
   const nowInSeconds = Math.floor(Date.now() / 1000);
   return {
-    sub: typeid(SUB_TYPE_ID, user.uid).toString(),
+    sub: user.uid,
     iat: nowInSeconds,
     role: "user",
     exp: nowInSeconds + JWT_EXPIRATION_TIME,

@@ -4,7 +4,6 @@ import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
 import { zValidator } from "@hono/zod-validator";
-import { fromString, getSuffix } from "typeid-js";
 import zod from "zod";
 import Document from "../components/Document.tsx";
 import Layout from "../components/Layout.tsx";
@@ -30,7 +29,6 @@ import {
   getUserPostCountPerTalk,
 } from "../models/user.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
-import { SUB_TYPE_ID } from "../utils/jwt.ts";
 import { config } from "../models/config.ts";
 
 const app = new Hono();
@@ -159,8 +157,7 @@ app.post(
     const event = c.get("event");
 
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
-    const user = await getUserByUID(getSuffix(userUID));
+    const user = await getUserByUID(payload.sub);
 
     if (!user) {
       throw new HTTPException(401, { message: "User not found" });
@@ -211,9 +208,8 @@ app.post(
   eventMiddleware,
   async (c) => {
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
     const uid = c.req.valid("json").uid;
-    const user = await getUserByUID(getSuffix(userUID));
+    const user = await getUserByUID(payload.sub);
 
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });

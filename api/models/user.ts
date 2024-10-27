@@ -1,5 +1,5 @@
 import { and, eq, gt, sql } from "drizzle-orm";
-import { typeid } from "typeid-js";
+import { uuidv7 } from "uuidv7";
 import db from "../db.ts";
 import { accounts, questions, users } from "../schema.ts";
 import { generateUsername } from "../usernames.ts";
@@ -14,9 +14,9 @@ export async function getUserByUID(uid: string) {
   return result.length === 1 ? result[0] : null;
 }
 
-export async function createUser() {
+export async function createUser(uid?: string | undefined) {
   const result = await db.insert(users).values({
-    uid: typeid().getSuffix(),
+    uid: uid ?? uuidv7(),
     name: generateUsername(),
   }).returning().execute();
 
@@ -28,7 +28,7 @@ export async function createUserFromAccount(
 ) {
   const result = await db.transaction(async (db) => {
     const result = await db.insert(users).values({
-      uid: typeid().getSuffix(),
+      uid: uuidv7(),
       name: generateUsername(),
     }).returning().execute();
 

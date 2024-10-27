@@ -1,7 +1,6 @@
 import { Hono } from "@hono/hono";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
-import { fromString, getSuffix } from "typeid-js";
 import { MAX_VOTES_PER_EVENT } from "../constants.ts";
 import env from "../env.ts";
 import { getEventById } from "../models/events.ts";
@@ -15,7 +14,6 @@ import {
   getVotesByQuestionIdAndUserId,
 } from "../models/votes.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
-import { SUB_TYPE_ID } from "../utils/jwt.ts";
 
 const app = new Hono();
 
@@ -26,15 +24,16 @@ app.post(
     const uid = c.req.param("uid");
 
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
 
     const [user, question] = await Promise.all([
-      getUserByUID(getSuffix(userUID)),
+      getUserByUID(payload.sub),
       getQuestionByUID(uid),
     ]);
 
     if (!user) {
-      throw new HTTPException(401, { message: `User ${userUID} not found` });
+      throw new HTTPException(401, {
+        message: `User ${payload.sub} not found`,
+      });
     }
 
     if (user.blocked) {
@@ -88,17 +87,17 @@ app.post(
   jwt({ secret: env.secret, cookie: "jwt" }),
   async (c) => {
     const uid = c.req.param("uid");
-
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
 
     const [user, question] = await Promise.all([
-      getUserByUID(getSuffix(userUID)),
+      getUserByUID(payload.sub),
       getQuestionByUID(uid),
     ]);
 
     if (!user) {
-      throw new HTTPException(401, { message: `User ${userUID} not found` });
+      throw new HTTPException(401, {
+        message: `User ${payload.sub} not found`,
+      });
     }
 
     if (!question) {

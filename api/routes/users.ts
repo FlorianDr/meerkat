@@ -2,12 +2,7 @@ import { z } from "zod";
 import { Hono } from "@hono/hono";
 import { jwt, sign, verify } from "@hono/hono/jwt";
 import env from "../env.ts";
-import { fromString, getSuffix } from "typeid-js";
-import {
-  constructJWTPayload,
-  JWT_EXPIRATION_TIME,
-  SUB_TYPE_ID,
-} from "../utils/jwt.ts";
+import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import {
   createUser,
   getUserByProvider,
@@ -44,8 +39,7 @@ app.get("/api/v1/users/me", async (c) => {
   let user: User;
   if (jwt) {
     const { sub } = await verify(jwt, env.secret);
-    const userUID = fromString(sub as string, SUB_TYPE_ID);
-    const maybeUser = await getUserByUID(getSuffix(userUID));
+    const maybeUser = await getUserByUID(sub as string);
 
     if (!maybeUser) {
       throw new HTTPException(401, { message: `User not found` });
@@ -57,8 +51,17 @@ app.get("/api/v1/users/me", async (c) => {
 
     user = maybeUser;
   } else if (supportsAnonymousLogin) {
-    // This is a temporary solution to allow users to login without a JWT
-    user = await createUser();
+    const deviceId = getCookie(c, "deviceId");
+    const maybeUser: User | null = deviceId
+      ? await getUserByUID(deviceId)
+      : null;
+
+    if (maybeUser) {
+      user = maybeUser;
+    } else {
+      user = await createUser();
+    }
+
     const origin = c.req.header("origin") ?? env.base;
     const payload = constructJWTPayload(user);
     const token = await sign(payload, env.secret);
@@ -91,8 +94,7 @@ app.get(
   jwt({ secret: env.secret, cookie: "jwt" }),
   async (c) => {
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
-    const user = await getUserByUID(getSuffix(userUID));
+    const user = await getUserByUID(payload.sub);
 
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });
@@ -116,8 +118,7 @@ app.get(
   jwt({ secret: env.secret, cookie: "jwt" }),
   async (c) => {
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
-    const user = await getUserByUID(getSuffix(userUID));
+    const user = await getUserByUID(payload.sub);
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });
     }
@@ -237,13 +238,14 @@ app.post(
     const uid = c.req.param("uid");
 
     const payload = c.get("jwtPayload");
-    const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
 
-    const user = await getUserByUID(getSuffix(userUID));
+    const user = await getUserByUID(payload.sub);
     const blockedUser = await getUserByUID(uid);
 
     if (!user) {
-      throw new HTTPException(404, { message: `User ${userUID} not found` });
+      throw new HTTPException(404, {
+        message: `User ${payload.sub} not found`,
+      });
     }
 
     const roles = await getConferenceRoles(user.id);
