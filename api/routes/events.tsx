@@ -109,25 +109,12 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
     });
   }
 
-  // Strips out internal fields
-  const apiQuestions = questions.map(
-    ({ userId: _userId, user, ...rest }) => ({
-      ...rest,
-      user: user
-        ? {
-          uid: user?.uid,
-          name: user?.name ?? undefined,
-        }
-        : undefined,
-    }),
-  );
-
   const votes = questions.reduce((acc, question) => acc + question.votes, 0);
 
   return c.json({
     data: {
       ...event,
-      questions: apiQuestions,
+      questions: questions.map(toApiQuestion),
       votes,
       participants,
       conference,
@@ -135,12 +122,26 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   });
 });
 
+const toApiQuestion = (
+  { userId: _userId, user, ...rest }: Awaited<
+    ReturnType<typeof getQuestions>
+  >[number],
+) => ({
+  ...rest,
+  user: user
+    ? {
+      uid: user?.uid,
+      name: user?.name ?? undefined,
+    }
+    : undefined,
+});
+
 app.get("/api/v1/events/:uid/questions", eventMiddleware, async (c) => {
   const event = c.get("event");
-  const questions = await getQuestions(event.id);
+  const questions = await getQuestions(event.id, "newest");
 
   return c.json({
-    data: questions,
+    data: questions.map(toApiQuestion),
   });
 });
 

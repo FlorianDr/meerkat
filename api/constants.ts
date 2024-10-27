@@ -1,5 +1,5 @@
 export const MAX_QUESTIONS_PER_INTERVAL = 3;
-export const MAX_QUESTIONS_PER_EVENT = 5;
+export const MAX_QUESTIONS_PER_EVENT = 10;
 export const MAX_CHARS_PER_QUESTION = 200;
 export const MAX_REACTIONS_PER_INTERVAL = 50;
 export const MAX_VOTES_PER_EVENT = 3;
