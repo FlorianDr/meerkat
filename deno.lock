@@ -18,6 +18,7 @@
     "npm:@pcd/proto-pod-gpc-artifacts@0.11": "0.11.0",
     "npm:@supabase/supabase-js@^2.45.6": "2.45.6",
     "npm:@types/node@*": "18.16.19",
+    "npm:@uidotdev/usehooks@^2.4.1": "2.4.1_react@18.3.1_react-dom@18.3.1__react@18.3.1",
     "npm:@vitejs/plugin-react@^4.2.1": "4.3.1_vite@5.4.1__@types+node@18.16.19_@babel+core@7.25.2_@types+node@18.16.19",
     "npm:drizzle-kit@*": "0.24.0_esbuild@0.19.12",
     "npm:drizzle-kit@0.24": "0.24.0_esbuild@0.19.12",
@@ -2312,6 +2313,13 @@
         "@types/node@22.5.4"
       ]
     },
+    "@uidotdev/usehooks@2.4.1_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-1I+RwWyS+kdv3Mv0Vmc+p0dPYH0DTRAo04HLyXReYBL9AeseDWUJyi4THuksBJcu9F0Pih69Ak150VDnqbVnXg==",
+      "dependencies": [
+        "react",
+        "react-dom"
+      ]
+    },
     "@vitejs/plugin-react@4.3.1_vite@5.4.1__@types+node@18.16.19_@babel+core@7.25.2_@types+node@18.16.19": {
       "integrity": "sha512-m/V2syj5CuVnaxcUJOQRel/Wr31FFXRFlnOoq1TVtkCxsY5veGMTEmpWHndrhB2U8ScHtCQB1e+4hWYExQc6Lg==",
       "dependencies": [
@@ -3673,6 +3681,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/dotenv@~0.225.2",
+      "npm:@uidotdev/usehooks@^2.4.1",
       "npm:drizzle-kit@0.24",
       "npm:postgres@^3.4.4"
     ],

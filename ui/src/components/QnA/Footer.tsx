@@ -1,5 +1,6 @@
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Flex, Icon, IconButton, Textarea, useToast } from "@chakra-ui/react";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { useLogin } from "../../hooks/use-login.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { User } from "../../types.ts";
@@ -31,6 +32,10 @@ export function Footer({
   const { login, isLoading } = useLogin();
   const toast = useToast();
   const [question, setQuestion] = useState("");
+  const [isTutorialHeartFinished, setIsTutorialHeartFinished] = useLocalStorage(
+    "tutorial-heart",
+    false,
+  );
   const { trigger } = useAskQuestion(event, {
     onSuccess: () => {
       toast({
@@ -97,10 +102,21 @@ export function Footer({
               ? (
                 <IconButton
                   isDisabled={!isAuthenticated}
-                  onClick={onReactClick}
-                  variant="outline"
+                  onClick={() => {
+                    onReactClick();
+                    setIsTutorialHeartFinished(true);
+                  }}
+                  variant="ghost"
                   size="lg"
-                  icon={<HeartIcon />}
+                  icon={
+                    <div
+                      className={!isTutorialHeartFinished
+                        ? "pulsate"
+                        : undefined}
+                    >
+                      <HeartIcon />
+                    </div>
+                  }
                   borderColor="purple.500"
                   aria-label="React to event"
                   type="button"
