@@ -31,7 +31,6 @@ import {
 } from "../models/user.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { SUB_TYPE_ID } from "../utils/jwt.ts";
-import { getZupassAddPCDURL } from "../zupass.ts";
 import { config } from "../models/config.ts";
 
 const app = new Hono();
@@ -110,14 +109,6 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
     });
   }
 
-  const origin = c.req.header("origin") ?? env.base;
-
-  const collectURL = await getZupassAddPCDURL({
-    conference,
-    event,
-    origin,
-  });
-
   // Strips out internal fields
   const apiQuestions = questions.map(
     ({ userId: _userId, user, ...rest }) => ({
@@ -137,11 +128,19 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
     data: {
       ...event,
       questions: apiQuestions,
-      collectURL,
       votes,
       participants,
       conference,
     },
+  });
+});
+
+app.get("/api/v1/events/:uid/questions", eventMiddleware, async (c) => {
+  const event = c.get("event");
+  const questions = await getQuestions(event.id);
+
+  return c.json({
+    data: questions,
   });
 });
 

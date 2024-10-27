@@ -5,7 +5,7 @@ import { Event } from "../types.ts";
 
 export const useEvent = (uid: string | undefined) => {
   const { data, error, isLoading, mutate } = useSWR<{ data: Event }, HTTPError>(
-    `/api/v1/events/${uid}`,
+    uid ? `/api/v1/events/${uid}` : undefined,
     fetcher,
   );
 

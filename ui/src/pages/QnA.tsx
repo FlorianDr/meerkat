@@ -18,14 +18,16 @@ import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
 import { uuidv7 } from "uuidv7";
 import { useReactionsSubscription } from "../hooks/use-reactions-subscription.ts";
 import { useQuestionsSubscription } from "../hooks/use-questions-subscription.ts";
+import { useQuestions } from "../hooks/use-questions.ts";
 
 export function QnA() {
   const { uid } = useParams();
-  const { data: event, mutate: refreshEvent } = useEvent(uid);
+  const { data: event } = useEvent(uid);
+  const { data: questions, mutate: refreshQuestions } = useQuestions(uid);
   const { data: votes, mutate: refreshVotes } = useVotes();
   const { data: roles } = useConferenceRoles();
   const refresh = () => {
-    refreshEvent();
+    refreshQuestions();
     refreshVotes();
   };
 
@@ -48,9 +50,7 @@ export function QnA() {
   });
 
   useQuestionsSubscription(event, {
-    onUpdate: () => {
-      refreshEvent();
-    },
+    onUpdate: refresh,
   });
 
   const { data: user, isAuthenticated, isBlocked } = useUser();
@@ -89,7 +89,7 @@ export function QnA() {
         </header>
         <main className="content flex">
           <QuestionsSection
-            event={event}
+            questions={questions}
             votes={votes}
             isOrganizer={isOrganizer}
             refresh={refresh}

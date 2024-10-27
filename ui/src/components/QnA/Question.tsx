@@ -12,14 +12,14 @@ import {
 import { MdMoreHoriz } from "react-icons/md";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 import { useBlockUser } from "../../hooks/use-block-user.ts";
-import { Question as QuestionModel } from "../../hooks/use-event.ts";
+import { Question as QuestionType } from "../../types";
 import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 
 interface QuestionProps {
   canVote: boolean;
   canModerate: boolean;
-  question: QuestionModel;
+  question: QuestionType;
   voted: boolean;
   refresh: () => void;
 }

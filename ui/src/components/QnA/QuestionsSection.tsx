@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { type Event } from "../../types.ts";
+import { type Question as QuestionType } from "../../types.ts";
 import { type Vote } from "../../hooks/use-votes.ts";
 import { Question } from "./Question.tsx";
 import { Flex } from "@chakra-ui/react";
 
 export type QuestionsSectionProps = {
-  event: Event | undefined;
+  questions: QuestionType[] | undefined;
   votes: Vote[] | undefined;
   isAuthenticated: boolean;
   isOrganizer: boolean;
@@ -13,7 +13,7 @@ export type QuestionsSectionProps = {
 };
 
 export function QuestionsSection(
-  { event, votes, isAuthenticated, isOrganizer, refresh }:
+  { questions, votes, isAuthenticated, isOrganizer, refresh }:
     QuestionsSectionProps,
 ) {
   const questionLookup = useMemo(() => {
@@ -21,16 +21,16 @@ export function QuestionsSection(
       acc.add(vote.questionUid);
       return acc;
     }, new Set());
-  }, [votes, event]);
+  }, [votes, questions]);
 
-  const hasQuestions = !!event?.questions?.length;
+  const hasQuestions = !!questions?.length;
 
   return (
     <>
       {hasQuestions
         ? (
           <ol className="question-list">
-            {event?.questions.map((question) => (
+            {questions.map((question) => (
               <Question
                 key={question.uid}
                 question={question}
