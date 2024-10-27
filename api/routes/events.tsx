@@ -3,7 +3,6 @@ import { Hono } from "@hono/hono";
 import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
-import { validator } from "@hono/hono/validator";
 import { zValidator } from "@hono/zod-validator";
 import { fromString, getSuffix } from "typeid-js";
 import zod from "zod";
@@ -60,7 +59,6 @@ const eventMiddleware = createMiddleware<Env>(async (c, next) => {
 
 app.get("/e/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
-  const uid = event.uid;
   const [conference, questions, participants] = await Promise.all([
     getConferenceById(event.conferenceId),
     getQuestions(event.id),
@@ -74,7 +72,7 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
   }
 
   const origin = c.req.header("origin") ?? env.base;
-  const url = new URL(`/e/${uid}/remote`, origin);
+  const url = new URL(`/e/${event.uid}/remote`, origin);
 
   return c.html(
     <Document>
@@ -121,7 +119,6 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   });
 
   // Strips out internal fields
-  const { ...rest } = event;
   const apiQuestions = questions.map(
     ({ userId: _userId, user, ...rest }) => ({
       ...rest,
@@ -138,7 +135,7 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
 
   return c.json({
     data: {
-      ...rest,
+      ...event,
       questions: apiQuestions,
       collectURL,
       votes,
@@ -148,25 +145,18 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   });
 });
 
+const createQuestionSchema = zod.object({
+  question: zod.string().max(MAX_CHARS_PER_QUESTION).min(1),
+});
+
 app.post(
   "/api/v1/events/:uid/questions",
   jwt({ secret: env.secret, cookie: "jwt" }),
   eventMiddleware,
-  validator("form", (value, c) => {
-    const question = value["question"];
-    if (!question || typeof question !== "string") {
-      return c.text("Invalid question", 400);
-    }
-    return question;
-  }),
+  zValidator("json", createQuestionSchema),
   async (c) => {
-    const questionText = c.req.valid("form");
+    const questionData = c.req.valid("json");
     const event = c.get("event");
-    const uid = event.uid;
-
-    if (!event) {
-      throw new HTTPException(404, { message: `Event ${uid} not found` });
-    }
 
     const payload = c.get("jwtPayload");
     const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
@@ -198,20 +188,14 @@ app.post(
       throw new HTTPException(429, { message: "User has too many posts" });
     }
 
-    if (questionText.length > MAX_CHARS_PER_QUESTION) {
-      throw new HTTPException(400, { message: "Question is too long" });
-    }
-
     const question = await createQuestion({
+      question: questionData.question,
       eventId: event.id,
-      question: questionText,
       userId: user.id,
     });
 
     return c.json({
-      data: {
-        createdAt: question.createdAt,
-      },
+      data: question,
     });
   },
 );

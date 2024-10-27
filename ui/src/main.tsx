@@ -39,9 +39,6 @@ const theme = extendTheme(
         body: {
           bg: "#0C021D",
           color: "#AFA5C0",
-          // colors: {
-          //   purple: "rgba(136, 116, 170, 1)",
-          // },
         },
       },
     },

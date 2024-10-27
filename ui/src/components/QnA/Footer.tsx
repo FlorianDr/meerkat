@@ -6,15 +6,18 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
-import { Event } from "../../hooks/use-event.ts";
 import { useLogin } from "../../hooks/use-login.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { User } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 import { HeartIcon } from "./HeartIcon.tsx";
+import { Event } from "../../types.ts";
+import { useRef, useState } from "react";
+import { useAskQuestion } from "../../hooks/use-ask-question.ts";
 
 const MAX_QUESTION_LENGTH = 200;
 
@@ -34,9 +37,11 @@ export function Footer({
   onReactClick,
 }: FooterProps) {
   const { primaryPurple } = useThemeColors();
+  const [focused, setFocused] = useState(false);
   const { login, isLoading } = useLogin();
   const toast = useToast();
-  const { onSubmit } = useAsyncFormSubmit({
+  const [question, setQuestion] = useState("");
+  const { trigger } = useAskQuestion(event, {
     onSuccess: () => {
       toast({
         title: "Question added 🎉",
@@ -44,79 +49,76 @@ export function Footer({
         duration: 2000,
       });
       refresh();
+      setQuestion("");
     },
   });
-
-  const action = `/api/v1/events/${event?.uid}/questions`;
 
   return (
     <>
       <div className="overlay-container">
-        <form
-          className="target question-input"
-          onSubmit={onSubmit}
-          method="POST"
-          action={action}
-        >
-          <Flex gap={2} flexFlow="row" alignItems="center">
-            <InputGroup size="lg">
-              <Input
-                size="lg"
-                disabled={!isAuthenticated}
-                placeholder={!isAuthenticated
-                  ? "Please, login before submitting a question!"
-                  : "Type a question..."}
-                name="question"
-                bg="#342749"
-                color="white"
-                borderColor={primaryPurple}
-                border="none"
-                borderRadius="md"
-                p="4 4 10 4"
-                _placeholder={{ color: "white" }}
-                maxLength={MAX_QUESTION_LENGTH}
-              />
-              <InputRightElement width="auto" pr={2}>
-                <IconButton
-                  isDisabled={!isAuthenticated}
-                  type="submit"
-                  h="1.75rem"
-                  size="sm"
-                  colorScheme="purple"
-                  icon={<SendIcon />}
-                  _hover={isAuthenticated
-                    ? {
-                      bg: primaryPurple,
-                      color: "white",
-                      opacity: 0.8,
-                    }
-                    : {}}
-                  aria-label="Submit question"
-                />
-              </InputRightElement>
-            </InputGroup>
+        <div className="target question-input">
+          <Flex gap={2} flexFlow="row" alignItems="flex-start">
+            <Textarea
+              resize="vertical"
+              size="lg"
+              minH="48px"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && question) {
+                  e.preventDefault();
+                  trigger({
+                    question,
+                  });
+                }
+              }}
+              disabled={!isAuthenticated}
+              placeholder="Type a question..."
+              name="question"
+              bg="#342749"
+              color="white"
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              rows={focused ? 3 : 1}
+              borderColor={primaryPurple}
+              border="none"
+              borderRadius="md"
+              paddingTop="12px"
+              _placeholder={{ color: "white" }}
+              maxLength={MAX_QUESTION_LENGTH}
+            />
             <IconButton
               isDisabled={!isAuthenticated}
-              onClick={onReactClick}
               size="lg"
-              colorScheme="purple"
-              bg="#342749"
-              icon={<HeartIcon />}
-              _hover={isAuthenticated
-                ? {
-                  bg: primaryPurple,
-                  color: "white",
-                  opacity: 0.8,
-                }
-                : {}}
-              aria-label="React to event"
-              type="button"
+              onClick={() => {
+                trigger({
+                  question,
+                });
+              }}
+              bg="purple.500"
+              _hover={{ bg: "purple.600" }}
+              icon={<SendIcon />}
+              aria-label="Submit question"
             />
+            {!focused
+              ? (
+                <IconButton
+                  isDisabled={!isAuthenticated}
+                  onClick={onReactClick}
+                  variant="outline"
+                  size="lg"
+                  icon={<HeartIcon />}
+                  borderColor="purple.500"
+                  aria-label="React to event"
+                  type="button"
+                />
+              )
+              : null}
           </Flex>
           <span className="signin-name">
             Signed as {user?.name ?? user?.uid ?? "Anonymous"}
           </span>
-        </form>
+        </div>
         {!isAuthenticated && (
           <LoginOverlay>
             <PrimaryButton

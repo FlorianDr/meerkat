@@ -9,10 +9,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "^/api/v1/events/.*/live$": {
-        target: "ws://localhost:8000",
-        ws: true,
-      },
       "/api": "http://localhost:8000",
     },
   },

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { type Event } from "../../hooks/use-event.ts";
+import { type Event } from "../../types.ts";
 import { type Vote } from "../../hooks/use-votes.ts";
 import { Question } from "./Question.tsx";
 import { Flex } from "@chakra-ui/react";

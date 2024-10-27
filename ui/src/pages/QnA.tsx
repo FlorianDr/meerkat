@@ -73,7 +73,7 @@ export function QnA() {
       <div className="layout">
         <header className="header">
           <nav>
-            <Link as={ReactRouterLink} to={remote(uid)}>
+            <Link as={ReactRouterLink} to={uid ? remote(uid) : ""}>
               <Flex
                 flexDirection="row"
                 gap="1"

@@ -30,13 +30,13 @@ export function Remote() {
           </Heading>
         </Stack>
         <Stack spacing={4} flexDirection="column" alignItems="center">
-          <PrimaryButton as={Link} to={qa(uid)}>
+          <PrimaryButton as={Link} to={uid ? qa(uid) : ""}>
             Join Q&A
           </PrimaryButton>
           <Button
             variant="outline"
             as={Link}
-            to={card(uid)}
+            to={uid ? card(uid) : ""}
             width="16rem"
             fontWeight="bold"
             py={6}
