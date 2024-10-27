@@ -4,7 +4,9 @@ import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
 import { validator } from "@hono/hono/validator";
+import { zValidator } from "@hono/zod-validator";
 import { fromString, getSuffix } from "typeid-js";
+import zod from "zod";
 import Document from "../components/Document.tsx";
 import Layout from "../components/Layout.tsx";
 import QR from "../components/QR.tsx";
@@ -31,8 +33,7 @@ import {
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { SUB_TYPE_ID } from "../utils/jwt.ts";
 import { getZupassAddPCDURL } from "../zupass.ts";
-import zod from "zod";
-import { zValidator } from "@hono/zod-validator";
+import { config } from "../models/config.ts";
 
 const app = new Hono();
 
@@ -86,6 +87,13 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
         </div>
       </Layout>
       <script src="/index.js" type="module"></script>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `globalThis.eventObject = '${
+            JSON.stringify({ ...event, questions })
+          }';globalThis.config = '${JSON.stringify(config)}';`,
+        }}
+      />
     </Document>,
   );
 });

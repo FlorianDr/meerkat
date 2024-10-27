@@ -24,18 +24,12 @@ function createReactionElement(icon) {
   return reactionElement;
 }
 
-const { supabaseUrl, supabaseAnonKey } = await fetch("/api/v1/config").then(
-  (res) => res.json(),
-);
-const url = new URL(globalThis.location.href);
-const eventId = url.pathname.split("/").pop();
-const { data: event } = await fetch(`/api/v1/events/${eventId}`).then((res) =>
-  res.json()
-);
-
+const config = JSON.parse(globalThis.config);
+const { supabaseUrl, supabaseAnonKey } = config;
+const event = JSON.parse(globalThis.eventObject);
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-supabase
+const channelReactions = supabase
   .channel("reactions-inserts")
   .on(
     "postgres_changes",
@@ -53,7 +47,7 @@ supabase
   )
   .subscribe();
 
-supabase
+const channelQuestions = supabase
   .channel("questions-inserts")
   .on(
     "postgres_changes",
@@ -71,7 +65,7 @@ supabase
 
 const key = event.questions.map((question) => question.id).join(",");
 
-supabase
+const channelVotes = supabase
   .channel("votes-updates")
   .on(
     "postgres_changes",
@@ -101,6 +95,8 @@ supabase
 
 // Extra safety measure
 setTimeout(() => {
-  socket.close();
+  channelReactions.unsubscribe();
+  channelQuestions.unsubscribe();
+  channelVotes.unsubscribe();
   globalThis.location.reload();
 }, 60_000);
