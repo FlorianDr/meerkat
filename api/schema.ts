@@ -121,6 +121,7 @@ export const features = pgTable("features", {
 export const reactions = pgTable(
   "reactions",
   {
+    uid: text("uid").primaryKey(),
     userId: integer("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),

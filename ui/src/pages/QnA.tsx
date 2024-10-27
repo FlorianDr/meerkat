@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Flex, Link } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
@@ -8,13 +8,16 @@ import { CooldownModal } from "../components/QnA/CooldownModal.tsx";
 import { Footer } from "../components/QnA/Footer.tsx";
 import { QuestionsSection } from "../components/QnA/QuestionsSection.tsx";
 import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
-import { useEvent, useEventUpdates } from "../hooks/use-event.ts";
+import { useEvent } from "../hooks/use-event.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { useVotes } from "../hooks/use-votes.ts";
 import { remote } from "../routes.ts";
 import { useReact } from "../hooks/use-react.ts";
 import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
+import { uuidv7 } from "uuidv7";
+import { useReactionsSubscription } from "../hooks/use-reactions-subscription.ts";
+import { useQuestionsSubscription } from "../hooks/use-questions-subscription.ts";
 
 export function QnA() {
   const { uid } = useParams();
@@ -30,41 +33,40 @@ export function QnA() {
     event?.uid ?? "",
   );
 
-  const [reactions, setReactions] = useState<{ id: number }[]>([]);
-  const ref = useRef(0);
-
-  const addReaction = () => {
-    setReactions((prevReactions: { id: number }[]) => [
-      ...prevReactions,
-      { id: ref.current },
-    ]);
-    ref.current += 1;
+  const [reactions, setReactions] = useState<{ uid: string }[]>([]);
+  const addReaction = (reaction: { uid: string }) => {
+    setReactions((prevReactions: { uid: string }[]) => {
+      const hasReaction = prevReactions.some((r) => r.uid === reaction.uid);
+      return hasReaction ? prevReactions : [...prevReactions, reaction];
+    });
   };
 
-  const onReactClick = () => {
-    // addReaction();
-    trigger();
-  };
-
-  const { data: user, isAuthenticated, isBlocked } = useUser();
-
-  const { data: _update } = useEventUpdates(uid, {
-    onUpdate: (message: string) => {
-      const parsedMessage = JSON.parse(message);
-      if (
-        parsedMessage.type === "reaction"
-      ) {
-        addReaction();
-      } else {
-        refresh();
-      }
+  useReactionsSubscription(event, {
+    onUpdate: (reaction) => {
+      addReaction(reaction);
     },
   });
+
+  useQuestionsSubscription(event, {
+    onUpdate: () => {
+      refreshEvent();
+    },
+  });
+
+  const { data: user, isAuthenticated, isBlocked } = useUser();
 
   const isOrganizer =
     roles?.some((role) =>
       role.role === "organizer" && role.conferenceId === event?.conferenceId
     ) ?? false;
+
+  const onReactClick = () => {
+    const reaction = {
+      uid: uuidv7(),
+    };
+    trigger(reaction);
+    addReaction(reaction);
+  };
 
   return (
     <>
@@ -95,10 +97,10 @@ export function QnA() {
           />
         </main>
         <footer className="footer">
-          {reactions.map((reaction: { id: number }) => (
+          {reactions.map((reaction: { uid: string }) => (
             <Reaction
-              key={reaction.id}
-              id={reaction.id}
+              key={reaction.uid}
+              uid={reaction.uid}
               icon={<HeartIcon />}
               setReactions={setReactions}
             />

@@ -1,7 +1,4 @@
-const refreshModels = {
-  question: "question",
-  reaction: "reaction",
-};
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.6";
 
 const HEART_ICON = `
   <svg
@@ -27,102 +24,80 @@ function createReactionElement(icon) {
   return reactionElement;
 }
 
-class SturdyWebsocket {
-  socket;
-  heartbeatInterval;
-  reconnectOnClose = true;
-  onMessageCallbacks = [];
-  onErrorCallbacks = [];
-  awaitingPong = false;
-  static PING_INTERVAL = 10_000;
-
-  constructor(url) {
-    this.url = url;
-  }
-
-  connect() {
-    this.socket = new WebSocket(this.url);
-    this.socket.addEventListener("open", this._onOpen.bind(this));
-    this.socket.addEventListener("close", this._onClose.bind(this));
-    this.socket.addEventListener("error", this._onError.bind(this));
-    this.socket.addEventListener("message", this._onMessage.bind(this));
-    this.reconnectOnClose = true;
-  }
-
-  close() {
-    this.socket?.close();
-    this.reconnectOnClose = false;
-    this._onClose();
-  }
-
-  onMessage(handler) {
-    this.onMessageCallbacks.push(handler);
-  }
-
-  onError(handler) {
-    this.onErrorCallbacks.push(handler);
-  }
-
-  _onOpen() {
-    this.heartbeatInterval = setInterval(() => {
-      if (this.awaitingPong) {
-        this.close();
-        this.connect();
-        return;
-      }
-      this.socket?.send("ping");
-      this.awaitingPong = true;
-    }, SturdyWebsocket.PING_INTERVAL);
-  }
-
-  _onError(e) {
-    this.onErrorCallbacks.forEach((cb) => cb(e));
-  }
-
-  _onMessage(event) {
-    if (event.data === "pong") {
-      this.awaitingPong = false;
-      return;
-    }
-
-    if (event.data === "ping") {
-      this.socket?.send("pong");
-      return;
-    }
-
-    this.onMessageCallbacks.forEach((cb) => cb(event.data));
-  }
-
-  _onClose() {
-    clearInterval(this.heartbeatInterval);
-
-    if (this.reconnectOnClose) {
-      this.connect();
-    }
-  }
-}
-
+const { supabaseUrl, supabaseAnonKey } = await fetch("/api/v1/config").then(
+  (res) => res.json(),
+);
 const url = new URL(globalThis.location.href);
 const eventId = url.pathname.split("/").pop();
+const { data: event } = await fetch(`/api/v1/events/${eventId}`).then((res) =>
+  res.json()
+);
 
-url.protocol = url.protocol.replace("http", "ws");
-url.pathname = `/api/v1/events/${eventId}/live`;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const socket = new SturdyWebsocket(url);
+supabase
+  .channel("reactions-inserts")
+  .on(
+    "postgres_changes",
+    {
+      event: "INSERT",
+      schema: "public",
+      table: "reactions",
+      filter: `event_id=eq.${event.id}`,
+    },
+    () => {
+      const reactionElement = createReactionElement(HEART_ICON);
+      const parent = document.querySelector(".heart-icon-container");
+      parent.appendChild(reactionElement);
+    },
+  )
+  .subscribe();
 
-socket.connect();
+supabase
+  .channel("questions-inserts")
+  .on(
+    "postgres_changes",
+    {
+      event: "INSERT",
+      schema: "public",
+      table: "questions",
+      filter: `event_id=eq.${event.id}`,
+    },
+    (_payload) => {
+      globalThis.location.reload();
+    },
+  )
+  .subscribe();
 
-socket.onMessage((data) => {
-  const parsedData = JSON.parse(data);
-  if (parsedData.type === refreshModels.question) {
-    console.info("Reloading page...");
-    globalThis.location.reload();
-  } else if (parsedData.type === refreshModels.reaction) {
-    const reactionElement = createReactionElement(HEART_ICON);
-    const parent = document.querySelector(".heart-icon-container");
-    parent.appendChild(reactionElement);
-  }
-});
+const key = event.questions.map((question) => question.id).join(",");
+
+supabase
+  .channel("votes-updates")
+  .on(
+    "postgres_changes",
+    {
+      event: "INSERT",
+      schema: "public",
+      table: "votes",
+      filter: `question_id=in.(${key})`,
+    },
+    (_payload) => {
+      globalThis.location.reload();
+    },
+  )
+  .on(
+    "postgres_changes",
+    {
+      event: "DELETE",
+      schema: "public",
+      table: "votes",
+      filter: `question_id=in.(${key})`,
+    },
+    (_payload) => {
+      globalThis.location.reload();
+    },
+  )
+  .subscribe();
 
 // Extra safety measure
 setTimeout(() => {

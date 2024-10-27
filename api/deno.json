@@ -10,6 +10,7 @@
     "@pcd/proto-pod-gpc-artifacts": "npm:@pcd/proto-pod-gpc-artifacts@^0.11.0",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
     "@std/path": "jsr:@std/path@^1.0.7",
+    "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.45.6",
     "drizzle-orm": "npm:drizzle-orm@^0.32.1",
     "postgres": "npm:postgres@^3.4.4",
     "typeid-js": "npm:typeid-js@^1.0.0",

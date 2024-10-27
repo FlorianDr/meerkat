@@ -14,7 +14,6 @@ import {
   getUserVoteCountAfterDate,
   getVotesByQuestionIdAndUserId,
 } from "../models/votes.ts";
-import { broadcast } from "../realtime.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { SUB_TYPE_ID } from "../utils/jwt.ts";
 
@@ -78,17 +77,6 @@ app.post(
       await createVote(question.id, user.id);
     }
 
-    broadcast(
-      event.uid,
-      {
-        op: "update",
-        type: "question",
-        uid: question.uid,
-        initiator: {
-          uid: user.uid,
-        },
-      },
-    );
     const { id: _id, userId: _userId, ...rest } = question;
 
     return c.json({ data: rest });
@@ -142,18 +130,6 @@ app.post(
     if (!result) {
       throw new HTTPException(500, { message: `Failed to mark as answered` });
     }
-
-    broadcast(
-      event.uid,
-      {
-        op: "update",
-        type: "question",
-        uid: question.uid,
-        initiator: {
-          uid: user.uid,
-        },
-      },
-    );
     const { id: _id, userId: _userId, ...rest } = result;
 
     return c.json({ data: rest });

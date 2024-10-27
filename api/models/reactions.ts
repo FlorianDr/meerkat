@@ -3,12 +3,12 @@ import db from "../db.ts";
 import { reactions } from "../schema.ts";
 
 export async function createReaction(
-  { eventId, userId }: { eventId: number; userId: number },
+  { eventId, userId, uid }: { eventId: number; userId: number; uid: string },
 ): Promise<Reaction> {
   const [newReaction] = await db.insert(reactions).values({
     eventId: eventId,
     userId: userId,
-    createdAt: new Date(),
+    uid: uid,
   }).returning().execute();
 
   return newReaction;

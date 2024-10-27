@@ -1,0 +1,1 @@
+ALTER TABLE "reactions" ADD COLUMN "uid" text PRIMARY KEY NOT NULL;

@@ -1,6 +1,5 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { Hono } from "@hono/hono";
-import { upgradeWebSocket } from "@hono/hono/deno";
 import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
@@ -29,10 +28,11 @@ import {
   getUserPostCountAfterDate,
   getUserPostCountPerTalk,
 } from "../models/user.ts";
-import { broadcast, join, leave } from "../realtime.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { SUB_TYPE_ID } from "../utils/jwt.ts";
 import { getZupassAddPCDURL } from "../zupass.ts";
+import zod from "zod";
+import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono();
 
@@ -113,9 +113,9 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   });
 
   // Strips out internal fields
-  const { id: _id, ...rest } = event;
+  const { ...rest } = event;
   const apiQuestions = questions.map(
-    ({ id: _id, eventId: _eventId, userId: _userId, user, ...rest }) => ({
+    ({ userId: _userId, user, ...rest }) => ({
       ...rest,
       user: user
         ? {
@@ -139,53 +139,6 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
     },
   });
 });
-
-const PING_INTERVAL = 15_000;
-
-app.get(
-  "/api/v1/events/:uid/live",
-  eventMiddleware,
-  upgradeWebSocket((c) => {
-    const event = c.get("event");
-    const uid = event.uid;
-    let awaitPong = false;
-    return {
-      onMessage: (event, ws) => {
-        if (event.data === "ping") {
-          ws.send("pong");
-          return;
-        }
-        if (event.data === "pong") {
-          awaitPong = false;
-          return;
-        }
-        console.log("Received unexpected message from client", event.data);
-      },
-      onOpen: (_event, ws) => {
-        const intervalId = setInterval(() => {
-          if (ws.readyState !== 1) {
-            clearInterval(intervalId);
-            return;
-          }
-
-          if (awaitPong) {
-            awaitPong = false;
-            ws.close();
-            leave(uid, ws);
-            return;
-          }
-
-          ws.send("ping");
-          awaitPong = true;
-        }, PING_INTERVAL);
-        join(uid, ws);
-      },
-      onClose: (_event, ws) => {
-        leave(uid, ws);
-      },
-    };
-  }),
-);
 
 app.post(
   "/api/v1/events/:uid/questions",
@@ -247,15 +200,6 @@ app.post(
       userId: user.id,
     });
 
-    broadcast(uid, {
-      op: "insert",
-      type: "question",
-      uid: question.uid,
-      initiator: {
-        uid: user.uid,
-      },
-    });
-
     return c.json({
       data: {
         createdAt: question.createdAt,
@@ -264,13 +208,19 @@ app.post(
   },
 );
 
+const reactionScheme = zod.object({
+  uid: zod.string(),
+});
+
 app.post(
   "/api/v1/events/:uid/react",
+  zValidator("json", reactionScheme),
   jwt({ secret: env.secret, cookie: "jwt" }),
   eventMiddleware,
   async (c) => {
     const payload = c.get("jwtPayload");
     const userUID = fromString(payload.sub as string, SUB_TYPE_ID);
+    const uid = c.req.valid("json").uid;
     const user = await getUserByUID(getSuffix(userUID));
 
     if (!user) {
@@ -290,21 +240,16 @@ app.post(
     }
 
     const reaction = await createReaction({
+      uid,
       eventId: event.id,
       userId: user.id,
     });
 
-    broadcast(event.uid, {
-      op: "insert",
-      type: "reaction",
-      createdAt: reaction.createdAt,
-      initiator: {
-        uid: user.uid,
-      },
-    });
-
     return c.json({
-      data: { createdAt: reaction.createdAt },
+      data: {
+        uid,
+        createdAt: reaction.createdAt,
+      },
     });
   },
 );

@@ -1,25 +1,25 @@
 import { useCallback, useEffect, useRef } from "react";
 
 interface ReactionProps {
-  id: number;
+  uid: string;
   icon: JSX.Element;
-  setReactions: React.Dispatch<React.SetStateAction<{ id: number }[]>>;
+  setReactions: React.Dispatch<React.SetStateAction<{ uid: string }[]>>;
 }
 
-export function Reaction({ id, icon, setReactions }: ReactionProps) {
+export function Reaction({ uid, icon, setReactions }: ReactionProps) {
   const reactionRef = useRef(null);
 
-  const removeReaction = useCallback((id: number) => {
+  const removeReaction = useCallback((uid: string) => {
     setReactions((prevReactions) => {
-      return prevReactions.filter((reaction) => reaction.id !== id);
+      return prevReactions.filter((reaction) => reaction.uid !== uid);
     });
-  }, [id]);
+  }, [uid]);
 
   useEffect(() => {
     const reactionElement = reactionRef.current;
     // Remove reaction after animation ends
     const handleAnimationEnd = () => {
-      removeReaction(id);
+      removeReaction(uid);
     };
 
     reactionElement.addEventListener("animationend", handleAnimationEnd);
@@ -27,13 +27,18 @@ export function Reaction({ id, icon, setReactions }: ReactionProps) {
     return () => {
       reactionElement.removeEventListener("animationend", handleAnimationEnd);
     };
-  }, [id, removeReaction]);
+  }, [uid, removeReaction]);
 
   // "Random" starting position
-  const right = ((id % 100) / 100) * 2 + 5;
+  const right = ((getTimestamp(uid) % 100) / 100) * 2 + 5;
   return (
     <div className="reaction" ref={reactionRef} style={{ right: `${right}%` }}>
       {icon}
     </div>
   );
+}
+
+function getTimestamp(uid: string) {
+  const timestampHex = uid.replace(/-/g, "").slice(0, 12);
+  return parseInt(timestampHex, 16);
 }

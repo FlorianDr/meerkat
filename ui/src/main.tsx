@@ -10,6 +10,8 @@ import { ZAPIProvider } from "./zapi/context.tsx";
 import { Zapp } from "@parcnet-js/app-connector";
 import { UserProvider } from "./context/user.tsx";
 import { posthog } from "posthog-js";
+import { createClient } from "@supabase/supabase-js";
+import { SupabaseProvider } from "./context/supabase.tsx";
 
 const config = await fetch("/api/v1/config").then((res) => res.json());
 
@@ -19,6 +21,11 @@ if (config.posthogToken) {
     person_profiles: "identified_only",
   });
 }
+
+const supabase = createClient(
+  config.supabaseUrl,
+  config.supabaseAnonKey,
+);
 
 const theme = extendTheme(
   withDefaultColorScheme({ colorScheme: "purple" }),
@@ -51,12 +58,14 @@ const zapp: Zapp = {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <ZAPIProvider zapp={zapp} zupassUrl={config.zupassUrl}>
-        <UserProvider>
-          <App />
-        </UserProvider>
-      </ZAPIProvider>
-    </ChakraProvider>
+    <SupabaseProvider client={supabase}>
+      <ChakraProvider theme={theme}>
+        <ZAPIProvider zapp={zapp} zupassUrl={config.zupassUrl}>
+          <UserProvider>
+            <App />
+          </UserProvider>
+        </ZAPIProvider>
+      </ChakraProvider>
+    </SupabaseProvider>
   </React.StrictMode>,
 );

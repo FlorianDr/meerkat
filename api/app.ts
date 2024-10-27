@@ -27,6 +27,8 @@ app.get("/api/v1/config", (c) => {
     zupassUrl: env.zupassUrl,
     zappName: env.zappName,
     posthogToken: env.posthogToken,
+    supabaseUrl: env.supabaseUrl,
+    supabaseAnonKey: env.supabaseAnonKey,
   });
 });
 

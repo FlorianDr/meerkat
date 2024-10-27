@@ -3,11 +3,11 @@ import useSWRMutation from "swr/mutation";
 import { UserContext } from "../context/user.tsx";
 import { poster } from "./fetcher.ts";
 
-type ReactReturnType = {
-  trigger: () => Promise<void>;
+export type UseReactReturnType = {
+  trigger: (obj: { uid: string }) => void;
 };
 
-export function useReact(uid: string): ReactReturnType {
+export function useReact(uid: string): UseReactReturnType {
   const { setIsOnCooldown } = useContext(UserContext);
   const { trigger } = useSWRMutation(`/api/v1/events/${uid}/react`, poster, {
     onError: (error) => {
@@ -17,5 +17,7 @@ export function useReact(uid: string): ReactReturnType {
     },
   });
 
-  return { trigger };
+  return {
+    trigger,
+  };
 }
