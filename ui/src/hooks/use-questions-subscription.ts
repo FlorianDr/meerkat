@@ -13,18 +13,18 @@ export const useQuestionsSubscription = (
   },
 ) => {
   const { client: supabase } = useSupabase();
-  const { data, error } = useSWRSubscription(
+  const { error } = useSWRSubscription(
     typeof event?.id === "number" && supabase
       ? `${PREFIX}${event.id}`
       : undefined,
     (key) => {
       const eventId = key.substring(PREFIX.length);
       const channel = supabase
-        .channel("questions-inserts")
+        .channel("questions-updates")
         .on(
           "postgres_changes",
           {
-            event: "INSERT",
+            event: "*",
             schema: "public",
             table: "questions",
             filter: `event_id=eq.${eventId}`,
@@ -43,7 +43,7 @@ export const useQuestionsSubscription = (
 
   const questionIds = event?.questions.map((question) => question.id).sort();
 
-  const { _error } = useSWRSubscription(
+  const { error: error2 } = useSWRSubscription(
     typeof questionIds === "object" && supabase
       ? questionIds.join(", ")
       : undefined,
@@ -83,6 +83,6 @@ export const useQuestionsSubscription = (
   );
 
   return {
-    error,
+    error: error || error2,
   };
 };

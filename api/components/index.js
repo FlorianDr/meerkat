@@ -48,11 +48,11 @@ const channelReactions = supabase
   .subscribe();
 
 const channelQuestions = supabase
-  .channel("questions-inserts")
+  .channel("questions-updates")
   .on(
     "postgres_changes",
     {
-      event: "INSERT",
+      event: "*",
       schema: "public",
       table: "questions",
       filter: `event_id=eq.${event.id}`,

@@ -89,9 +89,9 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
       <script src="/index.js" type="module"></script>
       <script
         dangerouslySetInnerHTML={{
-          __html: `globalThis.eventObject = '${
+          __html: `globalThis.eventObject = \`${
             JSON.stringify({ ...event, questions })
-          }';globalThis.config = '${JSON.stringify(config)}';`,
+          }\`;globalThis.config = \`${JSON.stringify(config)}\`;`,
         }}
       />
     </Document>,
