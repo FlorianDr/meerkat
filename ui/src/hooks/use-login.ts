@@ -7,11 +7,12 @@ import {
   TicketProofRequest,
   ticketProofRequest,
 } from "@parcnet-js/ticket-spec";
-import {
-  boundConfigToJSON,
-  proofConfigToJSON,
-  revealedClaimsToJSON,
-} from "@pcd/gpc";
+// FIX: Enable when this import does not fail ui build
+// import {
+//   boundConfigToJSON,
+//   proofConfigToJSON,
+//   revealedClaimsToJSON,
+// } from "@pcd/gpc";
 
 export function useLogin() {
   const { setUser } = useContext(UserContext);
@@ -62,9 +63,9 @@ async function proveRequest(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      proof: proofConfigToJSON(ticketProof.proof),
-      revealedClaims: revealedClaimsToJSON(ticketProof.revealedClaims),
-      boundConfig: boundConfigToJSON(ticketProof.boundConfig),
+      // proof: proofConfigToJSON(ticketProof.proof),
+      // revealedClaims: revealedClaimsToJSON(ticketProof.revealedClaims),
+      // boundConfig: boundConfigToJSON(ticketProof.boundConfig),
     }),
   });
   if (!response.ok) {

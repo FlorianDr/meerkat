@@ -1,4 +1,5 @@
-FROM denoland/deno:2.0.2 AS builder
+FROM denoland/deno:2.0.2 AS base
+FROM base AS builder
 
 WORKDIR /app
 
@@ -6,7 +7,7 @@ COPY . .
 
 RUN deno install && deno task ui:build
 
-FROM denoland/deno:2.0.2
+FROM base
 
 WORKDIR /app
 
