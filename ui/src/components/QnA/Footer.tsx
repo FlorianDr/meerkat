@@ -68,7 +68,7 @@ export function Footer({
               size="lg"
               minH="48px"
               value={question}
-              onChange={(e) => setQuestion(e.target.value.trim())}
+              onChange={(e) => setQuestion(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
