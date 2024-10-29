@@ -13,6 +13,7 @@ export async function createEvents(
   const results = await db.insert(events).values(
     newEvents.map((event) => ({
       ...event,
+      uid: event.uid.toUpperCase(),
       conferenceId,
     })),
   ).returning().execute();
@@ -31,7 +32,7 @@ const eventByUID = db.select().from(events).where(
 ).limit(1).prepare("event_by_uid");
 
 export async function getEventByUID(uid: string) {
-  const results = await eventByUID.execute({ uid });
+  const results = await eventByUID.execute({ uid: uid.toUpperCase() });
   const event = results.length === 1 ? results[0] : null;
   return event ? { ...event, cover: event.cover ?? FALLBACK_COVER } : null;
 }
