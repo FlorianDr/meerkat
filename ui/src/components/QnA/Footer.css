@@ -1,49 +1,49 @@
 .overlay-container {
-    display: grid;
+  display: grid;
 }
 
 .target,
 .overlay {
-    grid-area: 1 / 1 / 2 / 2;
+  grid-area: 1 / 1 / 2 / 2;
 }
 
 .login {
-    display: flex;
-    flex-flow: column;
-    color: white;
-    justify-content: center;
-    align-items: center;
-    padding: 0 1.5rem 1.5rem 1.5rem;
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    gap: 8px;
+  display: flex;
+  flex-flow: column;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  gap: 8px;
 }
 
 .question-input {
-    padding: 0.5rem 0 1.5rem 0;
-    border-top: 2px solid rgba(255, 255, 255, 0.16);
+  padding: 0.5rem 0 1.5rem 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.16);
 }
 
 .signin-name {
-    display: block;
-    padding-top: 8px;
-    text-align: center;
+  display: block;
+  padding-top: 8px;
+  text-align: center;
 }
 
 .pulsate {
-    animation: pulsate 1s ease-in-out infinite;
-    animation-iteration-count: 15;
-    transform-origin: center;
+  animation: pulsate 1s ease-in-out infinite;
+  animation-iteration-count: 15;
+  transform-origin: center;
 }
 
 @keyframes pulsate {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.8);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.8);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

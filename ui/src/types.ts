@@ -29,6 +29,7 @@ export type Event = {
   participants: number;
   speaker: string;
   conference: Conference;
+  features: Record<string, boolean>;
 };
 
 export type Question = {

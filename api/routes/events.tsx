@@ -30,6 +30,7 @@ import {
 } from "../models/user.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { config } from "../models/config.ts";
+import { getFeatures } from "../models/features.ts";
 
 const app = new Hono();
 
@@ -95,10 +96,11 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
 
 app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
-  const [conference, questions, participants] = await Promise.all([
+  const [conference, questions, participants, features] = await Promise.all([
     getConferenceById(event.conferenceId),
     getQuestions(event.id),
     countParticipants(event.id),
+    getFeatures(event.conferenceId),
   ]);
 
   if (!conference) {
@@ -116,6 +118,10 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
       votes,
       participants,
       conference,
+      features: features.reduce((acc, val) => {
+        acc[val.name] = val.active;
+        return acc;
+      }, {} as Record<string, boolean>),
     },
   });
 });

@@ -29,55 +29,55 @@ import { dirname } from "@std/path/dirname";
 
 const app = new Hono();
 
-app.get("/api/v1/users/me", async (c) => {
-  const features = await getFeatures();
-  const supportsAnonymousLogin = features.some(
-    (f) => f.name === "anonymous-login" && f.active,
-  );
-  const jwt = getCookie(c, "jwt");
+app.get(
+  "/api/v1/users/me",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const payload = c.get("jwtPayload");
+    const user = await getUserByUID(payload.sub);
 
-  let user: User;
-  if (jwt) {
-    const { sub } = await verify(jwt, env.secret);
-    const maybeUser = await getUserByUID(sub as string);
-
-    if (!maybeUser) {
+    if (!user) {
       throw new HTTPException(401, { message: `User not found` });
     }
 
-    if (maybeUser.blocked) {
+    if (user.blocked) {
       throw new HTTPException(403, { message: `User is blocked` });
     }
 
-    user = maybeUser;
-  } else if (supportsAnonymousLogin) {
-    const deviceId = getCookie(c, "deviceId");
-    const maybeUser: User | null = deviceId
-      ? await getUserByUID(deviceId)
-      : null;
+    const { id: _id, blocked: _blocked, name, ...rest } = user;
 
-    if (maybeUser) {
-      user = maybeUser;
-    } else {
-      user = await createUser();
-    }
-
-    const origin = c.req.header("origin") ?? env.base;
-    const payload = constructJWTPayload(user);
-    const token = await sign(payload, env.secret);
-
-    const baseUrl = new URL(origin);
-    setCookie(c, "jwt", token, {
-      path: "/",
-      domain: baseUrl.hostname,
-      secure: baseUrl.protocol === "https:",
-      httpOnly: true,
-      maxAge: JWT_EXPIRATION_TIME,
-      sameSite: "strict",
+    return c.json({
+      data: {
+        ...rest,
+        name: name ?? undefined,
+      },
     });
-  } else {
-    throw new HTTPException(401, { message: `User not found` });
+  },
+);
+
+app.post("/api/v1/users", async (c) => {
+  const deviceId = getCookie(c, "deviceId");
+
+  if (!deviceId) {
+    throw new HTTPException(400, { message: "Device ID is required" });
   }
+
+  const maybeUser: User | null = deviceId ? await getUserByUID(deviceId) : null;
+  const user = maybeUser ?? await createUser(deviceId);
+
+  const origin = c.req.header("origin") ?? env.base;
+  const payload = constructJWTPayload(user);
+  const token = await sign(payload, env.secret);
+
+  const baseUrl = new URL(origin);
+  setCookie(c, "jwt", token, {
+    path: "/",
+    domain: baseUrl.hostname,
+    secure: baseUrl.protocol === "https:",
+    httpOnly: true,
+    maxAge: JWT_EXPIRATION_TIME,
+    sameSite: "strict",
+  });
 
   const { id: _id, blocked: _blocked, name, ...rest } = user;
 

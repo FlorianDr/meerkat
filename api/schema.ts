@@ -114,9 +114,15 @@ export const accounts = pgTable(
 );
 
 export const features = pgTable("features", {
-  name: text("name").primaryKey(),
+  conferenceId: integer("conference_id").notNull().references(
+    () => conferences.id,
+    { onDelete: "cascade" },
+  ),
+  name: text("name").notNull(),
   active: boolean("active").notNull(),
-});
+}, (table) => ({
+  pk: primaryKey({ columns: [table.conferenceId, table.name] }),
+}));
 
 export const reactions = pgTable(
   "reactions",
