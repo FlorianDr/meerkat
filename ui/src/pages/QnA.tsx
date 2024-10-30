@@ -19,6 +19,7 @@ import { uuidv7 } from "uuidv7";
 import { useReactionsSubscription } from "../hooks/use-reactions-subscription.ts";
 import { useQuestionsSubscription } from "../hooks/use-questions-subscription.ts";
 import { useQuestions } from "../hooks/use-questions.ts";
+import { useAnonymousUser } from "../hooks/use-anonymous-user.ts";
 
 export function QnA() {
   const { uid } = useParams();
@@ -53,7 +54,11 @@ export function QnA() {
     onUpdate: refresh,
   });
 
-  const { data: user, isAuthenticated, isBlocked } = useUser();
+  const { data: user, isAuthenticated, isLoading, isBlocked } = useUser();
+  const supportsAnonymousLogin = event?.features?.["anonymous-login"] ?? false;
+  useAnonymousUser(
+    !isLoading && !isAuthenticated && supportsAnonymousLogin,
+  );
 
   const isOrganizer =
     roles?.some((role) =>

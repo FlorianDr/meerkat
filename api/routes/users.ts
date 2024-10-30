@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Hono } from "@hono/hono";
-import { jwt, sign, verify } from "@hono/hono/jwt";
+import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import {
@@ -13,7 +13,6 @@ import { HTTPException } from "@hono/hono/http-exception";
 import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "@hono/hono/cookie";
-import { getFeatures } from "../models/features.ts";
 import { createUserFromAccount } from "../models/user.ts";
 import { markUserAsBlocked } from "../models/user.ts";
 import { getConferenceRoles } from "../models/roles.ts";
@@ -44,13 +43,10 @@ app.get(
       throw new HTTPException(403, { message: `User is blocked` });
     }
 
-    const { id: _id, blocked: _blocked, name, ...rest } = user;
+    const { id: _id, blocked: _blocked, ...rest } = user;
 
     return c.json({
-      data: {
-        ...rest,
-        name: name ?? undefined,
-      },
+      data: rest,
     });
   },
 );
