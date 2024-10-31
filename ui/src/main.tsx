@@ -51,6 +51,8 @@ const zapp: Zapp = {
   permissions: {
     REQUEST_PROOF: { collections: ["Devcon SEA"] },
     READ_PUBLIC_IDENTIFIERS: {},
+    READ_POD: { collections: [`${config.zappName}: Devcon SEA`] },
+    INSERT_POD: { collections: [`${config.zappName}: Devcon SEA`] },
   },
 };
 
