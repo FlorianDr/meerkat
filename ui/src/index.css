@@ -43,7 +43,7 @@ body {
 }
 
 .title-section {
-  padding: 0 1rem 1rem 1rem;
+  padding: 0 1rem 0 1rem;
 }
 
 ol,
@@ -181,6 +181,7 @@ ul {
 
 .flex {
   display: flex;
+  flex-direction: column;
 }
 
 .two-lines {

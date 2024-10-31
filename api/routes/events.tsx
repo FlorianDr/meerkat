@@ -156,7 +156,10 @@ app.get(
   async (c) => {
     const event = c.get("event");
     const payload = c.get("jwtPayload");
-    const user = await getUserByUID(payload.sub);
+    const [conference, user] = await Promise.all([
+      getConferenceById(event.conferenceId),
+      getUserByUID(payload.sub),
+    ]);
 
     if (!user) {
       throw new HTTPException(401, { message: "User not found" });
@@ -172,7 +175,7 @@ app.get(
     }
 
     const zupassAccount = await getAccounts(user.id);
-    const zupassId = zupassAccount?.find((a) => a.type === "zupass")?.id;
+    const zupassId = zupassAccount?.find((a) => a.provider === "zupass")?.id;
 
     if (!zupassId) {
       throw new HTTPException(400, {
@@ -180,7 +183,7 @@ app.get(
       });
     }
 
-    const podPcd = createPODPCD(event, zupassId);
+    const podPcd = createPODPCD(conference!, event, zupassId);
     return c.json({
       data: PODPCDPackage.serialize(podPcd),
     });
@@ -189,7 +192,8 @@ app.get(
 
 app.get("/api/v1/events/:uid/questions", eventMiddleware, async (c) => {
   const event = c.get("event");
-  const questions = await getQuestions(event.id, "newest");
+  const sort = c.req.query("sort") ?? "newest";
+  const questions = await getQuestions(event.id, sort);
 
   return c.json({
     data: questions.map(toApiQuestion),

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Flex, Link } from "@chakra-ui/react";
+import { Flex, Link, Switch } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
 import { Header } from "../components/Header/Header.tsx";
 import { Modal } from "../components/Modal/Modal.tsx";
@@ -24,7 +24,11 @@ import { useAnonymousUser } from "../hooks/use-anonymous-user.ts";
 export function QnA() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
-  const { data: questions, mutate: refreshQuestions } = useQuestions(uid);
+  const [isSortByPopularity, setIsSortByPopularity] = useState(false);
+  const { data: questions, mutate: refreshQuestions } = useQuestions(
+    uid,
+    isSortByPopularity ? "popular" : "newest",
+  );
   const { data: votes, mutate: refreshVotes } = useVotes();
   const { data: roles } = useConferenceRoles();
   const refresh = () => {
@@ -76,7 +80,7 @@ export function QnA() {
   return (
     <>
       <div className="layout">
-        <header className="header">
+        <header className="header flex">
           <nav>
             <Link as={ReactRouterLink} to={uid ? remote(uid) : ""}>
               <Flex
@@ -91,6 +95,15 @@ export function QnA() {
             </Link>
           </nav>
           <Header title={`QA: ${event?.title}`} />
+          <div style={{ alignSelf: "flex-end", paddingBottom: "0.5rem" }}>
+            🕖{" "}
+            <Switch
+              isChecked={isSortByPopularity}
+              size="lg"
+              onChange={(e) => setIsSortByPopularity(e.target.checked)}
+            />{" "}
+            ⬆️
+          </div>
         </header>
         <main className="content flex">
           <QuestionsSection
