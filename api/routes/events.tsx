@@ -24,6 +24,7 @@ import {
   getUserReactionCountAfterDate,
 } from "../models/reactions.ts";
 import {
+  getAccounts,
   getUserByUID,
   getUserPostCountAfterDate,
   getUserPostCountPerTalk,
@@ -31,6 +32,9 @@ import {
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { config } from "../models/config.ts";
 import { getFeatures } from "../models/features.ts";
+import { createPODPCD } from "../zupass.ts";
+import { getConferenceRolesForConference } from "../models/roles.ts";
+import { PODPCDPackage } from "@pcd/pod-pcd";
 
 const app = new Hono();
 
@@ -144,6 +148,44 @@ const toApiQuestion = (
     }
     : undefined,
 });
+
+app.get(
+  "/api/v1/events/:uid/event-card",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  eventMiddleware,
+  async (c) => {
+    const event = c.get("event");
+    const payload = c.get("jwtPayload");
+    const user = await getUserByUID(payload.sub);
+
+    if (!user) {
+      throw new HTTPException(401, { message: "User not found" });
+    }
+
+    const roles = await getConferenceRolesForConference(
+      user?.id,
+      event.conferenceId,
+    );
+
+    if (!roles.some((r) => r.role === "organizer" || r.role === "attendee")) {
+      throw new HTTPException(403, { message: "User is not authorized" });
+    }
+
+    const zupassAccount = await getAccounts(user.id);
+    const zupassId = zupassAccount?.find((a) => a.type === "zupass")?.id;
+
+    if (!zupassId) {
+      throw new HTTPException(400, {
+        message: "User does not have a Zupass account",
+      });
+    }
+
+    const podPcd = createPODPCD(event, zupassId);
+    return c.json({
+      data: PODPCDPackage.serialize(podPcd),
+    });
+  },
+);
 
 app.get("/api/v1/events/:uid/questions", eventMiddleware, async (c) => {
   const event = c.get("event");

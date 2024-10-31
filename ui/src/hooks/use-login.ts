@@ -3,16 +3,7 @@ import { useZAPIConnect } from "../zapi/connect.ts";
 import { UserContext } from "../context/user.tsx";
 import { User } from "../types.ts";
 import { ParcnetAPI } from "@parcnet-js/app-connector";
-import {
-  TicketProofRequest,
-  ticketProofRequest,
-} from "@parcnet-js/ticket-spec";
-// FIX: Enable when this import does not fail ui build
-// import {
-//   boundConfigToJSON,
-//   proofConfigToJSON,
-//   revealedClaimsToJSON,
-// } from "@pcd/gpc";
+import { ticketProofRequest } from "@parcnet-js/ticket-spec";
 
 export function useLogin() {
   const { setUser } = useContext(UserContext);
@@ -25,7 +16,7 @@ export function useLogin() {
       const zapi = await connect();
       const publicKey = await zapi.identity.getPublicKey();
       const user = await loginRequest(publicKey);
-      // TODO: Use ticket proofing when it works :)
+      // TODO: Enable when serialization is fixed
       // const ticketProof = await proveTicket(zapi);
       // const user = await proveRequest({ ticketProof });
       setUser(user);
@@ -57,15 +48,20 @@ async function loginRequest(publicKey: string) {
 async function proveRequest(
   { ticketProof }: { ticketProof: any },
 ) {
+  const {
+    boundConfigToJSON,
+    proofConfigToJSON,
+    revealedClaimsToJSON,
+  } = await import("@pcd/gpc");
   const response = await fetch("/api/v1/users/prove", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      // proof: proofConfigToJSON(ticketProof.proof),
-      // revealedClaims: revealedClaimsToJSON(ticketProof.revealedClaims),
-      // boundConfig: boundConfigToJSON(ticketProof.boundConfig),
+      proof: proofConfigToJSON(ticketProof.proof),
+      revealedClaims: revealedClaimsToJSON(ticketProof.revealedClaims),
+      boundConfig: boundConfigToJSON(ticketProof.boundConfig),
     }),
   });
   if (!response.ok) {
@@ -85,7 +81,7 @@ function proveTicket(zapi: ParcnetAPI) {
     ],
     fieldsToReveal: ({
       owner: true,
-    }) as TicketProofRequest["fieldsToReveal"] & { owner?: boolean },
+    }),
   });
 
   return zapi.gpc.prove({ request: request.schema });

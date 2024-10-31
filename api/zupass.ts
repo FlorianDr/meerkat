@@ -1,44 +1,54 @@
-import { constructZupassPcdAddRequestUrl } from "@pcd/passport-interface";
-import { POD, podEntriesFromSimplifiedJSON } from "@pcd/pod";
-import { PODPCD, PODPCDPackage } from "@pcd/pod-pcd";
+import { POD, PODEntries } from "@pcd/pod";
+import { PODPCD } from "@pcd/pod-pcd";
 import env from "./env.ts";
-import type { Conference } from "./models/conferences.ts";
 import type { Event } from "./models/events.ts";
+import type { Conference } from "./models/conferences.ts";
 
-export async function getZupassAddPCDURL(
-  { conference, event, origin }: {
-    conference: Conference;
-    event: Event;
-    origin: string;
-  },
-): Promise<URL> {
-  // For examples, check: https://github.com/proofcarryingdata/zupass/blob/4dc89f0f65ad719edd22478bcc9f4887b5c1ac3a/apps/consumer-client/src/podExampleConstants.ts#L9
-  const pod = {
-    "zupass_display": "collectable",
-    "zupass_image_url": event.cover ??
-      "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg",
-    "zupass_title": event.title,
-    "zupass_description": event.description ?? "",
-    "code": event.uid,
-    "track": event.track,
+export function createPODPCD(
+  conference: Conference,
+  event: Event,
+  owner: string,
+) {
+  const entries: PODEntries = {
+    "owner": {
+      type: "eddsa_pubkey",
+      value: owner,
+    },
+    "type": {
+      type: "string",
+      value: "events.meerkat.event-card",
+    },
+    "conference": {
+      type: "string",
+      value: conference.name,
+    },
+    "version": {
+      type: "string",
+      value: "1.0.0",
+    },
+    "zupass_display": {
+      type: "string",
+      value: "collectable",
+    },
+    "zupass_image_url": {
+      type: "string",
+      value: event.cover ??
+        "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg",
+    },
+    "zupass_title": {
+      type: "string",
+      value: event.title,
+    },
+    "zupass_description": {
+      type: "string",
+      value: event.description ?? "",
+    },
+    "track": {
+      type: "string",
+      value: event.track ?? "",
+    },
   };
-  const podContent = JSON.stringify(pod);
-  const podFolder = conference?.name ?? "Conference";
-  const newPOD = new PODPCD(
-    event.uid,
-    POD.sign(podEntriesFromSimplifiedJSON(podContent), env.privateKey),
-  );
 
-  const returnUrl = new URL(`/events/${event.uid}/qa`, origin);
-  const serializedPODPCD = await PODPCDPackage.serialize(newPOD);
-
-  const addPODURL = new URL(constructZupassPcdAddRequestUrl(
-    env.zupassUrl,
-    returnUrl.toString(),
-    serializedPODPCD,
-    podFolder,
-    false,
-  ));
-
-  return addPODURL;
+  const pod = POD.sign(entries, env.privateKey);
+  return new PODPCD(event.uid, pod);
 }

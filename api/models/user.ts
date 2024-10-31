@@ -66,6 +66,14 @@ export async function markUserAsBlocked(id: number) {
   ).execute();
 }
 
+export async function getAccounts(userId: number) {
+  const result = await db.select().from(accounts).where(
+    eq(accounts.userId, userId),
+  ).execute();
+
+  return result;
+}
+
 export async function getUserPostCountAfterDate(
   userId: number,
   date: Date,
