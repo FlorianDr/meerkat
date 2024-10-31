@@ -17,11 +17,13 @@ export const useUser = () => {
     },
   );
 
+  const resolvedUser = data?.data || user;
+
   return {
-    data: user,
+    data: resolvedUser,
     error,
     isLoading,
-    isAuthenticated: !!data,
+    isAuthenticated: !!resolvedUser,
     isBlocked: !isLoading && error?.status === 403,
   };
 };
