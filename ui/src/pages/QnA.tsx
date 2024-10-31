@@ -90,7 +90,7 @@ export function QnA() {
               </Flex>
             </Link>
           </nav>
-          <Header title={`QA: ${event?.title}`} subline={event?.speaker} />
+          <Header title={`QA: ${event?.title}`} />
         </header>
         <main className="content flex">
           <QuestionsSection

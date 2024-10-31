@@ -31,7 +31,7 @@ export function EventCard() {
             </Flex>
           </Link>
         </nav>
-        <Header title={`Card: ${event?.title}`} subline={event?.speaker} />
+        <Header title={`Card: ${event?.title}`} />
       </header>
       <main
         className={`content ${hasTempleBackground ? "temple-background" : ""}`}
