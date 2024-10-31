@@ -10,6 +10,8 @@ export function Remote() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
 
+  const hasFileverseLink = event?.features["fileverse-link"] ?? false;
+
   return (
     <Stack height="100dvh" justifyContent="center">
       <Grid templateRows="max-content max-content 1fr" gap="2rem">
@@ -43,12 +45,15 @@ export function Remote() {
           >
             Collect
           </Button>
-          <Link
-            to={"https://docs.fileverse.io/document/4A8cBKBXTf7zhhUWENxD2t"}
-            target="_blank"
-          >
-            Contribute on Fileverse <ExternalLinkIcon />
-          </Link>
+          {hasFileverseLink && event?.uid &&
+            (
+              <Link
+                to={`https://devcon.fileverse.io/devcon7/space?event=${event.uid}`}
+                target="_blank"
+              >
+                Contribute on Fileverse <ExternalLinkIcon />
+              </Link>
+            )}
         </Stack>
       </Grid>
     </Stack>
