@@ -32,7 +32,7 @@ function createReactionElement(icon) {
 }
 
 const { supabaseUrl, supabaseAnonKey } = config;
-const event = JSON.parse(globalThis.eventObject);
+const eventPartial = JSON.parse(globalThis.eventPartial);
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const channelReactions = supabase
@@ -43,7 +43,7 @@ const channelReactions = supabase
       event: "INSERT",
       schema: "public",
       table: "reactions",
-      filter: `event_id=eq.${event.id}`,
+      filter: `event_id=eq.${eventPartial.id}`,
     },
     () => {
       const reactionElement = createReactionElement(HEART_ICON);
@@ -61,15 +61,13 @@ const channelQuestions = supabase
       event: "*",
       schema: "public",
       table: "questions",
-      filter: `event_id=eq.${event.id}`,
+      filter: `event_id=eq.${eventPartial.id}`,
     },
     (_payload) => {
       globalThis.location.reload();
     },
   )
   .subscribe();
-
-const key = event.questions.map((question) => question.id).join(",");
 
 const channelVotes = supabase
   .channel("votes-updates")
@@ -79,7 +77,7 @@ const channelVotes = supabase
       event: "INSERT",
       schema: "public",
       table: "votes",
-      filter: `question_id=in.(${key})`,
+      filter: `question_id=in.(${eventPartial.questionIds})`,
     },
     (_payload) => {
       globalThis.location.reload();
@@ -91,7 +89,7 @@ const channelVotes = supabase
       event: "DELETE",
       schema: "public",
       table: "votes",
-      filter: `question_id=in.(${key})`,
+      filter: `question_id=in.(${eventPartial.questionIds})`,
     },
     (_payload) => {
       globalThis.location.reload();

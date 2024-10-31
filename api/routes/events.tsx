@@ -72,6 +72,11 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/e/${event.uid}/remote`, origin);
 
+  const eventPartial = {
+    id: event.id,
+    questionIds: questions.map((q) => q.id).join(","),
+  };
+
   return c.html(
     <Document>
       <Layout>
@@ -85,8 +90,8 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
       <script src="/index.js" type="module"></script>
       <script
         dangerouslySetInnerHTML={{
-          __html: `globalThis.eventObject = \`${
-            JSON.stringify({ ...event, questions })
+          __html: `globalThis.eventPartial = \`${
+            JSON.stringify(eventPartial)
           }\`;globalThis.config = \`${JSON.stringify(config)}\`;`,
         }}
       />
