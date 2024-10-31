@@ -29,6 +29,7 @@ const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
 const posthogToken = Deno.env.get("POSTHOG_TOKEN");
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+const sentryDSN = Deno.env.get("SENTRY_DSN");
 
 console.info(`Env - zupassUrl: ${zupassUrl}, base: ${base}`);
 
@@ -43,4 +44,5 @@ export default {
   posthogToken,
   supabaseUrl,
   supabaseAnonKey,
+  sentryDSN,
 };

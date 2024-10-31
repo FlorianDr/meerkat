@@ -6,4 +6,5 @@ export const config = {
   posthogToken: env.posthogToken,
   supabaseUrl: env.supabaseUrl,
   supabaseAnonKey: env.supabaseAnonKey,
+  sentryDSN: env.sentryDSN,
 };

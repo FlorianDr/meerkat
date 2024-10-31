@@ -1,4 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.6";
+import * as Sentry from "https://esm.sh/@sentry/browser@8.36.0";
+
+const config = JSON.parse(globalThis.config);
+
+if (config.sentryDSN) {
+  Sentry.init({ dsn: config.sentryDSN });
+}
 
 const HEART_ICON = `
   <svg
@@ -24,7 +31,6 @@ function createReactionElement(icon) {
   return reactionElement;
 }
 
-const config = JSON.parse(globalThis.config);
 const { supabaseUrl, supabaseAnonKey } = config;
 const event = JSON.parse(globalThis.eventObject);
 const supabase = createClient(supabaseUrl, supabaseAnonKey);

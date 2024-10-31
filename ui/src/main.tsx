@@ -13,6 +13,7 @@ import { posthog } from "posthog-js";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseProvider } from "./context/supabase.tsx";
 import { uuidv7 } from "uuidv7";
+import * as Sentry from "@sentry/react";
 
 const config = await fetch("/api/v1/config").then((res) => res.json());
 
@@ -20,6 +21,12 @@ if (config.posthogToken) {
   posthog.init(config.posthogToken, {
     api_host: "https://eu.i.posthog.com",
     person_profiles: "identified_only",
+  });
+}
+
+if (config.sentryDSN) {
+  Sentry.init({
+    dsn: config.sentryDSN,
   });
 }
 

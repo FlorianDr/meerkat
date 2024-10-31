@@ -16,6 +16,7 @@
     "npm:@pcd/pod-pcd@~0.1.3": "0.1.5",
     "npm:@pcd/pod@~0.1.3": "0.1.5",
     "npm:@pcd/proto-pod-gpc-artifacts@0.11": "0.11.0",
+    "npm:@sentry/react@^8.36.0": "8.36.0_react@18.3.1",
     "npm:@supabase/supabase-js@^2.45.6": "2.45.6",
     "npm:@types/node@*": "18.16.19",
     "npm:@uidotdev/usehooks@^2.4.1": "2.4.1_react@18.3.1_react-dom@18.3.1__react@18.3.1",
@@ -2289,6 +2290,79 @@
         "ethers@6.13.3"
       ]
     },
+    "@sentry-internal/browser-utils@8.36.0": {
+      "integrity": "sha512-AVJ9GmQW7jYxaal6hjQnnktsDNype01ajVC4q1RyOn1SfzSnXg6mXwj4xm4ovuJV+aBI7fAZJ55vEX5ASuP0ZA==",
+      "dependencies": [
+        "@sentry/core",
+        "@sentry/types",
+        "@sentry/utils"
+      ]
+    },
+    "@sentry-internal/feedback@8.36.0": {
+      "integrity": "sha512-aAMTm3uDBj8Ta7FwoohpLmJOpWzpWXvvtTbtmSgkeCtPJLUS8DZDCTZ9uCILUkpuYrv2savRUHsdPkxNjgL8FA==",
+      "dependencies": [
+        "@sentry/core",
+        "@sentry/types",
+        "@sentry/utils"
+      ]
+    },
+    "@sentry-internal/replay-canvas@8.36.0": {
+      "integrity": "sha512-KJPLf+qYdrQdmouoAqIPZ2KeapIBlHWbzNdQqNxJFWLHFFjpLUtt0b+87ruvbA/q3NYy2fDwD7EB0tGS1RHBaA==",
+      "dependencies": [
+        "@sentry-internal/replay",
+        "@sentry/core",
+        "@sentry/types",
+        "@sentry/utils"
+      ]
+    },
+    "@sentry-internal/replay@8.36.0": {
+      "integrity": "sha512-lbic98GsSkDeinQDix54tBFEgHUlmBtO+HjXECk9jIE0vOzR4As20/s5ta46t1rKMLlnxOtJuT5jKXeUYogBUw==",
+      "dependencies": [
+        "@sentry-internal/browser-utils",
+        "@sentry/core",
+        "@sentry/types",
+        "@sentry/utils"
+      ]
+    },
+    "@sentry/browser@8.36.0": {
+      "integrity": "sha512-bLrQNe+wD4DkCfB8OD5TF3Rr8KA2+aTo5wF3t3Bf6KVn8//iX1ia1hhtptYiRnbRkG/0AEPxlqL6XfPZYVPQ5A==",
+      "dependencies": [
+        "@sentry-internal/browser-utils",
+        "@sentry-internal/feedback",
+        "@sentry-internal/replay",
+        "@sentry-internal/replay-canvas",
+        "@sentry/core",
+        "@sentry/types",
+        "@sentry/utils"
+      ]
+    },
+    "@sentry/core@8.36.0": {
+      "integrity": "sha512-cbq1WQyRqc/+YpPhjwQxfniUM3ZxmO3Pm1oisTB8dw6mlbgQfGD6aznEIjXWWJY6k6acewJlMUx09N7DnprtBw==",
+      "dependencies": [
+        "@sentry/types",
+        "@sentry/utils"
+      ]
+    },
+    "@sentry/react@8.36.0_react@18.3.1": {
+      "integrity": "sha512-YIJZUx7Q5aulK034cRri0p/7MeP3tdLfdP6vMJMwrVlqoWQI9gKZXikmLIqHUQegZdMRYX5tr03gTWJu3dhYwg==",
+      "dependencies": [
+        "@sentry/browser",
+        "@sentry/core",
+        "@sentry/types",
+        "@sentry/utils",
+        "hoist-non-react-statics",
+        "react"
+      ]
+    },
+    "@sentry/types@8.36.0": {
+      "integrity": "sha512-K1pVFfdGHw115RzGHpwSOqoEPeayn4N1F9IfM0kxrYpQSbFT1X29eak88GBfC8gPiLEF0iFGlSaQ4ERmF7oRcA=="
+    },
+    "@sentry/utils@8.36.0": {
+      "integrity": "sha512-oJ3EDPj0I00z+AwC3EWBpSidXYUoKW0Id8MfMQP5Hflniz3gif7UEReblT+FJgPEVo6+6uNzAncY0MuNMxmDKQ==",
+      "dependencies": [
+        "@sentry/types"
+      ]
+    },
     "@supabase/auth-js@2.65.1": {
       "integrity": "sha512-IA7i2Xq2SWNCNMKxwmPlHafBQda0qtnFr8QnyyBr+KaSxoXXqEzFCnQ1dGTy6bsZjVBgXu++o3qrDypTspaAPw==",
       "dependencies": [
@@ -3784,6 +3858,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/dotenv@~0.225.2",
+      "npm:@sentry/react@^8.36.0",
       "npm:@uidotdev/usehooks@^2.4.1",
       "npm:drizzle-kit@0.24",
       "npm:postgres@^3.4.4"
@@ -3817,6 +3892,7 @@
           "npm:@parcnet-js/app-connector@^1.1.9",
           "npm:@parcnet-js/ticket-spec@^1.1.9",
           "npm:@pcd/gpc@0.3",
+          "npm:@sentry/react@^8.36.0",
           "npm:@supabase/supabase-js@^2.45.6",
           "npm:framer-motion@^11.3.28",
           "npm:posthog-js@^1.176.0",

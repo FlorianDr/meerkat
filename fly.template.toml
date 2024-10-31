@@ -13,6 +13,7 @@ PORT = '8000'
 BASE_URL = '$BASE_URL'
 ZUPASS_ZAPP_NAME = '$ZUPASS_ZAPP_NAME'
 ZUPASS_URL = '$ZUPASS_URL'
+SENTRY_DSN = '$SENTRY_DSN'
 
 [processes]
 app = 'task api:start'

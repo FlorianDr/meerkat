@@ -7,6 +7,7 @@
     "@parcnet-js/app-connector": "npm:@parcnet-js/app-connector@^1.1.9",
     "@parcnet-js/ticket-spec": "npm:@parcnet-js/ticket-spec@^1.1.9",
     "@pcd/gpc": "npm:@pcd/gpc@^0.3.0",
+    "@sentry/react": "npm:@sentry/react@^8.36.0",
     "@supabase/supabase-js": "npm:@supabase/supabase-js@^2.45.6",
     "framer-motion": "npm:framer-motion@^11.3.28",
     "posthog-js": "npm:posthog-js@^1.176.0",
