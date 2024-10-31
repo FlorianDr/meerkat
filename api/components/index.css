@@ -84,7 +84,7 @@ ul {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: hidden;
+  overflow-y: auto;
   max-height: 32rem;
 }
 
