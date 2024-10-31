@@ -137,12 +137,16 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 3rem;
-  height: 20rem;
+  margin-bottom: 4rem;
+  margin-top: 100px;
 
   & img {
     max-height: 20rem;
   }
+}
+
+.temple-background {
+  background: url("/Background.svg") center -40px / contain no-repeat;
 }
 
 .card {

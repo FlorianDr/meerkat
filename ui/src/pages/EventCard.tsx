@@ -13,6 +13,8 @@ export function EventCard() {
   const { data: event } = useEvent(uid);
   const secret = searchParams.get("secret");
 
+  const hasTempleBackground = event?.features["temple-background"] ?? false;
+
   return (
     <div className="layout">
       <header className="header">
@@ -31,7 +33,9 @@ export function EventCard() {
         </nav>
         <Header title={`Card: ${event?.title}`} subline={event?.speaker} />
       </header>
-      <main className="content">
+      <main
+        className={`content ${hasTempleBackground ? "temple-background" : ""}`}
+      >
         <Card event={event} canCollect={!!secret} />
       </main>
     </div>
