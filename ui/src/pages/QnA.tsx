@@ -113,6 +113,7 @@ export function QnA() {
           <Footer
             event={event}
             user={user}
+            isUserLoading={isLoading}
             isAuthenticated={isAuthenticated}
             onReactClick={onReactClick}
             refresh={refresh}

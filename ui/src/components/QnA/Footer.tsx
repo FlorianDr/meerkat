@@ -15,6 +15,7 @@ const MAX_QUESTION_LENGTH = 200;
 export type FooterProps = {
   event: Event | undefined;
   isAuthenticated: boolean;
+  isUserLoading: boolean;
   user: User | undefined;
   refresh: () => void;
   onReactClick: () => void;
@@ -23,6 +24,7 @@ export type FooterProps = {
 export function Footer({
   event,
   isAuthenticated,
+  isUserLoading,
   user,
   refresh,
   onReactClick,
@@ -128,7 +130,7 @@ export function Footer({
             Signed as {user?.name ?? user?.uid ?? "Anonymous"}
           </span>
         </div>
-        {!isAuthenticated && (
+        {!isAuthenticated && !isUserLoading && (
           <LoginOverlay>
             <PrimaryButton
               isLoading={isLoading}
