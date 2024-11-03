@@ -19,7 +19,6 @@ import { getConferenceRoles } from "../models/roles.ts";
 import {
   boundConfigFromJSON,
   gpcVerify,
-  proofConfigFromJSON,
   revealedClaimsFromJSON,
 } from "@pcd/gpc";
 import { fromFileUrl } from "@std/path/from-file-url";
@@ -182,7 +181,7 @@ app.post(
   async (c) => {
     const ticketProof = c.req.valid("json");
 
-    const proofConfig = proofConfigFromJSON(ticketProof.proof);
+    const proofConfig = ticketProof.proof;
     const boundConfig = boundConfigFromJSON(ticketProof.boundConfig);
     const revealedClaims = revealedClaimsFromJSON(ticketProof.revealedClaims);
 

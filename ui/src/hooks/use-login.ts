@@ -14,11 +14,8 @@ export function useLogin() {
     try {
       setLoading(true);
       const zapi = await connect();
-      const publicKey = await zapi.identity.getPublicKey();
-      const user = await loginRequest(publicKey);
-      // TODO: Enable when serialization is fixed
-      // const ticketProof = await proveTicket(zapi);
-      // const user = await proveRequest({ ticketProof });
+      const ticketProof = await proveTicket(zapi);
+      const user = await proveRequest({ ticketProof });
       setUser(user);
     } catch (error) {
       throw error;
@@ -30,27 +27,11 @@ export function useLogin() {
   return { login, isLoading };
 }
 
-async function loginRequest(publicKey: string) {
-  const response = await fetch("/api/v1/users/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ publicKey }),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to login");
-  }
-  const { data: { user } } = await response.json();
-  return user as User;
-}
-
 async function proveRequest(
   { ticketProof }: { ticketProof: any },
 ) {
   const {
     boundConfigToJSON,
-    proofConfigToJSON,
     revealedClaimsToJSON,
   } = await import("@pcd/gpc");
   const response = await fetch("/api/v1/users/prove", {
@@ -59,7 +40,7 @@ async function proveRequest(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      proof: proofConfigToJSON(ticketProof.proof),
+      proof: ticketProof.proof,
       revealedClaims: revealedClaimsToJSON(ticketProof.revealedClaims),
       boundConfig: boundConfigToJSON(ticketProof.boundConfig),
     }),
