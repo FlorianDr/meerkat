@@ -16,14 +16,6 @@ import { getCookie, setCookie } from "@hono/hono/cookie";
 import { createUserFromAccount } from "../models/user.ts";
 import { markUserAsBlocked } from "../models/user.ts";
 import { getConferenceRoles } from "../models/roles.ts";
-import {
-  boundConfigFromJSON,
-  gpcVerify,
-  revealedClaimsFromJSON,
-} from "@pcd/gpc";
-import { fromFileUrl } from "@std/path/from-file-url";
-import { join } from "@std/path/join";
-import { dirname } from "@std/path/dirname";
 
 const app = new Hono();
 
@@ -169,35 +161,29 @@ app.post(
 // TODO: Use correct ticket proof scheme
 const proofScheme = z.any();
 
-const currentDir = dirname(fromFileUrl(import.meta.url));
-const artifactsPath = join(
-  currentDir,
-  "../../.cache/npm/registry.npmjs.org/@pcd/proto-pod-gpc-artifacts/0.11.0",
-);
-
 app.post(
   "/api/v1/users/prove",
   zValidator("json", proofScheme),
   async (c) => {
     const ticketProof = c.req.valid("json");
 
-    const proofConfig = ticketProof.proof;
-    const boundConfig = boundConfigFromJSON(ticketProof.boundConfig);
-    const revealedClaims = revealedClaimsFromJSON(ticketProof.revealedClaims);
+    const response = await fetch(`${env.verifierEndpoint}/verify`, {
+      body: JSON.stringify(ticketProof),
+      method: "POST",
+    });
 
-    const verified = await gpcVerify(
-      proofConfig,
-      boundConfig,
-      revealedClaims,
-      artifactsPath,
-    );
-
-    if (!verified) {
-      throw new HTTPException(401, { message: `Proof not valid` });
+    if (!response.ok) {
+      throw new HTTPException(500, { message: "Failed to verify prove" });
     }
 
-    // TODO: Get public key from revealed claims
-    const publicKey = "";
+    const body = await response.json();
+
+    if (!body.data.verified) {
+      throw new HTTPException(400, { message: "Prove is invalid" });
+    }
+
+    const publicKey =
+      ticketProof.revealedClaims.pods.ticket.entries.owner.eddsa_pubkey;
 
     let user = await getUserByProvider("zupass", publicKey);
 
