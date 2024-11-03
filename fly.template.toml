@@ -37,3 +37,7 @@ path = "/api/v1/conferences"
 memory = '2gb'
 cpu_kind = 'performance'
 cpus = 1
+
+[[statics]]
+guest_path = "/app/ui/dist"
+url_prefix = "/assets"
