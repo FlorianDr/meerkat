@@ -14,13 +14,9 @@ export function createPODPCD(
       type: "eddsa_pubkey",
       value: owner,
     },
-    "type": {
+    "pod_type": {
       type: "string",
-      value: "events.meerkat.event-card",
-    },
-    "conference": {
-      type: "string",
-      value: conference.name,
+      value: "events.meerkat.attendance",
     },
     "version": {
       type: "string",
@@ -43,12 +39,28 @@ export function createPODPCD(
       type: "string",
       value: event.description ?? "",
     },
+    "start_date": {
+      type: "date",
+      value: event.start,
+    },
+    "end_date": {
+      type: "date",
+      value: event.end,
+    },
+    "conference": {
+      type: "string",
+      value: conference.name,
+    },
     "track": {
       type: "string",
       value: event.track ?? "",
     },
+    "code": {
+      type: "string",
+      value: event.uid,
+    },
   };
 
   const pod = POD.sign(entries, env.privateKey);
-  return new PODPCD(event.uid, pod);
+  return new PODPCD(`att_${event.uid}`, pod);
 }
