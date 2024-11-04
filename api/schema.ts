@@ -32,6 +32,7 @@ export const events = pgTable("events", {
   track: text("track"),
   cover: text("cover"),
   speaker: text("speaker"),
+  secret: text("secret"),
 });
 
 export const questions = pgTable(

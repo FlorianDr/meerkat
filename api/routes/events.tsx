@@ -32,9 +32,8 @@ import {
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { config } from "../models/config.ts";
 import { getFeatures } from "../models/features.ts";
-import { createPODPCD } from "../zupass.ts";
+import { createAttendancePOD } from "../zupass.ts";
 import { getConferenceRolesForConference } from "../models/roles.ts";
-import { PODPCDPackage } from "@pcd/pod-pcd";
 
 const app = new Hono();
 
@@ -120,9 +119,11 @@ app.get("/api/v1/events/:uid", eventMiddleware, async (c) => {
 
   const votes = questions.reduce((acc, question) => acc + question.votes, 0);
 
+  const { secret: _secret, ...rest } = event;
+
   return c.json({
     data: {
-      ...event,
+      ...rest,
       questions: questions.map(toApiQuestion),
       votes,
       participants,
@@ -150,10 +151,11 @@ const toApiQuestion = (
 });
 
 app.get(
-  "/api/v1/events/:uid/event-card",
+  "/api/v1/events/:uid/attendance",
   jwt({ secret: env.secret, cookie: "jwt" }),
   eventMiddleware,
   async (c) => {
+    const secret = c.req.query("secret");
     const event = c.get("event");
     const payload = c.get("jwtPayload");
     const [conference, user] = await Promise.all([
@@ -165,14 +167,18 @@ app.get(
       throw new HTTPException(401, { message: "User not found" });
     }
 
+    if (event.secret && event.secret !== secret) {
+      throw new HTTPException(401, { message: "Invalid secret" });
+    }
+
     const roles = await getConferenceRolesForConference(
       user?.id,
       event.conferenceId,
     );
 
-    if (!roles.some((r) => r.role === "organizer" || r.role === "attendee")) {
-      throw new HTTPException(403, { message: "User is not authorized" });
-    }
+    // if (!roles.some((r) => r.role === "organizer" || r.role === "attendee")) {
+    //   throw new HTTPException(403, { message: "User is not authorized" });
+    // }
 
     const zupassAccount = await getAccounts(user.id);
     const zupassId = zupassAccount?.find((a) => a.provider === "zupass")?.id;
@@ -183,9 +189,10 @@ app.get(
       });
     }
 
-    const podPcd = createPODPCD(conference!, event, zupassId);
+    const pod = createAttendancePOD(conference!, event, zupassId);
+    const serialized = pod.toJSON();
     return c.json({
-      data: PODPCDPackage.serialize(podPcd),
+      data: serialized,
     });
   },
 );
