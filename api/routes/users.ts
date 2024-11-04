@@ -19,6 +19,9 @@ import { getConferenceRoles } from "../models/roles.ts";
 
 const app = new Hono();
 
+const TICKET_SIGNER_PUBLIC_KEY = "YwahfUdUYehkGMaWh0+q3F8itx2h8mybjPmt8CmTJSs";
+const EVENT_ID = "5074edf5-f079-4099-b036-22223c0c6995";
+
 app.get(
   "/api/v1/users/me",
   jwt({ secret: env.secret, cookie: "jwt" }),
@@ -180,6 +183,23 @@ app.post(
 
     if (!body.data.verified) {
       throw new HTTPException(400, { message: "Prove is invalid" });
+    }
+
+    if (
+      ticketProof.revealedClaims.pods.ticket.signerPublicKey !==
+        TICKET_SIGNER_PUBLIC_KEY
+    ) {
+      throw new HTTPException(400, {
+        message:
+          `Signer public key mismatch. expected: ${TICKET_SIGNER_PUBLIC_KEY} actual: ${body.data.revealedClaims.pods.ticket.signerPublicKey}`,
+      });
+    }
+
+    if (ticketProof.revealedClaims.pods.ticket.entries.eventId !== EVENT_ID) {
+      throw new HTTPException(400, {
+        message:
+          `Event id mismatch. expected: ${EVENT_ID} actual: ${body.data.revealedClaims.pods.ticket.entries.eventId}`,
+      });
     }
 
     const publicKey =

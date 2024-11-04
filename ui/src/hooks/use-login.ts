@@ -4,6 +4,7 @@ import { UserContext } from "../context/user.tsx";
 import { User } from "../types.ts";
 import { ParcnetAPI } from "@parcnet-js/app-connector";
 import { ticketProofRequest } from "@parcnet-js/ticket-spec";
+import { classificationTuples } from "./classification-tuples.ts";
 
 export function useLogin() {
   const { setUser } = useContext(UserContext);
@@ -54,14 +55,10 @@ async function proveRequest(
 
 function proveTicket(zapi: ParcnetAPI) {
   const request = ticketProofRequest({
-    classificationTuples: [
-      {
-        signerPublicKey: "YwahfUdUYehkGMaWh0+q3F8itx2h8mybjPmt8CmTJSs",
-        eventId: "5074edf5-f079-4099-b036-22223c0c6995",
-      },
-    ],
+    classificationTuples,
     fieldsToReveal: ({
       owner: true,
+      eventId: true,
     }),
   });
 
