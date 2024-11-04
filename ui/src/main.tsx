@@ -56,9 +56,9 @@ const theme = extendTheme(
 const zapp: Zapp = {
   name: config.zappName,
   permissions: {
+    // TODO: Move it to connect flow and parameterize it depending
+    // on the current conference
     REQUEST_PROOF: { collections: ["Devcon SEA"] },
-    READ_PUBLIC_IDENTIFIERS: {},
-    READ_POD: { collections: [`${config.zappName}: Devcon SEA`] },
     INSERT_POD: { collections: [`${config.zappName}: Devcon SEA`] },
   },
 };

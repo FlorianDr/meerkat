@@ -1,10 +1,12 @@
 import { POD, PODEntries } from "@pcd/pod";
-import { PODPCD } from "@pcd/pod-pcd";
 import env from "./env.ts";
 import type { Event } from "./models/events.ts";
 import type { Conference } from "./models/conferences.ts";
 
-export function createPODPCD(
+const url = new URL(env.base);
+const reversedDomain = url.hostname.split(".").reverse().join(".");
+
+export function createAttendancePOD(
   conference: Conference,
   event: Event,
   owner: string,
@@ -16,7 +18,7 @@ export function createPODPCD(
     },
     "pod_type": {
       type: "string",
-      value: "events.meerkat.attendance",
+      value: `${reversedDomain}/attendance`,
     },
     "version": {
       type: "string",
@@ -61,6 +63,5 @@ export function createPODPCD(
     },
   };
 
-  const pod = POD.sign(entries, env.privateKey);
-  return new PODPCD(`att_${event.uid}`, pod);
+  return POD.sign(entries, env.privateKey);
 }

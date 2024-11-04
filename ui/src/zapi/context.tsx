@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { type ParcnetAPI, type Zapp } from "@parcnet-js/app-connector";
 
 export type ZAPIProviderProps = {
@@ -37,4 +37,9 @@ export function ZAPIProvider({ children, zapp, zupassUrl }: ZAPIProviderProps) {
       </ZAPIContext.Provider>
     </>
   );
+}
+
+export function useZAPI() {
+  const { context } = useContext(ZAPIContext);
+  return context;
 }

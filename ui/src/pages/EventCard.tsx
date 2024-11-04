@@ -6,12 +6,14 @@ import { remote } from "../routes.ts";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { Flex } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import { useCollect } from "../hooks/use-collect.ts";
 
 export function EventCard() {
   const { uid } = useParams();
   const [searchParams] = useSearchParams();
   const { data: event } = useEvent(uid);
   const secret = searchParams.get("secret");
+  const { collect, isCollecting } = useCollect(event!, secret);
 
   const hasTempleBackground = event?.features["temple-background"] ?? false;
 
@@ -38,7 +40,12 @@ export function EventCard() {
       <main
         className={`content ${hasTempleBackground ? "temple-background" : ""}`}
       >
-        <Card event={event} canCollect={!!secret} />
+        <Card
+          event={event}
+          canCollect={!!secret}
+          collect={collect}
+          isCollecting={isCollecting}
+        />
       </main>
     </div>
   );

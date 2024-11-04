@@ -150,12 +150,17 @@ const toApiQuestion = (
     : undefined,
 });
 
-app.get(
+const attendanceSchema = zod.object({
+  secret: zod.string(),
+});
+
+app.post(
   "/api/v1/events/:uid/attendance",
   jwt({ secret: env.secret, cookie: "jwt" }),
+  zValidator("json", attendanceSchema),
   eventMiddleware,
   async (c) => {
-    const secret = c.req.query("secret");
+    const secret = c.req.valid("json").secret;
     const event = c.get("event");
     const payload = c.get("jwtPayload");
     const [conference, user] = await Promise.all([
@@ -168,7 +173,7 @@ app.get(
     }
 
     if (event.secret && event.secret !== secret) {
-      throw new HTTPException(401, { message: "Invalid secret" });
+      throw new HTTPException(401, { message: `Invalid secret ${secret}` });
     }
 
     const roles = await getConferenceRolesForConference(
@@ -185,14 +190,13 @@ app.get(
 
     if (!zupassId) {
       throw new HTTPException(400, {
-        message: "User does not have a Zupass account",
+        message: `User ${user.uid} does not have a Zupass account`,
       });
     }
 
     const pod = createAttendancePOD(conference!, event, zupassId);
-    const serialized = pod.toJSON();
     return c.json({
-      data: serialized,
+      data: pod.toJSON(),
     });
   },
 );

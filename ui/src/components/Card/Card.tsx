@@ -1,13 +1,17 @@
 import { Flex } from "@chakra-ui/react";
-import { Event } from "../../hooks/use-event.ts";
+import { Event } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 export type CardProps = {
   event: Event | undefined;
   canCollect?: boolean;
+  collect?: () => Promise<void>;
+  isCollecting?: boolean;
 };
 
-export const Card = ({ event, canCollect = false }: CardProps) => {
+export const Card = (
+  { event, canCollect = false, collect, isCollecting }: CardProps,
+) => {
   return (
     <div className="card">
       <div className="collect-card-image">
@@ -21,9 +25,9 @@ export const Card = ({ event, canCollect = false }: CardProps) => {
         {canCollect
           ? (
             <PrimaryButton
-              as="a"
-              href={event?.collectURL}
-              target="_blank"
+              isLoading={isCollecting}
+              loadingText="Collecting..."
+              onClick={collect}
               disabled={!canCollect}
             >
               Collect

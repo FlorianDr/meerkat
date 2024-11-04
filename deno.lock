@@ -11,7 +11,7 @@
     "npm:@parcnet-js/app-connector@^1.1.9": "1.1.9",
     "npm:@parcnet-js/ticket-spec@^1.1.9": "1.1.9",
     "npm:@pcd/gpc@0.4": "0.4.0",
-    "npm:@pcd/pod-pcd@0.5": "0.5.0",
+    "npm:@pcd/pod@*": "0.5.0",
     "npm:@pcd/pod@0.5": "0.5.0",
     "npm:@sentry/react@^8.36.0": "8.36.0_react@18.3.1",
     "npm:@supabase/supabase-js@^2.45.6": "2.45.6",
@@ -1557,19 +1557,6 @@
         "fastfile",
         "snarkjs",
         "url-join"
-      ]
-    },
-    "@pcd/pcd-types@0.15.0": {
-      "integrity": "sha512-2sWpSuYvdBc2Fo+GnxkrRt2YW1kYDceXFBCzKrpa0D12uCRl8/Y3+4HHEGoqZnWV8ONMN9Dk4x5UlkmFCf3ntw=="
-    },
-    "@pcd/pod-pcd@0.5.0": {
-      "integrity": "sha512-7Jwkxw4ML21e1Iv9glH+RxK6M+GEXo28ksQgQbQu5eRLlmFnsKvhoEsD8rtAnJTkFeNYFuA9dXIEOkNHRtMCUQ==",
-      "dependencies": [
-        "@pcd/pcd-types",
-        "@pcd/pod",
-        "@pcd/util",
-        "json-bigint",
-        "uuid"
       ]
     },
     "@pcd/pod@0.5.0": {
@@ -3704,7 +3691,6 @@
           "jsr:@std/dotenv@~0.225.2",
           "jsr:@supabase/supabase-js@^2.45.6",
           "npm:@hono/zod-validator@~0.2.2",
-          "npm:@pcd/pod-pcd@0.5",
           "npm:@pcd/pod@0.5",
           "npm:drizzle-orm@~0.32.1",
           "npm:hono@^4.5.3",
@@ -3722,6 +3708,7 @@
           "npm:@parcnet-js/app-connector@^1.1.9",
           "npm:@parcnet-js/ticket-spec@^1.1.9",
           "npm:@pcd/gpc@0.4",
+          "npm:@pcd/pod@0.5",
           "npm:@sentry/react@^8.36.0",
           "npm:@supabase/supabase-js@^2.45.6",
           "npm:framer-motion@^11.3.28",
