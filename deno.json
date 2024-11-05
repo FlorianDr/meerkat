@@ -10,10 +10,13 @@
     "db:generate": "deno run -A --node-modules-dir npm:drizzle-kit generate",
     "ui:dev": "deno run -A --node-modules-dir npm:vite ui",
     "ui:build": "deno run -A --node-modules-dir npm:vite build ui",
-    "fmt": "deno fmt --ignore=.cache,ui/.vite,drizzle",
+    "fmt": "deno fmt --ignore=.cache,ui/.vite,drizzle,ui/dist",
     "setup": "cp ./scripts/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
   },
-  "workspace": ["ui", "api"],
+  "workspace": [
+    "ui",
+    "api"
+  ],
   "imports": {
     "@sentry/react": "npm:@sentry/react@^8.36.0",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
@@ -22,7 +25,11 @@
     "postgres": "npm:postgres@^3.4.4"
   },
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "deno.window"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "deno.window"
+    ],
     "jsx": "react-jsx",
     "jsxImportSource": "https://esm.sh/react@18.3.1"
   }

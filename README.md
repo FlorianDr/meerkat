@@ -26,6 +26,28 @@ Open your browser and visit
 [http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t](http://localhost:8000/events/01j4yc358mf4xrd5aqj8kvj75t)
 to view the app.
 
+## Environment Variables
+
+The following environment variables are required to run the application:
+
+- DATABASE_URL: The connection string for the database.
+- ADMIN_TOKEN: The secret token used to authenticate admin requests.
+- PRIVATE_KEY: The private key used to sign PODs.
+- BASE_URL: The base URL of the application.
+- JWT_SECRET: The secret used to sign JWT tokens.
+- CODE_SECRET: The secret used to sign codes for event secrets.
+- ZUPASS_URL: The URL of the Zupass server.
+- ZUPASS_ZAPP_NAME: The name of the Zupass zapp.
+- SUPABASE_URL: The URL of the Supabase server.
+- SUPABASE_ANON_KEY: The anon key for the Supabase server.
+- VERIFIER_ENDPOINT: The URL of the verifier endpoint.
+
+Optionally, you can set the following environment variables to enable additional
+features:
+
+- POSTHOG_TOKEN: The token for the PostHog server.
+- SENTRY_DSN: The DSN for the Sentry server.
+
 ## FAQ
 
 ### How to generate secrets?

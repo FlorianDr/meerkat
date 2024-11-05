@@ -11,6 +11,12 @@ if (!secret || !meerkatApiBaseUrl) {
   );
 }
 
+export async function getConferences() {
+  const response = await fetch(`${meerkatApiBaseUrl}/api/v1/conferences`);
+  const { data } = await response.json();
+  return data;
+}
+
 export async function createConference(conference: ConferenceCreate) {
   const response = await fetch(`${meerkatApiBaseUrl}/api/v1/conferences`, {
     method: "POST",

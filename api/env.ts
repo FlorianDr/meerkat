@@ -17,10 +17,22 @@ if (!privateKey) {
   throw new Error("PRIVATE_KEY is required");
 }
 
-const secret = Deno.env.get("SECRET");
+const secret = Deno.env.get("JWT_SECRET");
 
 if (!secret) {
   throw new Error("SECRET is required");
+}
+
+const verifierEndpoint = Deno.env.get("VERIFIER_ENDPOINT");
+
+if (!verifierEndpoint) {
+  throw new Error("VERIFIER_ENDPOINT is required");
+}
+
+const codeSecret = Deno.env.get("CODE_SECRET");
+
+if (!codeSecret) {
+  throw new Error("CODE_SECRET is required");
 }
 
 const zupassUrl = Deno.env.get("ZUPASS_URL") ?? "https://zupass.org";
@@ -30,9 +42,10 @@ const posthogToken = Deno.env.get("POSTHOG_TOKEN");
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 const sentryDSN = Deno.env.get("SENTRY_DSN");
-const verifierEndpoint = Deno.env.get("VERIFIER_ENDPOINT");
 
-console.info(`Env - zupassUrl: ${zupassUrl}, base: ${base}`);
+console.info(
+  `Env - zupassUrl: ${zupassUrl}, base: ${base}, verifier: ${verifierEndpoint}`,
+);
 
 export default {
   adminToken,
@@ -47,4 +60,5 @@ export default {
   supabaseAnonKey,
   sentryDSN,
   verifierEndpoint,
+  codeSecret,
 };

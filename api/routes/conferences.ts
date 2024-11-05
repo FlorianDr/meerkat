@@ -7,10 +7,11 @@ import {
   getConferenceById,
   getConferences,
 } from "../models/conferences.ts";
-import { createEvents, Event, getEvents } from "../models/events.ts";
+import { Event, getEvents, upsertEvents } from "../models/events.ts";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "@hono/hono/http-exception";
 import { accepts } from "@hono/hono/accepts";
+import { createSigner } from "../utils/secret.ts";
 
 const app = new Hono();
 
@@ -64,7 +65,7 @@ app.get(
     const format = accepts(c, {
       header: "Accept",
       supports: [FORMATS.csv, FORMATS.json],
-      default: FORMATS.csv,
+      default: FORMATS.json,
     });
 
     const events = await getEvents(conferenceId);
@@ -128,9 +129,12 @@ app.post(
     }
 
     const parsedJSON = c.req.valid("json");
-    const events = parsedJSON.map((event) => {
+    const sign = await createSigner(env.codeSecret);
+    const promises = parsedJSON.map(async (event) => {
+      const secret = await sign(event.uid);
       return {
         ...event,
+        secret,
         description: event.description ?? null,
         abstract: event.abstract ?? null,
         track: event.track ?? null,
@@ -139,7 +143,9 @@ app.post(
       };
     });
 
-    const response = await createEvents(conferenceId, events);
+    const events = await Promise.all(promises);
+
+    const response = await upsertEvents(conferenceId, events);
 
     return c.json({ data: response }, 201);
   },

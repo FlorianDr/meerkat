@@ -1,14 +1,21 @@
 import { EventCreate } from "../api/routes/conferences.ts";
 import { getEvent, getSessions, type Session } from "./devcon.ts";
 import { eventId } from "./constants.ts";
-import { createConference, createEvents } from "./api.ts";
+import { createConference, createEvents, getConferences } from "./api.ts";
 import { slice } from "./arrays.ts";
 
 const event = await getEvent(eventId);
 const sessions = await getSessions(eventId);
+const conferences = await getConferences();
 
-const conference = await createConference({ name: event.title });
-console.info(`Created conference: ${conference.id}`);
+// We match by name for now.
+let conference = conferences.find((c) => c.name === event.title);
+if (conference) {
+  console.info(`Found conference: ${conference.id}`);
+} else {
+  conference = await createConference({ name: event.title });
+  console.info(`Created conference: ${conference.id}`);
+}
 
 // Max 50 events per request
 const eventSlices = slice(sessions, 50);

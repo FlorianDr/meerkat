@@ -2,7 +2,9 @@
   "version": "4",
   "specifiers": {
     "jsr:@libs/qrcode@^1.2.5": "1.2.5",
+    "jsr:@std/crypto@^1.0.3": "1.0.3",
     "jsr:@std/dotenv@~0.225.2": "0.225.2",
+    "jsr:@std/encoding@^1.0.5": "1.0.5",
     "npm:@chakra-ui/icons@^2.1.1": "2.1.1_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_react@18.3.1",
     "npm:@chakra-ui/react@^2.8.2": "2.8.2_@emotion+react@11.13.3__react@18.3.1_@emotion+styled@11.13.0__@emotion+react@11.13.3___react@18.3.1__react@18.3.1_framer-motion@11.3.31__react@18.3.1__react-dom@18.3.1___react@18.3.1_react@18.3.1_react-dom@18.3.1__react@18.3.1_@chakra-ui+system@2.6.2__@emotion+react@11.13.3___react@18.3.1__@emotion+styled@11.13.0___@emotion+react@11.13.3____react@18.3.1___react@18.3.1__react@18.3.1_@chakra-ui+styled-system@2.9.2",
     "npm:@emotion/react@^11.13.0": "11.13.3_react@18.3.1",
@@ -41,8 +43,14 @@
     "@libs/qrcode@1.2.5": {
       "integrity": "86b2ff67a19f03b57c2772dad5e8b1534a9994d5a025414c52d8f4ebc0e44796"
     },
+    "@std/crypto@1.0.3": {
+      "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
+    },
     "@std/dotenv@0.225.2": {
       "integrity": "e2025dce4de6c7bca21dece8baddd4262b09d5187217e231b033e088e0c4dd23"
+    },
+    "@std/encoding@1.0.5": {
+      "integrity": "ecf363d4fc25bd85bd915ff6733a7e79b67e0e7806334af15f4645c569fefc04"
     }
   },
   "npm": {
@@ -3688,7 +3696,9 @@
       "api": {
         "dependencies": [
           "jsr:@libs/qrcode@^1.2.5",
+          "jsr:@std/crypto@^1.0.3",
           "jsr:@std/dotenv@~0.225.2",
+          "jsr:@std/encoding@^1.0.5",
           "jsr:@supabase/supabase-js@^2.45.6",
           "npm:@hono/zod-validator@~0.2.2",
           "npm:@pcd/pod@0.5",

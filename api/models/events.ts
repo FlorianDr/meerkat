@@ -1,22 +1,35 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, getTableColumns, sql } from "drizzle-orm";
 import { union } from "drizzle-orm/pg-core";
 import db from "../db.ts";
 import { events, questions, votes } from "../schema.ts";
+import { buildConflictUpdateColumns } from "./utils.ts";
 
 const FALLBACK_COVER =
   "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg";
 
-export async function createEvents(
+export async function upsertEvents(
   conferenceId: number,
   newEvents: Omit<Event, "id" | "conferenceId" | "createAt">[],
 ) {
-  const results = await db.insert(events).values(
-    newEvents.map((event) => ({
-      ...event,
-      uid: event.uid.toUpperCase(),
-      conferenceId,
-    })),
-  ).returning().execute();
+  const allColumns = getTableColumns(events);
+  const updateColumns = Object.keys(allColumns).filter(
+    (column) => !["uid", "conferenceId", "createdAt", "id"].includes(column),
+  );
+
+  const results = await db.insert(events)
+    .values(
+      newEvents.map((event) => ({
+        ...event,
+        uid: event.uid.toUpperCase(),
+        conferenceId,
+      })),
+    )
+    .onConflictDoUpdate({
+      target: events.uid,
+      set: buildConflictUpdateColumns(events, updateColumns),
+    })
+    .returning()
+    .execute();
   return results;
 }
 
