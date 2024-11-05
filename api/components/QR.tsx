@@ -1,7 +1,7 @@
 /** @jsxImportSource @hono/hono/jsx */
 import { type FC } from "@hono/hono/jsx";
-import { qrcode } from "@libs/qrcode";
 import { Event } from "../models/events.ts";
+import { generateQRCodeSVG } from "../code.ts";
 
 // TODO: move to a separate file once agreed on structure
 const QrFrame: FC = () => {
@@ -26,14 +26,7 @@ const QR: FC<QRProps> = ({
   event,
   conferenceName,
 }) => {
-  // set bg transparent
-  const svg = qrcode(url, { output: "svg", border: 0 }).replace(
-    '<rect width="100%" height="100%" fill="white"/>',
-    '<rect width="100%" height="100%" fill="none"/>',
-  ).replace(
-    'version="1.1"',
-    'style="width: 100%; height: 100%;" version="1.1"',
-  );
+  const svg = generateQRCodeSVG(url.toString());
 
   return (
     <div className="qr-layout">
@@ -57,11 +50,12 @@ const QR: FC<QRProps> = ({
       <footer className="qr-footer">
         <h2>{conferenceName}</h2>
         <h2>
-          {/* QUESTION: Is it today? */}
           {event?.start.toLocaleTimeString("en-US", {
             month: "long",
             day: "numeric",
             year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
           })}
         </h2>
       </footer>

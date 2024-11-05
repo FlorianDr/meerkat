@@ -18,7 +18,12 @@ import {
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { countParticipants, getEventByUID } from "../models/events.ts";
-import { createQuestion, getQuestions } from "../models/questions.ts";
+import {
+  createQuestion,
+  getQuestions,
+  Sort,
+  Sorts,
+} from "../models/questions.ts";
 import {
   createReaction,
   getUserReactionCountAfterDate,
@@ -34,6 +39,9 @@ import { config } from "../models/config.ts";
 import { getFeatures } from "../models/features.ts";
 import { createAttendancePOD } from "../zupass.ts";
 import { getConferenceRolesForConference } from "../models/roles.ts";
+import { bearerAuth } from "@hono/hono/bearer-auth";
+import { createSigner } from "../utils/secret.ts";
+import { generateQRCodePNG } from "../code.ts";
 
 const app = new Hono();
 
@@ -201,10 +209,30 @@ app.post(
   },
 );
 
+app.get(
+  "/api/v1/events/:uid/code",
+  eventMiddleware,
+  bearerAuth({ token: env.adminToken }),
+  async (c) => {
+    const event = c.get("event");
+    const sign = await createSigner(env.codeSecret);
+    const code = await sign(event.uid);
+    const url = new URL(`/e/${event.uid}/remote`, env.base);
+    url.searchParams.set("secret", code);
+    const imageBytes = await generateQRCodePNG(url.toString());
+    c.res.headers.set("Content-Type", "image/png");
+    c.res.headers.set("Content-Disposition", "inline");
+    return c.body(imageBytes);
+  },
+);
+
 app.get("/api/v1/events/:uid/questions", eventMiddleware, async (c) => {
   const event = c.get("event");
   const sort = c.req.query("sort") ?? "newest";
-  const questions = await getQuestions(event.id, sort);
+  if (!Sorts.includes(sort as Sort)) {
+    throw new HTTPException(400, { message: `Invalid sort ${sort}` });
+  }
+  const questions = await getQuestions(event.id, sort as Sort);
 
   return c.json({
     data: questions.map(toApiQuestion),

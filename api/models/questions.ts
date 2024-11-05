@@ -62,6 +62,7 @@ const getQuestionsPreparedStatementByCreation = db
   .prepare("questions_with_votes_by_event_id");
 
 export type Sort = "popular" | "newest";
+export const Sorts = ["popular", "newest"] as const;
 
 export async function getQuestions(
   eventId: number,
