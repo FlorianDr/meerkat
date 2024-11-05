@@ -13,7 +13,14 @@ export const generateQRCodeSVG = (url: string) => {
 };
 
 export const generateQRCodePNG = async (url: string) => {
-  const dataUrl = await QRCode.toDataURL(url);
+  const dataUrl = await QRCode.toDataURL(url, {
+    width: 512,
+    margin: 0,
+    color: {
+      // Aubergine 2
+      dark: "#342749",
+    },
+  });
   const [, base64Data] = dataUrl.split(",");
   const imageBytes = Uint8Array.from(
     atob(base64Data),
