@@ -37,7 +37,13 @@ export function Remote() {
             {event?.title ?? ""}
           </Heading>
           <Flex justifyContent="space-between">
-            <Heading as="h2" size="md" fontWeight="thin" wordBreak="break-word">
+            <Heading
+              as="h2"
+              size="md"
+              fontWeight="thin"
+              wordBreak="break-word"
+              color="white"
+            >
               {event?.speaker ?? ""}
             </Heading>
           </Flex>

@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import { Event } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
@@ -22,6 +22,22 @@ export const Card = (
         />
       </div>
       <Flex direction="column" align="center">
+        <Heading as="h1" color="white" size="lg" mb={1.5}>
+          {event?.title ?? ""}
+        </Heading>
+        <Flex justifyContent="space-between">
+          <Heading
+            as="h2"
+            size="md"
+            fontWeight="thin"
+            wordBreak="break-word"
+            marginTop="2rem"
+            color="white"
+          >
+            {event?.speaker ?? ""}
+          </Heading>
+        </Flex>
+
         {canCollect
           ? (
             <PrimaryButton
@@ -33,11 +49,7 @@ export const Card = (
               Collect
             </PrimaryButton>
           )
-          : (
-            <p>
-              Find the secret QR in the venue to collect this card.
-            </p>
-          )}
+          : null}
       </Flex>
     </div>
   );
