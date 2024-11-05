@@ -11,6 +11,7 @@ export const useUser = () => {
     "/api/v1/users/me",
     fetcher,
     {
+      revalidateOnFocus: false,
       onSuccess: (data) => {
         setUser(data.data);
       },
