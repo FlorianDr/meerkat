@@ -17,6 +17,19 @@ export const conferences = pgTable("conferences", {
   logoUrl: text("logo_url"),
 });
 
+export const roleEnum = pgEnum("role", ["attendee", "speaker", "organizer"]);
+
+export const conferenceTickets = pgTable("conference_tickets", {
+  id: serial("id").primaryKey(),
+  conferenceId: integer("conference_id")
+    .notNull()
+    .references(() => conferences.id, { onDelete: "cascade" }),
+  eventId: text("event_id").notNull(),
+  signerPublicKey: text("signer_public_key").notNull(),
+  productId: text("product_id"),
+  role: roleEnum("role").default("attendee").notNull(),
+});
+
 export const events = pgTable("events", {
   id: serial("id").primaryKey(),
   conferenceId: integer("conference_id")
@@ -79,8 +92,6 @@ export const users = pgTable("users", {
   blocked: boolean("blocked").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-export const roleEnum = pgEnum("role", ["attendee", "organizer"]);
 
 export const conferenceRole = pgTable(
   "conference_role",

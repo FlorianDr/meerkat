@@ -29,4 +29,22 @@ export function getConferenceRolesForConference(
     );
 }
 
+export function grantRole(
+  userId: number,
+  conferenceId: number,
+  role: ConferenceRole["role"],
+) {
+  return db
+    .insert(conferenceRole)
+    .values({
+      userId,
+      conferenceId,
+      role,
+    })
+    .onConflictDoUpdate({
+      target: [conferenceRole.userId, conferenceRole.conferenceId],
+      set: { role, grantedAt: sql`now()` },
+    });
+}
+
 export type ConferenceRole = typeof conferenceRole.$inferSelect;

@@ -15,12 +15,10 @@ import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "@hono/hono/cookie";
 import { createUserFromAccount } from "../models/user.ts";
 import { markUserAsBlocked } from "../models/user.ts";
-import { getConferenceRoles } from "../models/roles.ts";
+import { getConferenceRoles, grantRole } from "../models/roles.ts";
+import { getConferenceByTicket } from "../models/conferences.ts";
 
 const app = new Hono();
-
-const TICKET_SIGNER_PUBLIC_KEY = "YwahfUdUYehkGMaWh0+q3F8itx2h8mybjPmt8CmTJSs";
-const EVENT_ID = "5074edf5-f079-4099-b036-22223c0c6995";
 
 app.get(
   "/api/v1/users/me",
@@ -176,7 +174,7 @@ app.post(
     });
 
     if (!response.ok) {
-      throw new HTTPException(500, { message: "Failed to verify prove" });
+      throw new HTTPException(500, { message: "Failed to verify proof" });
     }
 
     const body = await response.json();
@@ -185,25 +183,24 @@ app.post(
       throw new HTTPException(400, { message: "Prove is invalid" });
     }
 
-    if (
-      ticketProof.revealedClaims.pods.ticket.signerPublicKey !==
-        TICKET_SIGNER_PUBLIC_KEY
-    ) {
-      throw new HTTPException(400, {
-        message:
-          `Signer public key mismatch. expected: ${TICKET_SIGNER_PUBLIC_KEY} actual: ${body.data.revealedClaims.pods.ticket.signerPublicKey}`,
-      });
-    }
-
-    if (ticketProof.revealedClaims.pods.ticket.entries.eventId !== EVENT_ID) {
-      throw new HTTPException(400, {
-        message:
-          `Event id mismatch. expected: ${EVENT_ID} actual: ${body.data.revealedClaims.pods.ticket.entries.eventId}`,
-      });
-    }
-
+    const signerPublicKey = ticketProof.revealedClaims.pods.ticket
+      .signerPublicKey as string;
+    const eventId = ticketProof.revealedClaims.pods.ticket.entries
+      .eventId as string;
+    const productId = ticketProof.revealedClaims.pods.ticket.entries
+      .productId as string;
     const publicKey =
       ticketProof.revealedClaims.pods.ticket.entries.owner.eddsa_pubkey;
+
+    const result = await getConferenceByTicket(
+      eventId,
+      signerPublicKey,
+      productId,
+    );
+
+    if (!result) {
+      throw new HTTPException(400, { message: "Ticket not found" });
+    }
 
     let user = await getUserByProvider("zupass", publicKey);
 
@@ -213,6 +210,11 @@ app.post(
         id: publicKey,
       });
     }
+
+    const conference = result.conferences;
+    const role = result.conference_tickets.role;
+
+    await grantRole(user.id, conference.id, role);
 
     const origin = c.req.header("origin") ?? env.base;
     const payload = constructJWTPayload(user);

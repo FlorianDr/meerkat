@@ -183,17 +183,19 @@ app.post(
     }
 
     if (event.secret && event.secret !== secret) {
-      throw new HTTPException(401, { message: `Invalid secret ${secret}` });
+      throw new HTTPException(401, {
+        message: `Invalid secret: ${event.uid}`,
+      });
     }
 
     const roles = await getConferenceRolesForConference(
-      user?.id,
+      user.id,
       event.conferenceId,
     );
 
-    // if (!roles.some((r) => r.role === "organizer" || r.role === "attendee")) {
-    //   throw new HTTPException(403, { message: "User is not authorized" });
-    // }
+    if (roles.length === 0) {
+      throw new HTTPException(403, { message: "User has no conference roles" });
+    }
 
     const zupassAccount = await getAccounts(user.id);
     const zupassId = zupassAccount?.find((a) => a.provider === "zupass")?.id;
@@ -205,6 +207,7 @@ app.post(
     }
 
     const pod = createAttendancePOD(conference!, event, zupassId);
+
     return c.json({
       data: pod.toJSON(),
     });

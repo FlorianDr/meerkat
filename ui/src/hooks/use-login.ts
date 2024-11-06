@@ -59,6 +59,7 @@ function proveTicket(zapi: ParcnetAPI) {
     fieldsToReveal: ({
       owner: true,
       eventId: true,
+      productId: true,
     }),
   });
 

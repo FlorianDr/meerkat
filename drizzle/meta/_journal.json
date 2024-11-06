@@ -155,6 +155,13 @@
       "when": 1730650717595,
       "tag": "0021_fancy_sage",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1730903019408,
+      "tag": "0022_dazzling_king_bedlam",
+      "breakpoints": true
     }
   ]
 }
