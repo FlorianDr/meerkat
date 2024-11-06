@@ -137,8 +137,8 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 3rem;
-  margin-top: 100px;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
 
   & img {
     max-height: 20rem;
@@ -167,6 +167,7 @@ ul {
 
 .card {
   padding: 1rem 0;
+  text-align: center;
 }
 
 .tab-panel {

@@ -12,7 +12,9 @@ export async function upsertEvents(
   const allColumns = getTableColumns(events);
   const updateColumns = Object.keys(allColumns).filter(
     (column) =>
-      !["uid", "conferenceId", "createdAt", "id", "cover"].includes(column),
+      !["uid", "conferenceId", "createdAt", "id", "cover"].includes(
+        column,
+      ),
   );
 
   const results = await db.insert(events)
