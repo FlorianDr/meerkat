@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { Flex, Heading, Skeleton } from "@chakra-ui/react";
 import { Event } from "../../types.ts";
-import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
 
 export type CardProps = {
   event: Event | undefined;
-  canCollect?: boolean;
-  collect?: () => Promise<void>;
-  isCollecting?: boolean;
 };
 
 export const Card = (
-  { event, canCollect = false, collect, isCollecting }: CardProps,
+  { event }: CardProps,
 ) => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="card">
+    <>
       <div className="collect-card-image">
         <Skeleton isLoaded={!isLoading} width={300} height={300}>
           {event?.cover
@@ -31,7 +27,7 @@ export const Card = (
             : null}
         </Skeleton>
       </div>
-      <Flex direction="column" align="center" gap={4}>
+      <Flex direction="column" align="center" gap="12px">
         <Skeleton isLoaded={!!event} width="fit-content">
           <Heading as="h1" color="white" size="lg" mb={1.5}>
             {event?.title ?? "Loading... please stand by"}
@@ -50,21 +46,8 @@ export const Card = (
             </Heading>
           </Skeleton>
         </Flex>
-
-        {canCollect
-          ? (
-            <PrimaryButton
-              isLoading={isCollecting}
-              loadingText="Collecting..."
-              onClick={collect}
-              disabled={!canCollect}
-            >
-              Collect
-            </PrimaryButton>
-          )
-          : null}
       </Flex>
-    </div>
+    </>
   );
 };
 

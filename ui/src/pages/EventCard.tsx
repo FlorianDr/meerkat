@@ -11,16 +11,27 @@ import { useCollect } from "../hooks/use-collect.ts";
 import { useToast } from "@chakra-ui/react";
 import { pageTitle } from "../utils/events.ts";
 import { usePageTitle } from "../hooks/use-page-title.ts";
+import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
+import { useLogin } from "../hooks/use-login.ts";
+import { useUser } from "../hooks/use-user.ts";
+import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 
 export function EventCard() {
   const { uid } = useParams();
   const [searchParams] = useSearchParams();
   const { data: event } = useEvent(uid);
+  const { isAuthenticated } = useUser();
+  const { login, isLoading: isLoggingIn } = useLogin();
+  const [isCollected, setIsCollected] = useState(false);
   usePageTitle(pageTitle(event));
   const secret = searchParams.get("secret");
   const [isCollecting, setIsCollecting] = useState(false);
   const { collect } = useCollect(event, secret);
   const toast = useToast();
+  const { data: roles } = useConferenceRoles();
+
+  const hasAnyRoles =
+    roles?.some((r) => r.conferenceId === event?.conferenceId) ?? false;
 
   const onCollect = async () => {
     setIsCollecting(true);
@@ -33,6 +44,7 @@ export function EventCard() {
         duration: 5000,
         isClosable: true,
       });
+      setIsCollected(true);
     } catch (error) {
       toast({
         title: "Error: Failed to record attendance",
@@ -45,6 +57,17 @@ export function EventCard() {
       setIsCollecting(false);
     }
   };
+
+  const onLogin = async () => {
+    await login();
+    onCollect();
+  };
+
+  const action = isAuthenticated && hasAnyRoles && secret && !isCollected
+    ? onCollect
+    : secret && !isCollected
+    ? onLogin
+    : null;
 
   const hasTempleBackground = event?.features["temple-background"] ?? false;
 
@@ -71,12 +94,26 @@ export function EventCard() {
       <main
         className={`content ${hasTempleBackground ? "temple-background" : ""}`}
       >
-        <Card
-          event={event}
-          canCollect={!!secret}
-          collect={onCollect}
-          isCollecting={isCollecting}
-        />
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          gap="12px"
+          textAlign="center"
+          padding="1rem 0"
+        >
+          <Card event={event} />
+          {action &&
+            (
+              <PrimaryButton
+                isLoading={isLoggingIn || isCollecting}
+                loadingText="Collecting..."
+                onClick={action}
+                disabled={isLoggingIn || isCollecting}
+              >
+                Collect
+              </PrimaryButton>
+            )}
+        </Flex>
       </main>
     </div>
   );
