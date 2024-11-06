@@ -3,9 +3,7 @@ import { union } from "drizzle-orm/pg-core";
 import db from "../db.ts";
 import { events, questions, votes } from "../schema.ts";
 import { buildConflictUpdateColumns } from "./utils.ts";
-
-const FALLBACK_COVER =
-  "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg";
+import { DEFAULT_COVER } from "./event.ts";
 
 export async function upsertEvents(
   conferenceId: number,
@@ -13,7 +11,8 @@ export async function upsertEvents(
 ) {
   const allColumns = getTableColumns(events);
   const updateColumns = Object.keys(allColumns).filter(
-    (column) => !["uid", "conferenceId", "createdAt", "id"].includes(column),
+    (column) =>
+      !["uid", "conferenceId", "createdAt", "id", "cover"].includes(column),
   );
 
   const results = await db.insert(events)
@@ -47,7 +46,7 @@ const eventByUID = db.select().from(events).where(
 export async function getEventByUID(uid: string) {
   const results = await eventByUID.execute({ uid: uid.toUpperCase() });
   const event = results.length === 1 ? results[0] : null;
-  return event ? { ...event, cover: event.cover ?? FALLBACK_COVER } : null;
+  return event ? { ...event, cover: event.cover ?? DEFAULT_COVER } : null;
 }
 
 const eventByID = db.select().from(events).where(
@@ -57,7 +56,7 @@ const eventByID = db.select().from(events).where(
 export async function getEventById(id: number) {
   const results = await eventByID.execute({ id });
   const event = results.length === 1 ? results[0] : null;
-  return event ? { ...event, cover: event.cover ?? FALLBACK_COVER } : null;
+  return event ? { ...event, cover: event.cover ?? DEFAULT_COVER } : null;
 }
 
 export async function countParticipants(eventId: number) {

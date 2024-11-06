@@ -14,7 +14,7 @@ import {
   MAX_QUESTIONS_PER_EVENT,
   MAX_QUESTIONS_PER_INTERVAL,
   MAX_REACTIONS_PER_INTERVAL,
-} from "../constants.ts";
+} from "../moderation.ts";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
 import { countParticipants, getEventByUID } from "../models/events.ts";

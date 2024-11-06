@@ -29,7 +29,7 @@ VALUES (
 		'Abstract 1',
 		'We''ll present an overview of learnings from 3 years of building and running Dark Forest, the first fully decentralized MMORTS, including: why ZK is important for games, what a crypto-native game is and why we should care, designing for emergent player behavior, pushing the limits of Ethereum devex, and social consensus and legitimacy - why is Dark Forest more like chess than League of Legends? We''ll also hint at 0xPARC''s next crypto-gaming experiments.',
 		'Track 1',
-		'https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg'
+		'https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/global/logo.png'
 	) ON CONFLICT DO NOTHING;
 INSERT INTO users (uid, name)
 VALUES ('01j513yxhnf66t1m7awr087d9m', 'vibrant-barking-deer-57d6') ON CONFLICT DO NOTHING;

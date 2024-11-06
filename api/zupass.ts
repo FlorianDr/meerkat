@@ -31,7 +31,7 @@ export function createAttendancePOD(
     "zupass_image_url": {
       type: "string",
       value: event.cover ??
-        "https://cdn.britannica.com/57/152457-050-1128A5FE/Meerkat.jpg",
+        "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/global/logo.png",
     },
     "zupass_title": {
       type: "string",

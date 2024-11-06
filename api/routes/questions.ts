@@ -1,7 +1,7 @@
 import { Hono } from "@hono/hono";
 import { HTTPException } from "@hono/hono/http-exception";
 import { jwt } from "@hono/hono/jwt";
-import { MAX_VOTES_PER_EVENT } from "../constants.ts";
+import { MAX_VOTES_PER_EVENT } from "../moderation.ts";
 import env from "../env.ts";
 import { getEventById } from "../models/events.ts";
 import { getQuestionByUID, markAsAnswered } from "../models/questions.ts";
