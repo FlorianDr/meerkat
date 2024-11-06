@@ -65,7 +65,7 @@ export function EventCard() {
           </Link>
         </nav>
         <div style={{ paddingBottom: "1rem" }}>
-          <Header title={`Card: ${event?.title}`} />
+          <Header title={`Card: ${event?.title ?? "Loading..."}`} />
         </div>
       </header>
       <main

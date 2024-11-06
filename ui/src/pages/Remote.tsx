@@ -1,4 +1,5 @@
-import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
+import { useState } from "react";
+import { Button, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useEvent } from "../hooks/use-event.ts";
@@ -11,6 +12,7 @@ import { pageTitle } from "../utils/events.ts";
 export function Remote() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
+  const [isLoading, setIsLoading] = useState(true);
 
   usePageTitle(pageTitle(event));
 
@@ -25,31 +27,40 @@ export function Remote() {
           display: "flex",
           flexDirection: "column",
           gap: 20,
+          textAlign: "center",
+          alignItems: "center",
         }}
       >
-        {event?.conference.logoUrl
-          ? (
-            <img
-              style={{ maxHeight: 300, margin: "0 auto" }}
-              src={event.conference.logoUrl}
-              alt={event.conference.name}
-            />
-          )
-          : null}
+        <Skeleton isLoaded={!isLoading} width={300} height={300} rounded="12px">
+          {event?.conference.logoUrl
+            ? (
+              <img
+                style={{ height: 300, margin: "0 auto" }}
+                src={event.conference.logoUrl}
+                alt={event.conference.name}
+                onLoad={() => setIsLoading(false)}
+              />
+            )
+            : null}
+        </Skeleton>
         <Stack spacing={2} flexDirection="column" alignItems="center">
-          <Heading as="h1" color="white" size="lg" mb={1.5}>
-            {event?.title ?? ""}
-          </Heading>
-          <Flex justifyContent="space-between">
-            <Heading
-              as="h2"
-              size="md"
-              fontWeight="thin"
-              wordBreak="break-word"
-              color="white"
-            >
-              {event?.speaker ?? ""}
+          <Skeleton isLoaded={!!event} width="fit-content">
+            <Heading as="h1" color="white" size="lg" mb={1.5}>
+              {event?.title ?? "Loading... please stand by"}
             </Heading>
+          </Skeleton>
+          <Flex justifyContent="space-between">
+            <Skeleton isLoaded={!!event} width="fit-content">
+              <Heading
+                as="h2"
+                size="md"
+                fontWeight="thin"
+                wordBreak="break-word"
+                color="white"
+              >
+                {event?.speaker ?? "Loading..."}
+              </Heading>
+            </Skeleton>
           </Flex>
         </Stack>
         <Stack spacing={4} flexDirection="column" alignItems="center">
