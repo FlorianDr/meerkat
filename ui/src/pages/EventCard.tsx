@@ -9,11 +9,14 @@ import { Flex } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { useCollect } from "../hooks/use-collect.ts";
 import { useToast } from "@chakra-ui/react";
+import { pageTitle } from "../utils/events.ts";
+import { usePageTitle } from "../hooks/use-page-title.ts";
 
 export function EventCard() {
   const { uid } = useParams();
   const [searchParams] = useSearchParams();
   const { data: event } = useEvent(uid);
+  usePageTitle(pageTitle(event));
   const secret = searchParams.get("secret");
   const [isCollecting, setIsCollecting] = useState(false);
   const { collect } = useCollect(event, secret);

@@ -5,10 +5,14 @@ import { useEvent } from "../hooks/use-event.ts";
 import { qa } from "../routes.ts";
 import { card } from "../routes.ts";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { usePageTitle } from "../hooks/use-page-title.ts";
+import { pageTitle } from "../utils/events.ts";
 
 export function Remote() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
+
+  usePageTitle(pageTitle(event));
 
   const hasFileverseLink = event?.features["fileverse-link"] ?? false;
 

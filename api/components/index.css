@@ -94,6 +94,10 @@ ul {
   padding: 1rem 1rem 1rem 1rem;
   margin-bottom: 1.125rem;
   position: relative;
+
+  & > h2 {
+    font-size: 1.5rem;
+  }
 }
 
 .upvote-section {

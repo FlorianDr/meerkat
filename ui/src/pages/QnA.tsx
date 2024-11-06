@@ -20,10 +20,14 @@ import { useReactionsSubscription } from "../hooks/use-reactions-subscription.ts
 import { useQuestionsSubscription } from "../hooks/use-questions-subscription.ts";
 import { useQuestions } from "../hooks/use-questions.ts";
 import { useAnonymousUser } from "../hooks/use-anonymous-user.ts";
+import { usePageTitle } from "../hooks/use-page-title.ts";
+import { pageTitle } from "../utils/events.ts";
 
 export function QnA() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
+  usePageTitle(pageTitle(event));
+
   const [isSortByPopularity, setIsSortByPopularity] = useState(false);
   const { data: questions, mutate: refreshQuestions } = useQuestions(
     uid,

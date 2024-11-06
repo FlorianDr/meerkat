@@ -88,8 +88,10 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
     questionIds: questions.map((q) => q.id).join(","),
   };
 
+  const title = `Meerkat - ${event.title}`;
+
   return c.html(
-    <Document>
+    <Document title={title}>
       <Layout>
         <div className="top-questions-container">
           <TopQuestions questions={questions} participants={participants} />

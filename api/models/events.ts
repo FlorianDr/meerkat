@@ -26,7 +26,7 @@ export async function upsertEvents(
     )
     .onConflictDoUpdate({
       target: events.uid,
-      set: buildConflictUpdateColumns(events, updateColumns),
+      set: buildConflictUpdateColumns(events, updateColumns as any),
     })
     .returning()
     .execute();
