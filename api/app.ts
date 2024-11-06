@@ -5,6 +5,7 @@ import conferences from "./routes/conferences.ts";
 import users from "./routes/users.ts";
 import events from "./routes/events.tsx";
 import questions from "./routes/questions.ts";
+import home from "./routes/home.tsx";
 import { config } from "./models/config.ts";
 
 const app = new Hono();
@@ -15,6 +16,7 @@ app.route("/", conferences);
 app.route("/", users);
 app.route("/", events);
 app.route("/", questions);
+app.route("/", home);
 
 app.get("/e/:uid/*", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/login", serveStatic({ path: "./ui/dist/index.html" }));
