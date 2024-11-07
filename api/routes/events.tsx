@@ -88,7 +88,7 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
     questionIds: questions.map((q) => q.id).join(","),
   };
 
-  const title = `Meerkat - ${event.title}`;
+  const title = `${event.title} | ${event.uid} | Meerkat`;
 
   return c.html(
     <Document title={title}>
