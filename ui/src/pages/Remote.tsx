@@ -3,7 +3,7 @@ import { Button, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useEvent } from "../hooks/use-event.ts";
-import { qa } from "../routes.ts";
+import { feedback, qa } from "../routes.ts";
 import { card } from "../routes.ts";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { usePageTitle } from "../hooks/use-page-title.ts";
@@ -77,10 +77,20 @@ export function Remote() {
           >
             Collect
           </Button>
+          <Button
+            variant="outline"
+            as={Link}
+            to={uid ? feedback(uid) : ""}
+            width="16rem"
+            fontWeight="bold"
+            py={6}
+          >
+            Give Feedback
+          </Button>
           {hasFileverseLink && event?.uid &&
             (
               <Link
-                to={`https://devcon.fileverse.io/devcon7/space?event=${event.uid}`}
+                to={`https://devcon.fileverse.io/devcon7/portal?event=${event.uid}`}
                 target="_blank"
               >
                 Contribute on Fileverse <ExternalLinkIcon />
