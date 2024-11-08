@@ -43,39 +43,40 @@ app.get(
   },
 );
 
-app.post("/api/v1/users", async (c) => {
-  const deviceId = getCookie(c, "deviceId");
+// TOOO: Disallow creating new anonymous users for now
+// app.post("/api/v1/users", async (c) => {
+//   const deviceId = getCookie(c, "deviceId");
 
-  if (!deviceId) {
-    throw new HTTPException(400, { message: "Device ID is required" });
-  }
+//   if (!deviceId) {
+//     throw new HTTPException(400, { message: "Device ID is required" });
+//   }
 
-  const maybeUser: User | null = deviceId ? await getUserByUID(deviceId) : null;
-  const user = maybeUser ?? await createUser(deviceId);
+//   const maybeUser: User | null = deviceId ? await getUserByUID(deviceId) : null;
+//   const user = maybeUser ?? await createUser(deviceId);
 
-  const origin = c.req.header("origin") ?? env.base;
-  const payload = constructJWTPayload(user);
-  const token = await sign(payload, env.secret);
+//   const origin = c.req.header("origin") ?? env.base;
+//   const payload = constructJWTPayload(user);
+//   const token = await sign(payload, env.secret);
 
-  const baseUrl = new URL(origin);
-  setCookie(c, "jwt", token, {
-    path: "/",
-    domain: baseUrl.hostname,
-    secure: baseUrl.protocol === "https:",
-    httpOnly: true,
-    maxAge: JWT_EXPIRATION_TIME,
-    sameSite: "strict",
-  });
+//   const baseUrl = new URL(origin);
+//   setCookie(c, "jwt", token, {
+//     path: "/",
+//     domain: baseUrl.hostname,
+//     secure: baseUrl.protocol === "https:",
+//     httpOnly: true,
+//     maxAge: JWT_EXPIRATION_TIME,
+//     sameSite: "strict",
+//   });
 
-  const { id: _id, blocked: _blocked, name, ...rest } = user;
+//   const { id: _id, blocked: _blocked, name, ...rest } = user;
 
-  return c.json({
-    data: {
-      ...rest,
-      name: name ?? undefined,
-    },
-  });
-});
+//   return c.json({
+//     data: {
+//       ...rest,
+//       name: name ?? undefined,
+//     },
+//   });
+// });
 
 app.get(
   "/api/v1/users/me/votes",
@@ -122,42 +123,43 @@ app.get(
   },
 );
 
-const usersLoginScheme = z.object({
-  publicKey: z.string(),
-});
+// TODO: Deactivate public key login for now
+// const usersLoginScheme = z.object({
+//   publicKey: z.string(),
+// });
 
-app.post(
-  "/api/v1/users/login",
-  zValidator("json", usersLoginScheme),
-  async (c) => {
-    const { publicKey } = c.req.valid("json");
+// app.post(
+//   "/api/v1/users/login",
+//   zValidator("json", usersLoginScheme),
+//   async (c) => {
+//     const { publicKey } = c.req.valid("json");
 
-    let user = await getUserByProvider("zupass", publicKey);
+//     let user = await getUserByProvider("zupass", publicKey);
 
-    if (!user) {
-      user = await createUserFromAccount({
-        provider: "zupass",
-        id: publicKey,
-      });
-    }
+//     if (!user) {
+//       user = await createUserFromAccount({
+//         provider: "zupass",
+//         id: publicKey,
+//       });
+//     }
 
-    const origin = c.req.header("origin") ?? env.base;
-    const payload = constructJWTPayload(user);
-    const token = await sign(payload, env.secret);
+//     const origin = c.req.header("origin") ?? env.base;
+//     const payload = constructJWTPayload(user);
+//     const token = await sign(payload, env.secret);
 
-    const baseUrl = new URL(origin);
-    setCookie(c, "jwt", token, {
-      path: "/",
-      domain: baseUrl.hostname,
-      secure: baseUrl.protocol === "https:",
-      httpOnly: true,
-      maxAge: JWT_EXPIRATION_TIME,
-      sameSite: "Lax",
-    });
+//     const baseUrl = new URL(origin);
+//     setCookie(c, "jwt", token, {
+//       path: "/",
+//       domain: baseUrl.hostname,
+//       secure: baseUrl.protocol === "https:",
+//       httpOnly: true,
+//       maxAge: JWT_EXPIRATION_TIME,
+//       sameSite: "Lax",
+//     });
 
-    return c.json({ data: { user } });
-  },
-);
+//     return c.json({ data: { user } });
+//   },
+// );
 
 // TODO: Use correct ticket proof scheme
 const proofScheme = z.any();

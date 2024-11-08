@@ -256,7 +256,6 @@ app.post(
   async (c) => {
     const questionData = c.req.valid("json");
     const event = c.get("event");
-
     const payload = c.get("jwtPayload");
     const user = await getUserByUID(payload.sub);
 
@@ -266,6 +265,15 @@ app.post(
 
     if (user.blocked) {
       throw new HTTPException(403, { message: "User is blocked" });
+    }
+
+    const conferenceRoles = await getConferenceRolesForConference(
+      user.id,
+      event.conferenceId,
+    );
+
+    if (conferenceRoles.length === 0) {
+      throw new HTTPException(403, { message: "User has no conference roles" });
     }
 
     const minuteAgo = dateDeductedMinutes(1);
@@ -311,12 +319,24 @@ app.post(
     const payload = c.get("jwtPayload");
     const uid = c.req.valid("json").uid;
     const user = await getUserByUID(payload.sub);
+    const event = c.get("event");
 
     if (!user) {
       throw new HTTPException(401, { message: `User not found` });
     }
 
-    const event = c.get("event");
+    if (user.blocked) {
+      throw new HTTPException(403, { message: `User is blocked` });
+    }
+
+    const conferenceRoles = await getConferenceRolesForConference(
+      user.id,
+      event.conferenceId,
+    );
+
+    if (conferenceRoles.length === 0) {
+      throw new HTTPException(403, { message: "User has no conference roles" });
+    }
 
     const thirtySecondsAgo = dateDeductedMinutes(0.5);
     const thirtySecondsActivity = await getUserReactionCountAfterDate(

@@ -14,19 +14,25 @@ export function getConferenceRoles(
   return conferenceRolesByIdStatement.execute({ user_id: userId });
 }
 
+const conferenceRolesByUserIdAndConferenceIdStatement = db
+  .select()
+  .from(conferenceRole)
+  .where(
+    and(
+      eq(conferenceRole.userId, sql.placeholder("user_id")),
+      eq(conferenceRole.conferenceId, sql.placeholder("conference_id")),
+    ),
+  )
+  .prepare("conference_roles_by_user_id_and_conference_id");
+
 export function getConferenceRolesForConference(
   userId: number,
   conferenceId: number,
 ): Promise<ConferenceRole[]> {
-  return db
-    .select()
-    .from(conferenceRole)
-    .where(
-      and(
-        eq(conferenceRole.userId, userId),
-        eq(conferenceRole.conferenceId, conferenceId),
-      ),
-    );
+  return conferenceRolesByUserIdAndConferenceIdStatement.execute({
+    user_id: userId,
+    conference_id: conferenceId,
+  });
 }
 
 export function grantRole(

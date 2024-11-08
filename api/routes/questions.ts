@@ -46,12 +46,22 @@ app.post(
       });
     }
 
-    const event = await getEventById(question.eventId);
+    const [event, conferenceRoles] = await Promise.all([
+      getEventById(question.eventId),
+      getConferenceRolesForConference(
+        user.id,
+        question.eventId,
+      ),
+    ]);
 
     if (!event) {
       throw new HTTPException(404, {
         message: `Event ${question.eventId} not found`,
       });
+    }
+
+    if (conferenceRoles.length === 0) {
+      throw new HTTPException(403, { message: "User has no conference roles" });
     }
 
     const minuteAgo = dateDeductedMinutes(1);
