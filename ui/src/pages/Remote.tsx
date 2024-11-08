@@ -80,7 +80,7 @@ export function Remote() {
           {hasFileverseLink && event?.uid &&
             (
               <Link
-                to={`https://devcon.fileverse.io/devcon7/space?event=${event.uid}`}
+                to={`https://devcon.fileverse.io/devcon7/portal?event=${event.uid}`}
                 target="_blank"
               >
                 Contribute on Fileverse <ExternalLinkIcon />
