@@ -26,7 +26,7 @@ export function Speaker() {
       attendeeEmail: true,
     },
   });
-  const { data: user, isLoading } = useUser();
+  const { data: user } = useUser();
   const { connect, isConnecting } = useZAPIConnect();
   const { collection } = useZAPI();
   const { data: pods } = usePods();
