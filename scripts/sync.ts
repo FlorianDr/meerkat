@@ -17,8 +17,8 @@ if (conference) {
   console.info(`Created conference: ${conference.id}`);
 }
 
-// Max 50 events per request
-const eventSlices = slice(sessions, 50);
+// Max 100 events per request
+const eventSlices = slice(sessions, 100);
 for (const events of eventSlices) {
   await createEvents(
     conference.id,

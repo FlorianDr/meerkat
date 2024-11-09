@@ -3,21 +3,15 @@ import { Hono } from "@hono/hono";
 import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
-import {
-  createUser,
-  getUserByProvider,
-  getUserByUID,
-  User,
-} from "../models/user.ts";
+import { getUserByProvider, getUserByUID } from "../models/user.ts";
 import { HTTPException } from "@hono/hono/http-exception";
 import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
-import { getCookie, setCookie } from "@hono/hono/cookie";
-import { createUserFromAccount } from "../models/user.ts";
-import { markUserAsBlocked } from "../models/user.ts";
+import { setCookie } from "@hono/hono/cookie";
+import { createUserFromAccount, markUserAsBlocked } from "../models/user.ts";
 import { getConferenceRoles, grantRole } from "../models/roles.ts";
 import { getConferenceByTicket } from "../models/conferences.ts";
-
+import { hash } from "../utils/secret.ts";
 const app = new Hono();
 
 app.get(
@@ -194,6 +188,8 @@ app.post(
     const publicKey =
       ticketProof.revealedClaims.pods.ticket.entries.owner.eddsa_pubkey;
 
+    const email = ticketProof.revealedClaims.pods.ticket.entries.attendeeEmail;
+
     const result = await getConferenceByTicket(
       eventId,
       signerPublicKey,
@@ -207,9 +203,11 @@ app.post(
     let user = await getUserByProvider("zupass", publicKey);
 
     if (!user) {
+      const hashValue = email ? await hash(env.emailSecret, email) : null;
       user = await createUserFromAccount({
         provider: "zupass",
         id: publicKey,
+        hash: hashValue,
       });
     }
 

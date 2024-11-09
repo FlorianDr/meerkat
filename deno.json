@@ -1,7 +1,7 @@
 {
   "tasks": {
     "api:cache": "DENO_DIR=.cache deno cache ./api/main.ts",
-    "api:dev": "DENO_DIR=.cache deno run --allow-env --allow-sys --allow-read --allow-net --watch ./api/dev.ts",
+    "api:dev": "DENO_DIR=.cache deno run --inspect --allow-env --allow-sys --allow-read --allow-net --watch ./api/dev.ts",
     "api:start": "DENO_DIR=.cache deno run --allow-read --allow-env --allow-sys --allow-net ./api/main.ts",
     "api:sync": "DENO_DIR=.cache deno run -A ./scripts/sync.ts",
     "api:patch": "DENO_DIR=.cache ./scripts/patch-dependencies.sh",

@@ -3,6 +3,7 @@ export type User = {
   uid: string;
   createdAt: Date;
   name?: string | undefined;
+  hash?: string | undefined;
 };
 
 export type Conference = {
@@ -24,7 +25,6 @@ export type Event = {
   track: string | null;
   cover: string | null;
   questions: Question[];
-  collectURL: string;
   votes: number;
   participants: number;
   speaker: string;
@@ -44,6 +44,13 @@ export type Question = {
     uid: string;
     name?: string | undefined;
   } | undefined;
+};
+
+export type EventPod = {
+  uid: string;
+  event: Event;
+  pod: any;
+  createdAt: Date;
 };
 
 export type Reaction = {

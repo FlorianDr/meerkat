@@ -3,7 +3,7 @@ import { Button, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useEvent } from "../hooks/use-event.ts";
-import { qa } from "../routes.ts";
+import { feedback, qa, speaker } from "../routes.ts";
 import { card } from "../routes.ts";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { usePageTitle } from "../hooks/use-page-title.ts";
@@ -75,7 +75,17 @@ export function Remote() {
             fontWeight="bold"
             py={6}
           >
-            Collect
+            Collect Card
+          </Button>
+          <Button
+            variant="outline"
+            as={Link}
+            to={uid ? feedback(uid) : ""}
+            width="16rem"
+            fontWeight="bold"
+            py={6}
+          >
+            Speaker Feedback
           </Button>
           {hasFileverseLink && event?.uid &&
             (

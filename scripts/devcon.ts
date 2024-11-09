@@ -78,6 +78,7 @@ export type Speaker = {
   lens: string;
   ens: string;
   github: string;
+  hash: string | null;
 };
 
 export async function getSessions(eventId: string) {

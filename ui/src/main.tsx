@@ -53,13 +53,16 @@ const theme = extendTheme(
   },
 );
 
+const ticketCollection = `Devcon SEA`;
+const zupassCollection = `${config.zappName}: ${ticketCollection}`;
+
 const zapp: Zapp = {
   name: config.zappName,
   permissions: {
-    // TODO: Move it to connect flow and parameterize it depending
-    // on the current conference
-    REQUEST_PROOF: { collections: ["Devcon SEA"] },
-    INSERT_POD: { collections: [`${config.zappName}: Devcon SEA`] },
+    REQUEST_PROOF: { collections: [ticketCollection] },
+    INSERT_POD: { collections: [zupassCollection] },
+    SIGN_POD: {},
+    READ_POD: { collections: [zupassCollection] },
   },
 };
 
@@ -87,7 +90,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <SupabaseProvider client={supabase}>
       <ChakraProvider theme={theme}>
-        <ZAPIProvider zapp={zapp} zupassUrl={config.zupassUrl}>
+        <ZAPIProvider
+          zapp={zapp}
+          zupassUrl={config.zupassUrl}
+          collection={zupassCollection}
+        >
           <UserProvider>
             <App />
           </UserProvider>

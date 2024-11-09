@@ -162,6 +162,13 @@
       "when": 1730903019408,
       "tag": "0022_dazzling_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1731180788169,
+      "tag": "0023_bitter_cyclops",
+      "breakpoints": true
     }
   ]
 }

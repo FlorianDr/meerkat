@@ -17,7 +17,11 @@ import {
 } from "../moderation.ts";
 import env from "../env.ts";
 import { getConferenceById } from "../models/conferences.ts";
-import { countParticipants, getEventByUID } from "../models/events.ts";
+import {
+  countParticipants,
+  createEventPod,
+  getEventByUID,
+} from "../models/events.ts";
 import {
   createQuestion,
   getQuestions,
@@ -42,6 +46,7 @@ import { getConferenceRolesForConference } from "../models/roles.ts";
 import { bearerAuth } from "@hono/hono/bearer-auth";
 import { createSigner } from "../utils/secret.ts";
 import { generateQRCodePNG } from "../code.ts";
+import { bodyLimit } from "@hono/hono/body-limit";
 
 const app = new Hono();
 
@@ -359,6 +364,42 @@ app.post(
         uid,
         createdAt: reaction.createdAt,
       },
+    });
+  },
+);
+
+const feedbackSchema = zod.object({
+  entries: zod.record(zod.string(), zod.any()),
+  signature: zod.string(),
+  signerPublicKey: zod.string(),
+});
+
+app.post(
+  "/api/v1/events/:uid/feedback",
+  eventMiddleware,
+  bodyLimit({
+    maxSize: 100 * 1024,
+  }),
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  zValidator("json", feedbackSchema),
+  async (c) => {
+    const event = c.get("event");
+    const payload = c.get("jwtPayload");
+    const user = await getUserByUID(payload.sub);
+    const pod = c.req.valid("json");
+
+    if (!user) {
+      throw new HTTPException(401, { message: "User not found" });
+    }
+
+    const createdPod = await createEventPod({
+      eventId: event.id,
+      userId: user.id,
+      pod,
+    });
+
+    return c.json({
+      data: createdPod,
     });
   },
 );

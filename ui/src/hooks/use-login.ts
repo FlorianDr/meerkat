@@ -3,26 +3,46 @@ import { useZAPIConnect } from "../zapi/connect.ts";
 import { UserContext } from "../context/user.tsx";
 import { User } from "../types.ts";
 import { ParcnetAPI } from "@parcnet-js/app-connector";
-import { ticketProofRequest } from "@parcnet-js/ticket-spec";
+import {
+  TicketProofRequest,
+  ticketProofRequest,
+} from "@parcnet-js/ticket-spec";
 import { classificationTuples } from "./classification-tuples.ts";
 
-export function useLogin() {
+export type UseLoginProps = {
+  fieldsToReveal?: TicketProofRequest["fieldsToReveal"] | undefined;
+};
+
+export const minimumFieldsToReveal: TicketProofRequest["fieldsToReveal"] = {
+  owner: true,
+  eventId: true,
+  productId: true,
+};
+
+export function useLogin(props?: UseLoginProps) {
+  const fieldsToReveal = props?.fieldsToReveal ?? minimumFieldsToReveal;
   const { setUser } = useContext(UserContext);
   const [isLoading, setLoading] = useState(false);
   const { connect } = useZAPIConnect();
 
   const login = async () => {
+    let user: User | undefined;
+    let ticketProof: any;
     try {
       setLoading(true);
       const zapi = await connect();
-      const ticketProof = await proveTicket(zapi);
-      const user = await proveRequest({ ticketProof });
+      ticketProof = await proveTicket(
+        zapi,
+        fieldsToReveal,
+      );
+      user = await proveRequest({ ticketProof });
       setUser(user);
     } catch (error) {
       throw error;
     } finally {
       setLoading(false);
     }
+    return { user, ticketProof };
   };
 
   return { login, isLoading };
@@ -53,14 +73,13 @@ async function proveRequest(
   return user as User;
 }
 
-function proveTicket(zapi: ParcnetAPI) {
+function proveTicket(
+  zapi: ParcnetAPI,
+  fieldsToReveal: TicketProofRequest["fieldsToReveal"],
+) {
   const request = ticketProofRequest({
     classificationTuples,
-    fieldsToReveal: ({
-      owner: true,
-      eventId: true,
-      productId: true,
-    }),
+    fieldsToReveal,
   });
 
   return zapi.gpc.prove({ request: request.schema });

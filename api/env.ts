@@ -35,6 +35,12 @@ if (!codeSecret) {
   throw new Error("CODE_SECRET is required");
 }
 
+const emailSecret = Deno.env.get("EMAIL_SECRET");
+
+if (!emailSecret) {
+  throw new Error("EMAIL_SECRET is required");
+}
+
 const zupassUrl = Deno.env.get("ZUPASS_URL") ?? "https://zupass.org";
 const zappName = Deno.env.get("ZUPASS_ZAPP_NAME") ?? "meerkat-local";
 const base = Deno.env.get("BASE_URL") ?? "http://localhost:8000";
@@ -61,4 +67,5 @@ export default {
   sentryDSN,
   verifierEndpoint,
   codeSecret,
+  emailSecret,
 };

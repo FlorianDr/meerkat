@@ -1,8 +1,9 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { connect } from "@parcnet-js/app-connector";
 import { ZAPIContext } from "./context.tsx";
 
 export const useZAPIConnect = () => {
+  const [isConnecting, setIsConnecting] = useState(false);
   const { context, setContext } = useContext(ZAPIContext);
 
   const connectFn = async () => {
@@ -10,11 +11,20 @@ export const useZAPIConnect = () => {
       return context.zapi;
     }
 
-    const zapi = await connect(
-      context.config.zapp,
-      context.ref.current,
-      context.config.zupassUrl,
-    );
+    setIsConnecting(true);
+
+    let zapi;
+    try {
+      zapi = await connect(
+        context.config.zapp,
+        context.ref.current,
+        context.config.zupassUrl,
+      );
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsConnecting(false);
+    }
 
     setContext({
       ...context,
@@ -27,5 +37,6 @@ export const useZAPIConnect = () => {
   return {
     connect: connectFn,
     isConnected: context.zapi !== null,
+    isConnecting,
   };
 };

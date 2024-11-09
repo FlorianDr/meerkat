@@ -2,6 +2,8 @@ import { EventCard } from "./pages/EventCard.tsx";
 import { Login } from "./pages/Login.tsx";
 import { QnA } from "./pages/QnA.tsx";
 import { Remote } from "./pages/Remote.tsx";
+import { Feedback } from "./pages/Feedback.tsx";
+import { Speaker } from "./pages/Speaker.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -18,8 +20,16 @@ const router = createBrowserRouter([
     element: <EventCard />,
   },
   {
+    path: "/e/:uid/feedback",
+    element: <Feedback />,
+  },
+  {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/speaker",
+    element: <Speaker />,
   },
 ]);
 

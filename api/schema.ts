@@ -2,6 +2,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -48,6 +49,40 @@ export const events = pgTable("events", {
   secret: text("secret"),
 });
 
+// export const event_speakers = pgTable("event_speakers", {
+//   eventId: integer("event_id")
+//     .notNull()
+//     .references(() => events.id, { onDelete: "cascade" }),
+//   speakerId: integer("speaker_id")
+//     .notNull()
+//     .references(() => speakers.id, { onDelete: "cascade" }),
+// }, (table) => ({
+//   pk: primaryKey({ columns: [table.eventId, table.speakerId] }),
+// }));
+
+// export const speakers = pgTable("speakers", {
+//   id: serial("id").primaryKey(),
+//   sourceId: text("source_id").notNull(),
+//   name: text("name").notNull(),
+//   hash: text("hash").notNull(),
+//   userId: integer("user_id")
+//     .references(() => users.id, { onDelete: "cascade" }),
+// });
+
+export const event_pods = pgTable("event_pods", {
+  uid: text("uid").primaryKey(),
+  eventId: integer("event_id")
+    .notNull()
+    .references(() => events.id, { onDelete: "cascade" }),
+  pod: jsonb("pod").notNull(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  eventPodsIdx: index("event_pods_event_id_idx").on(table.eventId),
+}));
+
 export const questions = pgTable(
   "questions",
   {
@@ -82,6 +117,7 @@ export const votes = pgTable(
   (table) => ({
     pk: primaryKey({ columns: [table.questionId, table.userId] }),
     userIdx: index("votes_user_id_idx").on(table.userId),
+    questionIdx: index("votes_question_id_idx").on(table.questionId),
   }),
 );
 
@@ -118,7 +154,8 @@ export const accounts = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     provider: text("provider").notNull(),
-    id: text("id").notNull(),
+    id: text("id").notNull().unique(),
+    hash: text("hash"),
   },
   (table) => ({
     providerId: unique("provider_id_uniq").on(table.provider, table.id),

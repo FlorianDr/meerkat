@@ -4,14 +4,28 @@ import db from "../db.ts";
 import { accounts, questions, users } from "../schema.ts";
 import { generateUsername } from "../usernames.ts";
 
-const getUserByUIDPreparedStatement = db.select().from(users).where(
+const getUserByUIDPreparedStatement = db.select().from(users).innerJoin(
+  accounts,
+  eq(users.id, accounts.userId),
+).where(
   eq(users.uid, sql.placeholder("uid")),
-).prepare("get_user_by_uid");
+).limit(1).prepare("get_user_by_uid");
 
 export async function getUserByUID(uid: string) {
   const result = await getUserByUIDPreparedStatement.execute({ uid });
 
-  return result.length === 1 ? result[0] : null;
+  return result.length === 1 ? toUser(result[0]) : null;
+}
+
+function toUser(
+  result: {
+    users: typeof users.$inferSelect;
+    accounts: typeof accounts.$inferSelect;
+  },
+) {
+  const { users: user, accounts: account } = result;
+
+  return { ...user, hash: account?.hash };
 }
 
 export async function createUser(uid?: string | undefined) {
@@ -24,7 +38,11 @@ export async function createUser(uid?: string | undefined) {
 }
 
 export async function createUserFromAccount(
-  { provider, id }: { provider: string; id: string },
+  { provider, id, hash }: {
+    provider: string;
+    id: string;
+    hash: string | null;
+  },
 ) {
   const result = await db.transaction(async (db) => {
     const result = await db.insert(users).values({
@@ -39,10 +57,14 @@ export async function createUserFromAccount(
     await db.insert(accounts).values({
       provider,
       id,
+      hash,
       userId: result[0].id,
     }).execute();
 
-    return result[0];
+    return {
+      ...result[0],
+      hash,
+    };
   });
 
   return result;
@@ -55,7 +77,8 @@ export async function getUserByProvider(provider: string, id: string) {
       users.id,
       accounts.userId,
     ),
-  ).where(and(eq(accounts.provider, provider), eq(accounts.id, id))).execute();
+  ).where(and(eq(accounts.provider, provider), eq(accounts.id, id))).limit(1)
+    .execute();
 
   return result.length === 1 ? result[0].users : null;
 }

@@ -33,3 +33,8 @@ export async function createSigner(preSharedKey: string) {
 
   return signMessage;
 }
+
+export async function hash(secret: string, value: string) {
+  const sign = await createSigner(secret);
+  return sign(value);
+}
