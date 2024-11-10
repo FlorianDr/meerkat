@@ -4,6 +4,12 @@ if (!adminToken) {
   throw new Error("ADMIN_TOKEN is required");
 }
 
+const syncToken = Deno.env.get("SYNC_TOKEN");
+
+if (!syncToken) {
+  throw new Error("SYNC_TOKEN is required");
+}
+
 const connectionString = Deno.env.get("DATABASE_POOLER_URL") ??
   Deno.env.get("DATABASE_URL");
 
@@ -70,4 +76,5 @@ export default {
   codeSecret,
   emailSecret,
   maxPoolSize,
+  syncToken,
 };

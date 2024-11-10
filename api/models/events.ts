@@ -8,7 +8,10 @@ import { uuidv7 } from "uuidv7";
 
 export async function upsertEvents(
   conferenceId: number,
-  newEvents: Omit<Event, "id" | "conferenceId" | "createAt">[],
+  newEvents: Omit<
+    Event,
+    "id" | "conferenceId" | "createAt" | "cover"
+  >[],
 ) {
   const allColumns = getTableColumns(events);
   const updateColumns = Object.keys(allColumns).filter(
