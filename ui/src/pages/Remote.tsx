@@ -3,7 +3,7 @@ import { Button, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useEvent } from "../hooks/use-event.ts";
-import { feedback, qa, speaker } from "../routes.ts";
+import { feedback, qa } from "../routes.ts";
 import { card } from "../routes.ts";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { usePageTitle } from "../hooks/use-page-title.ts";
@@ -17,6 +17,7 @@ export function Remote() {
   usePageTitle(pageTitle(event));
 
   const hasFileverseLink = event?.features["fileverse-link"] ?? false;
+  const hasSpeakerFeedback = event?.features["speaker-feedback"] ?? false;
 
   return (
     <div className="layout">
@@ -77,25 +78,26 @@ export function Remote() {
           >
             Collect Card
           </Button>
-          <Button
-            variant="outline"
-            as={Link}
-            to={uid ? feedback(uid) : ""}
-            width="16rem"
-            fontWeight="bold"
-            py={6}
-          >
-            Speaker Feedback
-          </Button>
-          {hasFileverseLink && event?.uid &&
-            (
-              <Link
-                to={`https://devcon.fileverse.io/devcon7/portal?event=${event.uid}`}
-                target="_blank"
-              >
-                Contribute on Fileverse <ExternalLinkIcon />
-              </Link>
-            )}
+          {hasSpeakerFeedback && (
+            <Button
+              variant="outline"
+              as={Link}
+              to={uid ? feedback(uid) : ""}
+              width="16rem"
+              fontWeight="bold"
+              py={6}
+            >
+              Speaker Feedback
+            </Button>
+          )}
+          {hasFileverseLink && event?.uid && (
+            <Link
+              to={`https://devcon.fileverse.io/devcon7/portal?event=${event.uid}`}
+              target="_blank"
+            >
+              Contribute on Fileverse <ExternalLinkIcon />
+            </Link>
+          )}
         </Stack>
       </main>
     </div>
