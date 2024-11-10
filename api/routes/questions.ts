@@ -193,7 +193,9 @@ app.delete(
     const result = await deleteQuestion(question.id);
 
     if (!result) {
-      throw new HTTPException(500, { message: `Failed to mark as answered` });
+      throw new HTTPException(500, {
+        message: `Failed to delete question ${uid}`,
+      });
     }
     const { id: _id, userId: _userId, ...rest } = result;
 
