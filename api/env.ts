@@ -48,6 +48,7 @@ const posthogToken = Deno.env.get("POSTHOG_TOKEN");
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 const sentryDSN = Deno.env.get("SENTRY_DSN");
+const maxPoolSize = Deno.env.get("DATABASE_MAX_POOL_SIZE");
 
 console.info(
   `Env - zupassUrl: ${zupassUrl}, base: ${base}, verifier: ${verifierEndpoint}`,
@@ -68,4 +69,5 @@ export default {
   verifierEndpoint,
   codeSecret,
   emailSecret,
+  maxPoolSize,
 };
