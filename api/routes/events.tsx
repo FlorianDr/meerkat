@@ -189,7 +189,7 @@ app.post(
 
     if (event.secret && event.secret !== secret) {
       throw new HTTPException(401, {
-        message: `Invalid secret: ${event.uid}`,
+        message: `Secret ${secret} is invalid for event ${event.uid}`,
       });
     }
 
