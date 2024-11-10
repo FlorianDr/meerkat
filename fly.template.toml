@@ -36,9 +36,9 @@ timeout = "5s"
 path = "/api/v1/conferences"
 
 [[vm]]
-memory = '2gb'
+memory = '4gb'
 cpu_kind = 'performance'
-cpus = 1
+cpus = 2
 
 [[statics]]
 guest_path = "/app/ui/dist"
