@@ -1,4 +1,4 @@
-import { CheckCircleIcon, NotAllowedIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, DeleteIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import {
   Heading,
   Icon,
@@ -12,9 +12,10 @@ import {
 import { MdMoreHoriz } from "react-icons/md";
 import { useAsyncFormSubmit } from "../../hooks/use-async-form-submit.ts";
 import { useBlockUser } from "../../hooks/use-block-user.ts";
-import { Question as QuestionType } from "../../types";
+import { Question as QuestionType } from "../../types.ts";
 import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
+import { useDeleteQuestion } from "../../hooks/use-delete-question.ts";
 
 interface QuestionProps {
   canVote: boolean;
@@ -40,10 +41,18 @@ export function Question(
   });
   const { trigger: block } = useBlockUser(question.user?.uid ?? "");
   const { trigger: markAsAnswered } = useMarkAsAnswered(question.uid);
+  const { trigger: deleteQuestion } = useDeleteQuestion(question.uid);
 
   const handleBlock = async () => {
+    const result = await confirm("Are you sure you want to block this user?");
+
+    if (!result) {
+      return;
+    }
+
     await block();
     refresh();
+
     toast({
       title: "User blocked 🚫",
       status: "success",
@@ -55,6 +64,16 @@ export function Question(
     await markAsAnswered();
     toast({
       title: "Question marked as answered ✅",
+      status: "success",
+      duration: 1000,
+    });
+  };
+
+  const handleDelete = async () => {
+    await deleteQuestion();
+    refresh();
+    toast({
+      title: "Question deleted 🗑️",
       status: "success",
       duration: 1000,
     });
@@ -85,6 +104,9 @@ export function Question(
               <MenuList>
                 <MenuItem onClick={handleAnswered} icon={<CheckCircleIcon />}>
                   Mark as Answered
+                </MenuItem>
+                <MenuItem onClick={handleDelete} icon={<DeleteIcon />}>
+                  Delete
                 </MenuItem>
                 <MenuItem onClick={handleBlock} icon={<NotAllowedIcon />}>
                   Block User

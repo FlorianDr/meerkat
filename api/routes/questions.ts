@@ -4,7 +4,11 @@ import { jwt } from "@hono/hono/jwt";
 import { MAX_VOTES_PER_EVENT } from "../moderation.ts";
 import env from "../env.ts";
 import { getEventById } from "../models/events.ts";
-import { getQuestionByUID, markAsAnswered } from "../models/questions.ts";
+import {
+  deleteQuestion,
+  getQuestionByUID,
+  markAsAnswered,
+} from "../models/questions.ts";
 import { getConferenceRolesForConference } from "../models/roles.ts";
 import { getUserByUID } from "../models/user.ts";
 import {
@@ -134,6 +138,59 @@ app.post(
     }
 
     const result = await markAsAnswered(question.id);
+
+    if (!result) {
+      throw new HTTPException(500, { message: `Failed to mark as answered` });
+    }
+    const { id: _id, userId: _userId, ...rest } = result;
+
+    return c.json({ data: rest });
+  },
+);
+
+app.delete(
+  "/api/v1/questions/:uid",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const uid = c.req.param("uid");
+    const payload = c.get("jwtPayload");
+
+    const [user, question] = await Promise.all([
+      getUserByUID(payload.sub),
+      getQuestionByUID(uid),
+    ]);
+
+    if (!user) {
+      throw new HTTPException(401, {
+        message: `User ${payload.sub} not found`,
+      });
+    }
+
+    if (!question) {
+      throw new HTTPException(404, {
+        message: `Question ${uid} not found`,
+      });
+    }
+
+    const event = await getEventById(question.eventId);
+
+    if (!event) {
+      throw new HTTPException(404, {
+        message: `Event ${question.eventId} not found`,
+      });
+    }
+
+    const roles = await getConferenceRolesForConference(
+      user.id,
+      event.conferenceId,
+    );
+    const isOrganizer = roles.some((role) => role.role === "organizer");
+
+    if (!isOrganizer) {
+      throw new HTTPException(403, { message: `User is not an organizer` });
+    }
+
+    const result = await deleteQuestion(question.id);
 
     if (!result) {
       throw new HTTPException(500, { message: `Failed to mark as answered` });

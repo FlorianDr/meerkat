@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { uuidv7 } from "uuidv7";
 import { questions, users, votes } from "../schema.ts";
 import db from "../db.ts";
@@ -26,6 +26,7 @@ const getQuestionsPreparedStatement = db
     and(
       eq(questions.eventId, sql.placeholder("event_id")),
       eq(users.blocked, false),
+      isNull(questions.deletedAt),
     ),
   )
   .groupBy(questions.id, users.id)
@@ -55,6 +56,7 @@ const getQuestionsPreparedStatementByCreation = db
     and(
       eq(questions.eventId, sql.placeholder("event_id")),
       eq(users.blocked, false),
+      isNull(questions.deletedAt),
     ),
   )
   .groupBy(questions.id, users.id)
@@ -109,6 +111,14 @@ export async function markAsAnswered(
   }).where(
     eq(questions.id, id),
   ).returning().execute();
+
+  return results.length === 1 ? results[0] : null;
+}
+
+export async function deleteQuestion(id: number) {
+  const results = await db.update(questions).set({
+    deletedAt: new Date(),
+  }).where(eq(questions.id, id)).returning().execute();
 
   return results.length === 1 ? results[0] : null;
 }

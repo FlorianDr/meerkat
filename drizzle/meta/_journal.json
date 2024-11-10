@@ -169,6 +169,13 @@
       "when": 1731180788169,
       "tag": "0023_bitter_cyclops",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1731253103700,
+      "tag": "0024_luxuriant_phalanx",
+      "breakpoints": true
     }
   ]
 }

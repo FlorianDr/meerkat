@@ -97,6 +97,7 @@ export const questions = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     answeredAt: timestamp("answered_at"),
+    deletedAt: timestamp("deleted_at"),
   },
   (table) => ({
     eventIdx: index("questions_event_id_idx").on(table.eventId),

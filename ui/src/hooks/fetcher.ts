@@ -32,3 +32,12 @@ export const poster = async (
   }
   return res.json();
 };
+
+export const deleter = async (endpoint: string) => {
+  const res = await fetch(endpoint, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new HTTPError(res);
+  }
+};
