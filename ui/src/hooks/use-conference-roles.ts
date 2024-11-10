@@ -5,7 +5,7 @@ import { useUser } from "./use-user.ts";
 
 export type ConferenceRole = {
   conferenceId: number;
-  role: "anonymous" | "attendee" | "organizer";
+  role: "attendee" | "speaker" | "organizer";
   grantedAt: Date;
 };
 
@@ -13,7 +13,10 @@ export function useConferenceRoles() {
   const { isAuthenticated } = useUser();
   const { data, error, isLoading, mutate } = useSWR<
     { data: ConferenceRole[] },
-    HTTPError
+    HTTPError,
+    {
+      revalidateOnFocus: false;
+    }
   >(isAuthenticated ? `/api/v1/users/me/roles` : undefined, fetcher);
 
   return { data: data?.data, error, isLoading, mutate };
