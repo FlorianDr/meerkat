@@ -1,6 +1,6 @@
 import { User } from "../models/user.ts";
 
-export const JWT_EXPIRATION_TIME = 3 * 24 * 60 * 60; // 3 days
+export const JWT_EXPIRATION_TIME = 7 * 24 * 60 * 60; // 3 days
 
 /**
  * Constructs a JWT payload for the given user.
