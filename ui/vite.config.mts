@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react(), nodePolyfills()],
   server: {
     proxy: {
-      "/api": "http://localhost:8000",
+      "/api": "http://0.0.0.0:8000",
     },
   },
 });
