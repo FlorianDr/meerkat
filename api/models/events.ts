@@ -10,13 +10,13 @@ export async function upsertEvents(
   conferenceId: number,
   newEvents: Omit<
     Event,
-    "id" | "conferenceId" | "createAt" | "cover"
+    "id" | "conferenceId" | "createAt"
   >[],
 ) {
   const allColumns = getTableColumns(events);
   const updateColumns = Object.keys(allColumns).filter(
     (column) =>
-      !["uid", "conferenceId", "createdAt", "id", "cover"].includes(
+      !["uid", "conferenceId", "createdAt", "id"].includes(
         column,
       ),
   );
