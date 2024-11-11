@@ -16,6 +16,11 @@ h2 {
   font-size: 1rem;
 }
 
+h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.7rem;
+}
+
 ol,
 ul {
   list-style-type: none;
@@ -73,6 +78,14 @@ ul {
 
 .header-title {
   margin-bottom: 1.5rem;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.text-align-center {
+  text-align: center;
 }
 
 .question-count {
@@ -150,7 +163,7 @@ ul {
 
 /* QR - Content */
 
-.qr-conentet {
+.qr-content {
   padding: 0.8rem;
   display: flex;
   justify-content: center;
@@ -165,6 +178,7 @@ ul {
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
+  flex-direction: column;
 }
 
 /* QR - Frame */

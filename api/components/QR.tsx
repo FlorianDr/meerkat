@@ -28,17 +28,25 @@ const QR: FC<QRProps> = ({
 }) => {
   const svg = generateQRCodeSVG(url.toString());
 
+  const timeString = event?.start.toLocaleTimeString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  }) ?? "";
+
   return (
     <div className="qr-layout">
       <header className="qr-header">
-        <h2 className="header-title">{event?.title}</h2>
-        <h2 className="header-title">{event?.speaker}</h2>
+        <h2>{conferenceName}</h2>
+        <h2 className="text-align-right">{timeString}</h2>
       </header>
-      <main className="qr-conentet">
+      <main className="qr-content">
         <div
           style={{
             width: "100%",
-            maxWidth: "20rem",
+            maxWidth: "22rem",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -47,17 +55,9 @@ const QR: FC<QRProps> = ({
         />
         <QrFrame />
       </main>
-      <footer className="qr-footer">
-        <h2>{conferenceName}</h2>
-        <h2>
-          {event?.start.toLocaleTimeString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-          })}
-        </h2>
+      <footer className="qr-footer text-align-center">
+        <h2>{event?.title}</h2>
+        <h4>{event?.speaker}</h4>
       </footer>
     </div>
   );
