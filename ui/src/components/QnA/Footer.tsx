@@ -48,6 +48,14 @@ export function Footer({
       refresh();
       setQuestion("");
     },
+    onError: (error) => {
+      toast({
+        title: `Failed to create question (${error.status})`,
+        status: "error",
+        description: error.message,
+        duration: 2000,
+      });
+    },
   });
 
   const submitQuestion = () => {

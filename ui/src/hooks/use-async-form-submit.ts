@@ -1,8 +1,10 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../context/user.tsx";
+import { HTTPError } from "./http-error.ts";
 
 export type AsyncFormSubmitProps = {
   onSuccess?: () => void;
+  onError?: (error: HTTPError) => void;
 };
 
 type AsyncFormSubmitReturnType = {
@@ -33,13 +35,18 @@ export const useAsyncFormSubmit = (
       if (!response.ok) {
         if (response.status === 429) {
           setIsOnCooldown(true);
+        } else {
+          throw new HTTPError(response);
         }
-        throw new Error(`${response.status} - ${await response.text()}`);
       }
       form.reset();
       props?.onSuccess?.();
     } catch (error) {
-      setError(error);
+      if (error instanceof HTTPError) {
+        props?.onError?.(error);
+      } else {
+        setError(error);
+      }
     } finally {
       setIsLoading(false);
     }

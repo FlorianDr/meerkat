@@ -3,12 +3,14 @@ import { poster } from "./fetcher.ts";
 import { Event } from "../types.ts";
 import { useContext } from "react";
 import { UserContext } from "../context/user.tsx";
+import { HTTPError } from "./http-error.ts";
 
 export const useAskQuestion = (event: Event | undefined, {
   onSuccess,
-}: { onSuccess: () => void }) => {
+  onError,
+}: { onSuccess: () => void; onError: (error: HTTPError) => void }) => {
   const { setIsOnCooldown } = useContext(UserContext);
-  const { trigger } = useSWRMutation(
+  const { trigger } = useSWRMutation<{ data: any }, HTTPError>(
     event ? `/api/v1/events/${event.uid}/questions` : undefined,
     poster,
     {
@@ -16,6 +18,8 @@ export const useAskQuestion = (event: Event | undefined, {
       onError: (error) => {
         if (error.status === 429) {
           setIsOnCooldown(true);
+        } else {
+          onError(error);
         }
       },
     },

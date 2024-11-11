@@ -7,7 +7,7 @@ import { UserContext } from "../context/user.tsx";
 
 export const useUser = () => {
   const { user, setUser } = useContext(UserContext);
-  const { data, error, isLoading } = useSWR<{ data: User }, HTTPError>(
+  const { data, error, isLoading, mutate } = useSWR<{ data: User }, HTTPError>(
     "/api/v1/users/me",
     fetcher,
     {
@@ -22,6 +22,7 @@ export const useUser = () => {
 
   return {
     data: resolvedUser,
+    mutate,
     error,
     isLoading,
     isAuthenticated: !!resolvedUser,

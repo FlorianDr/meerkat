@@ -38,6 +38,13 @@ export function Question(
         duration: 1000,
       });
     },
+    onError: (error) => {
+      toast({
+        title: `Failed to vote (${error.status})`,
+        status: "error",
+        description: error.message,
+      });
+    },
   });
   const { trigger: block } = useBlockUser(question.user?.uid ?? "");
   const { trigger: markAsAnswered } = useMarkAsAnswered(question.uid);
