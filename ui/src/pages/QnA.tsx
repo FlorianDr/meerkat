@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Flex, Link, Switch } from "@chakra-ui/react";
+import { Flex, Link, Select } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
 import { Header } from "../components/Header/Header.tsx";
 import { Modal } from "../components/Modal/Modal.tsx";
@@ -107,14 +107,15 @@ export function QnA() {
             </Link>
           </nav>
           <Header title={`QA: ${event?.title}`} />
-          <div style={{ alignSelf: "flex-end", paddingBottom: "0.5rem" }}>
-            🕖{" "}
-            <Switch
-              isChecked={isSortByPopularity}
-              size="lg"
-              onChange={(e) => setIsSortByPopularity(e.target.checked)}
-            />{" "}
-            ⬆️
+          <div style={{ alignSelf: "flex-end", marginBottom: "0.5rem" }}>
+            <Select
+              value={isSortByPopularity ? "popular" : "newest"}
+              onChange={(e) =>
+                setIsSortByPopularity(e.target.value === "popular")}
+            >
+              <option value="newest">Newest</option>
+              <option value="popular">Votes</option>
+            </Select>
           </div>
         </header>
         <main className="content flex">

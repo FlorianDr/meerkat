@@ -22,7 +22,6 @@ body {
 .header {
   grid-row: 1;
   grid-column: 2;
-  max-height: 126px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.16);
 }
 
@@ -204,6 +203,7 @@ ul {
 .two-lines {
   display: -webkit-box;
   line-clamp: 2;
+  overflow: hidden;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
