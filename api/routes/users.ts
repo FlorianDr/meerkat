@@ -3,7 +3,12 @@ import { Hono } from "@hono/hono";
 import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
-import { getUserByProvider, getUserByUID } from "../models/user.ts";
+import {
+  getUserByProvider,
+  getUserByUID,
+  updateUserEmail,
+  ZUPASS_PROVIDER,
+} from "../models/user.ts";
 import { HTTPException } from "@hono/hono/http-exception";
 import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
@@ -200,15 +205,17 @@ app.post(
       throw new HTTPException(400, { message: "Ticket not found" });
     }
 
-    let user = await getUserByProvider("zupass", publicKey);
+    let user = await getUserByProvider(ZUPASS_PROVIDER, publicKey);
+    const hashValue = email ? await hash(env.emailSecret, email) : null;
 
     if (!user) {
-      const hashValue = email ? await hash(env.emailSecret, email) : null;
       user = await createUserFromAccount({
-        provider: "zupass",
+        provider: ZUPASS_PROVIDER,
         id: publicKey,
         hash: hashValue,
       });
+    } else if (hashValue) {
+      await updateUserEmail(user.id, hashValue);
     }
 
     const conference = result.conferences;

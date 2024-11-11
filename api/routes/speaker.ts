@@ -1,7 +1,7 @@
 import { jwt } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { HTTPException } from "@hono/hono/http-exception";
-import { getUserByUID } from "../models/user.ts";
+import { getUserByUID, ZUPASS_PROVIDER } from "../models/user.ts";
 import { getEventPods } from "../models/events.ts";
 import { getAccounts } from "../models/user.ts";
 import { Hono } from "@hono/hono";
@@ -20,7 +20,9 @@ app.get(
     }
 
     const accounts = await getAccounts(user.id);
-    const zuPass = accounts.find((account) => account.provider === "zupass");
+    const zuPass = accounts.find((account) =>
+      account.provider === ZUPASS_PROVIDER
+    );
 
     if (!zuPass?.hash) {
       throw new HTTPException(401, {

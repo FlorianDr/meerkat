@@ -4,6 +4,8 @@ import db from "../db.ts";
 import { accounts, questions, users } from "../schema.ts";
 import { generateUsername } from "../usernames.ts";
 
+export const ZUPASS_PROVIDER = "zupass";
+
 const getUserByUIDPreparedStatement = db.select().from(users).innerJoin(
   accounts,
   eq(users.id, accounts.userId),
@@ -131,6 +133,14 @@ export async function getUserPostCountPerTalk(
     .execute();
 
   return Number(result[0].count);
+}
+
+export async function updateUserEmail(userId: number, hash: string) {
+  await db
+    .update(accounts)
+    .set({ hash })
+    .where(eq(accounts.userId, userId))
+    .execute();
 }
 
 export type User = typeof users.$inferSelect;

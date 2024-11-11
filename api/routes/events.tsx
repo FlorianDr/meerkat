@@ -37,6 +37,7 @@ import {
   getUserByUID,
   getUserPostCountAfterDate,
   getUserPostCountPerTalk,
+  ZUPASS_PROVIDER,
 } from "../models/user.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 import { config } from "../models/config.ts";
@@ -203,7 +204,8 @@ app.post(
     }
 
     const zupassAccount = await getAccounts(user.id);
-    const zupassId = zupassAccount?.find((a) => a.provider === "zupass")?.id;
+    const zupassId = zupassAccount?.find((a) => a.provider === ZUPASS_PROVIDER)
+      ?.id;
 
     if (!zupassId) {
       throw new HTTPException(400, {
@@ -303,6 +305,7 @@ app.post(
       question: questionData.question,
       eventId: event.id,
       userId: user.id,
+      deletedAt: null,
     });
 
     return c.json({
