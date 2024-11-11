@@ -5,6 +5,7 @@ import { createConference, getConferences } from "../models/conferences.ts";
 import { upsertEvents } from "../models/events.ts";
 import { createSigner } from "../utils/secret.ts";
 import { getEvent, getSessions, type Session } from "../devcon/api.ts";
+import { getCover } from "../devcon/tracks.ts";
 
 const app = new Hono();
 
@@ -33,6 +34,7 @@ app.post(
         abstract: event.abstract ?? null,
         track: event.track ?? null,
         speaker: event.speaker ?? null,
+        cover: getCover(event.track),
       };
     });
 
