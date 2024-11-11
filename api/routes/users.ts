@@ -235,7 +235,7 @@ app.post(
     const newRoleIndex = ROLE_HIERARCHY.indexOf(role);
     const currentRoleIndex = conferenceRoles.reduce((acc, role) => {
       return Math.max(acc, ROLE_HIERARCHY.indexOf(role.role));
-    }, 0);
+    }, -1);
 
     if (newRoleIndex > currentRoleIndex) {
       await grantRole(user.id, conference.id, role);
