@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Flex, Link, Switch } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
@@ -22,6 +22,7 @@ import { useQuestions } from "../hooks/use-questions.ts";
 import { useAnonymousUser } from "../hooks/use-anonymous-user.ts";
 import { usePageTitle } from "../hooks/use-page-title.ts";
 import { pageTitle } from "../utils/events.ts";
+import throttle from "lodash.throttle";
 
 export function QnA() {
   const { uid } = useParams();
@@ -35,10 +36,13 @@ export function QnA() {
   );
   const { data: votes, mutate: refreshVotes } = useVotes();
   const { data: roles } = useConferenceRoles();
-  const refresh = () => {
-    refreshQuestions();
-    refreshVotes();
-  };
+  const refresh = useCallback(
+    throttle(() => {
+      refreshQuestions();
+      refreshVotes();
+    }, 500),
+    [refreshQuestions, refreshVotes],
+  );
 
   const { trigger } = useReact(
     event?.uid ?? "",

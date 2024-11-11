@@ -12,6 +12,7 @@
     "@sentry/react": "npm:@sentry/react@^8.36.0",
     "@supabase/supabase-js": "npm:@supabase/supabase-js@^2.45.6",
     "framer-motion": "npm:framer-motion@^11.3.28",
+    "lodash.throttle": "npm:lodash.throttle@^4.1.1",
     "posthog-js": "npm:posthog-js@^1.176.0",
     "react": "npm:react@^18.3.1",
     "react-dom": "npm:react-dom@^18.3.1",
