@@ -74,6 +74,7 @@ const eventMiddleware = createMiddleware<Env>(async (c, next) => {
 
 app.get("/e/:uid", eventMiddleware, async (c) => {
   const event = c.get("event");
+  const secret = c.req.query("secret");
   const [conference, questions, participants] = await Promise.all([
     getConferenceById(event.conferenceId),
     getQuestions(event.id),
@@ -88,6 +89,9 @@ app.get("/e/:uid", eventMiddleware, async (c) => {
 
   const origin = c.req.header("origin") ?? env.base;
   const url = new URL(`/e/${event.uid}/remote`, origin);
+  if (secret) {
+    url.searchParams.set("secret", secret);
+  }
 
   const eventPartial = {
     id: event.id,
