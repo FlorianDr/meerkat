@@ -8,6 +8,8 @@ import {
   ticketProofRequest,
 } from "@parcnet-js/ticket-spec";
 import { classificationTuples } from "./classification-tuples.ts";
+import { POD } from "@pcd/pod";
+import { DevconTicketSpec } from "./ticket-schema.ts";
 
 export type UseLoginProps = {
   fieldsToReveal?: TicketProofRequest["fieldsToReveal"] | undefined;
@@ -31,12 +33,40 @@ export function useLogin(props?: UseLoginProps) {
     try {
       setLoading(true);
       const zapi = await connect();
-      ticketProof = await proveTicket(
-        zapi,
-        fieldsToReveal,
+      const tickets = await zapi.pod.collection("Devcon SEA").query(
+        DevconTicketSpec,
       );
-      user = await proveRequest({ ticketProof });
-      setUser(user);
+
+      const ticket = tickets[0];
+      const ticketPOD = POD.load(
+        ticket.entries,
+        ticket.signature,
+        ticket.signerPublicKey,
+      );
+
+      const proofOfIdentity = await z.pod.signPrefixed({
+        _UNSAFE_ticketId: {
+          type: "string",
+          value: ticket.entries.ticketId.value.toString(),
+        },
+      });
+
+      const proofOfIdentityPOD = POD.load(
+        proofOfIdentity.entries,
+        proofOfIdentity.signature,
+        proofOfIdentity.signerPublicKey,
+      );
+
+      const res = await fetch("/api/v1/users/login/pods", {
+        method: "POST",
+        body: JSON.stringify({
+          serializedTicket: ticketPOD.toJSON(),
+          serializedProofOfIdentity: proofOfIdentityPOD.toJSON(),
+        }),
+      });
+      const data = await res.json();
+
+      setUser(data.data.user);
     } catch (error) {
       throw error;
     } finally {

@@ -3,6 +3,7 @@
     "@hono/hono": "npm:hono@^4.5.3",
     "@hono/zod-validator": "npm:@hono/zod-validator@^0.2.2",
     "@libs/qrcode": "jsr:@libs/qrcode@^1.2.5",
+    "@parcnet-js/ticket-spec": "npm:@parcnet-js/ticket-spec@^1.1.9",
     "@pcd/pod": "npm:@pcd/pod@^0.5.0",
     "@std/crypto": "jsr:@std/crypto@^1.0.3",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.2",

@@ -59,10 +59,11 @@ const zupassCollection = `${config.zappName}: ${ticketCollection}`;
 const zapp: Zapp = {
   name: config.zappName,
   permissions: {
+    READ_PUBLIC_IDENTIFIERS: {},
     REQUEST_PROOF: { collections: [ticketCollection] },
     INSERT_POD: { collections: [zupassCollection] },
     SIGN_POD: {},
-    READ_POD: { collections: [zupassCollection] },
+    READ_POD: { collections: [zupassCollection, ticketCollection] },
   },
 };
 
