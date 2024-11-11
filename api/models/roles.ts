@@ -23,16 +23,19 @@ const conferenceRolesByUserIdAndConferenceIdStatement = db
       eq(conferenceRole.conferenceId, sql.placeholder("conference_id")),
     ),
   )
+  .limit(1)
   .prepare("conference_roles_by_user_id_and_conference_id");
 
-export function getConferenceRolesForConference(
+export async function getConferenceRolesForConference(
   userId: number,
   conferenceId: number,
 ): Promise<ConferenceRole[]> {
-  return conferenceRolesByUserIdAndConferenceIdStatement.execute({
+  const result = await conferenceRolesByUserIdAndConferenceIdStatement.execute({
     user_id: userId,
     conference_id: conferenceId,
   });
+
+  return result;
 }
 
 export function grantRole(

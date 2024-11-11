@@ -14,7 +14,11 @@ import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "@hono/hono/cookie";
 import { createUserFromAccount, markUserAsBlocked } from "../models/user.ts";
-import { getConferenceRoles, grantRole } from "../models/roles.ts";
+import {
+  getConferenceRoles,
+  getConferenceRolesForConference,
+  grantRole,
+} from "../models/roles.ts";
 import { getConferenceByTicket } from "../models/conferences.ts";
 import { hash } from "../utils/secret.ts";
 const app = new Hono();
@@ -163,6 +167,8 @@ app.get(
 // TODO: Use correct ticket proof scheme
 const proofScheme = z.any();
 
+const ROLE_HIERARCHY = ["attendee", "speaker", "organizer"];
+
 app.post(
   "/api/v1/users/prove",
   zValidator("json", proofScheme),
@@ -218,10 +224,22 @@ app.post(
       await updateUserEmail(user.id, hashValue);
     }
 
+    const conferenceRoles = await getConferenceRolesForConference(
+      user.id,
+      result.conference_tickets.conferenceId,
+    );
+
     const conference = result.conferences;
     const role = result.conference_tickets.role;
 
-    await grantRole(user.id, conference.id, role);
+    const newRoleIndex = ROLE_HIERARCHY.indexOf(role);
+    const currentRoleIndex = conferenceRoles.reduce((acc, role) => {
+      return Math.max(acc, ROLE_HIERARCHY.indexOf(role.role));
+    }, 0);
+
+    if (newRoleIndex > currentRoleIndex) {
+      await grantRole(user.id, conference.id, role);
+    }
 
     const origin = c.req.header("origin") ?? env.base;
     const payload = constructJWTPayload(user);
