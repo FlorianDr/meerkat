@@ -29,7 +29,7 @@ export function Speaker() {
   const { data: user } = useUser();
   const { connect, isConnecting } = useZAPIConnect();
   const { collection } = useZAPI();
-  const { data: pods } = usePods();
+  const { data: pods, mutate: refreshPods } = usePods();
   const [collected, setCollected] = useState<string[]>([]);
   const toast = useToast();
 
@@ -47,6 +47,11 @@ export function Speaker() {
     });
   };
 
+  const handleLogin = async () => {
+    await login();
+    refreshPods();
+  };
+
   const isEmailVerified = user?.hash;
 
   const filteredPods = pods?.filter((pod) => !collected.includes(pod.uid));
@@ -58,7 +63,10 @@ export function Speaker() {
           <Header title="Feedback" />
         </div>
       </header>
-      <main className="content flex" style={{ gap: "1rem", marginTop: "1rem" }}>
+      <main
+        className="content flex"
+        style={{ gap: "1rem", marginTop: "1rem", alignItems: "center" }}
+      >
         <ul style={{}}>
           {filteredPods?.map((pod) => (
             <li key={pod.uid}>
@@ -75,7 +83,7 @@ export function Speaker() {
         </ul>
         {!isEmailVerified && (
           <PrimaryButton
-            onClick={() => login()}
+            onClick={handleLogin}
             isLoading={isLoading}
             loadingText="Logging in..."
           >

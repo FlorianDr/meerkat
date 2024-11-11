@@ -149,8 +149,8 @@ export function QnA() {
           lockFocusAcrossFrames
         >
           <p>
-            You have been blocked from asking questions in this event. If you
-            believe this is a mistake, please contact the event organizer.
+            You have been blocked from asking questions. If you believe this is
+            a mistake, please contact the event organizer.
           </p>
         </Modal>
       )}
