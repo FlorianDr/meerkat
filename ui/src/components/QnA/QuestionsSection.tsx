@@ -7,13 +7,14 @@ import { Flex } from "@chakra-ui/react";
 export type QuestionsSectionProps = {
   questions: QuestionType[] | undefined;
   votes: Vote[] | undefined;
+  isLoading: boolean;
   isAuthenticated: boolean;
   isOrganizer: boolean;
   refresh: () => void;
 };
 
 export function QuestionsSection(
-  { questions, votes, isAuthenticated, isOrganizer, refresh }:
+  { questions, votes, isAuthenticated, isOrganizer, refresh, isLoading }:
     QuestionsSectionProps,
 ) {
   const questionLookup = useMemo(() => {
@@ -41,6 +42,12 @@ export function QuestionsSection(
               />
             ))}
           </ol>
+        )
+        : isLoading
+        ? (
+          <Flex alignItems="center" justifyContent="center" flex="1">
+            Loading...
+          </Flex>
         )
         : (
           <Flex alignItems="center" justifyContent="center" flex="1">

@@ -30,7 +30,11 @@ export function QnA() {
   usePageTitle(pageTitle(event));
 
   const [isSortByPopularity, setIsSortByPopularity] = useState(false);
-  const { data: questions, mutate: refreshQuestions } = useQuestions(
+  const {
+    data: questions,
+    mutate: refreshQuestions,
+    isLoading: isQuestionsLoading,
+  } = useQuestions(
     uid,
     isSortByPopularity ? "popular" : "newest",
   );
@@ -120,6 +124,7 @@ export function QnA() {
             isOrganizer={isOrganizer}
             refresh={refresh}
             isAuthenticated={isAuthenticated}
+            isLoading={isQuestionsLoading}
           />
         </main>
         <footer className="footer">
