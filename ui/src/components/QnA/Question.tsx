@@ -16,8 +16,11 @@ import { Question as QuestionType } from "../../types.ts";
 import { useMarkAsAnswered } from "../../hooks/use-mark-as-answered.ts";
 import { UpVoteButton } from "../Buttons/UpVoteButton.tsx";
 import { useDeleteQuestion } from "../../hooks/use-delete-question.ts";
+import { Event } from "../../types.ts";
+import { posthog } from "posthog-js";
 
 interface QuestionProps {
+  event: Event | undefined;
   canVote: boolean;
   canModerate: boolean;
   question: QuestionType;
@@ -26,7 +29,7 @@ interface QuestionProps {
 }
 
 export function Question(
-  { canVote, canModerate, question, voted, refresh }: QuestionProps,
+  { event, canVote, canModerate, question, voted, refresh }: QuestionProps,
 ) {
   const toast = useToast();
   const { onSubmit } = useAsyncFormSubmit({
@@ -36,6 +39,10 @@ export function Question(
         title: "Vote recorded 🗳️",
         status: "success",
         duration: 1000,
+      });
+      posthog.capture("vote_toggled", {
+        question_uid: question.uid,
+        event_uid: event?.uid,
       });
     },
     onError: (error) => {

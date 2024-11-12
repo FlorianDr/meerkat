@@ -11,14 +11,7 @@ import { classificationTuples } from "./classification-tuples.ts";
 import { POD } from "@pcd/pod";
 import { DevconTicketSpec } from "./ticket-schema.ts";
 import { HTTPError } from "./http-error.ts";
-
-// globalThis.faro.api.pushMeasurement({
-//   type: "internal_framework_measurements",
-//   values: {
-//     root_render_ms: 142.3,
-//     memory_used: 286,
-//   },
-// });
+import { posthog } from "posthog-js";
 
 export type UseLoginProps = {
   fieldsToReveal?: TicketProofRequest["fieldsToReveal"] | undefined;
@@ -80,6 +73,10 @@ export function useLogin(props?: UseLoginProps) {
       const user = await sendPods(ticketPOD, proofOfIdentityPOD);
 
       setUser(user);
+      posthog.identify(user.uid, {
+        name: user.name,
+      });
+      posthog.capture("user_logged_in");
     } catch (error) {
       props?.onError?.(error as Error);
       throw error;

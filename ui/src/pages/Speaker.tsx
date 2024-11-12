@@ -18,6 +18,7 @@ import { usePods } from "../hooks/use-pods.ts";
 import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { EventPod } from "../types.ts";
 import { useZAPI } from "../zapi/context.tsx";
+import { posthog } from "posthog-js";
 
 export function Speaker() {
   const { login, isLoading } = useLogin({
@@ -44,6 +45,9 @@ export function Speaker() {
       title: "Feedback Collected",
       description: "Open Zupass to view it",
       status: "success",
+    });
+    posthog.capture("feedback_collected", {
+      event_uid: pod.event.uid,
     });
   };
 

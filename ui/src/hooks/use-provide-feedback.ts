@@ -4,6 +4,7 @@ import { useZAPI } from "../zapi/context.tsx";
 import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { Event } from "../types.ts";
 import { PODData } from "@parcnet-js/podspec";
+import { posthog } from "posthog-js";
 
 export function useProvideFeedback({
   onError,
@@ -38,6 +39,9 @@ export function useProvideFeedback({
       (zapi as ParcnetAPI).pod.collection(collection ?? "")
         .insert(pod);
       await sendFeedback(event, pod);
+      posthog.capture("feedback_provided", {
+        event_uid: pod.event.uid,
+      });
     } catch (error) {
       onError?.(error as Error);
       throw error;

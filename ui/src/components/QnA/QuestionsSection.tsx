@@ -1,10 +1,11 @@
 import { useMemo } from "react";
-import { type Question as QuestionType } from "../../types.ts";
+import { type Event, type Question as QuestionType } from "../../types.ts";
 import { type Vote } from "../../hooks/use-votes.ts";
 import { Question } from "./Question.tsx";
 import { Flex } from "@chakra-ui/react";
 
 export type QuestionsSectionProps = {
+  event: Event | undefined;
   questions: QuestionType[] | undefined;
   votes: Vote[] | undefined;
   isLoading: boolean;
@@ -14,7 +15,7 @@ export type QuestionsSectionProps = {
 };
 
 export function QuestionsSection(
-  { questions, votes, isAuthenticated, isOrganizer, refresh, isLoading }:
+  { event, questions, votes, isAuthenticated, isOrganizer, refresh, isLoading }:
     QuestionsSectionProps,
 ) {
   const questionLookup = useMemo(() => {
@@ -34,6 +35,7 @@ export function QuestionsSection(
             {questions.map((question) => (
               <Question
                 key={question.uid}
+                event={event}
                 question={question}
                 canModerate={isOrganizer}
                 canVote={isAuthenticated}

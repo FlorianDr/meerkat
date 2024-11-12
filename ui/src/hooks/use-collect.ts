@@ -4,6 +4,7 @@ import { POD } from "@pcd/pod";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { poster } from "./fetcher.ts";
 import { useZAPI } from "../zapi/context.tsx";
+import { posthog } from "posthog-js";
 
 export function useCollect(event: Event | undefined, secret: string | null) {
   const { connect } = useZAPIConnect();
@@ -21,6 +22,9 @@ export function useCollect(event: Event | undefined, secret: string | null) {
         signature: pod.signature,
         signerPublicKey: pod.signerPublicKey,
       });
+    posthog.capture("attendance_collected", {
+      event_uid: event?.uid,
+    });
   };
 
   return {
