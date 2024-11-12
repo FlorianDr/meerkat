@@ -140,17 +140,21 @@ export function Feedback() {
               maxLength={1000}
             />
             <FormHelperText>
-              Message will be signed with Zupass identity and privately
-              delivered to all speakers of this event. Find your given feedback
-              in Zupass.
+              Message will be signed with Zupass identity and delivered to all
+              speakers of this event. Find your own feedback in Zupass.
             </FormHelperText>
           </FormControl>
           <FormControl>
             <Stack spacing={5} direction="row">
               <CheckboxGroup>
-                <Checkbox {...getCheckboxProps({ value: "name" })} size="lg">
-                  Share Name
-                </Checkbox>
+                {
+                  /*
+                   * Disabled due to confusion over what "full name" is.
+                  <Checkbox {...getCheckboxProps({ value: "name" })} size="lg">
+                    Share Full Name
+                  </Checkbox>
+                  */
+                }
                 <Checkbox {...getCheckboxProps({ value: "email" })} size="lg">
                   Share Email
                 </Checkbox>

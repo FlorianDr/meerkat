@@ -39,7 +39,7 @@ export function EventCard() {
       await collect();
       toast({
         title: "Attendance Recorded",
-        description: "Open Zupass to view your attendance record",
+        description: "Open Zupass to view your attendance POD",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -100,10 +100,11 @@ export function EventCard() {
           gap="12px"
           textAlign="center"
           padding="1rem 0"
+          height="100%"
         >
           <Card event={event} />
-          {action &&
-            (
+          {action
+            ? (
               <PrimaryButton
                 isLoading={isLoggingIn || isCollecting}
                 loadingText="Collecting..."
@@ -112,6 +113,11 @@ export function EventCard() {
               >
                 Collect
               </PrimaryButton>
+            )
+            : (
+              <p style={{ marginTop: "auto" }}>
+                Scan the Session QR code to collect your attendance
+              </p>
             )}
         </Flex>
       </main>

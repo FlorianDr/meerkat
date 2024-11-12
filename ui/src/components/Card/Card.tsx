@@ -14,13 +14,13 @@ export const Card = (
   return (
     <>
       <div className="collect-card-image">
-        <Skeleton isLoaded={!isLoading} width={300} height={300}>
+        <Skeleton isLoaded={!isLoading} width={260} height={260}>
           {event?.cover
             ? (
               <img
                 src={event?.cover}
                 alt="Ordinary Card"
-                style={{ height: 300, margin: "0 auto" }}
+                style={{ height: 260, margin: "0 auto" }}
                 onLoad={() => setIsLoading(false)}
               />
             )

@@ -24,7 +24,8 @@ export function Remote() {
       <main
         className="content"
         style={{
-          marginTop: "8dvh",
+          marginTop: "6dvh",
+          marginBottom: "1dvh",
           display: "flex",
           flexDirection: "column",
           gap: 20,
@@ -32,11 +33,11 @@ export function Remote() {
           alignItems: "center",
         }}
       >
-        <Skeleton isLoaded={!isLoading} width={300} height={300} rounded="12px">
+        <Skeleton isLoaded={!isLoading} width={260} height={260} rounded="12px">
           {event?.conference.logoUrl
             ? (
               <img
-                style={{ height: 300, margin: "0 auto" }}
+                style={{ height: 260, margin: "0 auto" }}
                 src={event.conference.logoUrl}
                 alt={event.conference.name}
                 onLoad={() => setIsLoading(false)}
