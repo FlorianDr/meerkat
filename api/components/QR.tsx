@@ -34,6 +34,7 @@ const QR: FC<QRProps> = ({
     year: "numeric",
     hour: "numeric",
     minute: "numeric",
+    timeZone: "Asia/Bangkok", // UTC+7
   }) ?? "";
 
   return (
