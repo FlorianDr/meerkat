@@ -1,3 +1,4 @@
+import "./instrumentation.ts";
 import app from "./app.ts";
 
 Deno.serve({

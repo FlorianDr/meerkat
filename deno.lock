@@ -18,6 +18,7 @@
     "npm:@pcd/gpc@0.4": "0.4.0",
     "npm:@pcd/pod@*": "0.5.0",
     "npm:@pcd/pod@0.5": "0.5.0",
+    "npm:@sentry/deno@^8.37.1": "8.37.1",
     "npm:@sentry/react@^8.36.0": "8.36.0_react@18.3.1",
     "npm:@supabase/supabase-js@^2.45.6": "2.45.6",
     "npm:@types/node@*": "18.16.19",
@@ -1975,35 +1976,35 @@
     "@sentry-internal/browser-utils@8.36.0": {
       "integrity": "sha512-AVJ9GmQW7jYxaal6hjQnnktsDNype01ajVC4q1RyOn1SfzSnXg6mXwj4xm4ovuJV+aBI7fAZJ55vEX5ASuP0ZA==",
       "dependencies": [
-        "@sentry/core",
-        "@sentry/types",
-        "@sentry/utils"
+        "@sentry/core@8.36.0",
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0"
       ]
     },
     "@sentry-internal/feedback@8.36.0": {
       "integrity": "sha512-aAMTm3uDBj8Ta7FwoohpLmJOpWzpWXvvtTbtmSgkeCtPJLUS8DZDCTZ9uCILUkpuYrv2savRUHsdPkxNjgL8FA==",
       "dependencies": [
-        "@sentry/core",
-        "@sentry/types",
-        "@sentry/utils"
+        "@sentry/core@8.36.0",
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0"
       ]
     },
     "@sentry-internal/replay-canvas@8.36.0": {
       "integrity": "sha512-KJPLf+qYdrQdmouoAqIPZ2KeapIBlHWbzNdQqNxJFWLHFFjpLUtt0b+87ruvbA/q3NYy2fDwD7EB0tGS1RHBaA==",
       "dependencies": [
         "@sentry-internal/replay",
-        "@sentry/core",
-        "@sentry/types",
-        "@sentry/utils"
+        "@sentry/core@8.36.0",
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0"
       ]
     },
     "@sentry-internal/replay@8.36.0": {
       "integrity": "sha512-lbic98GsSkDeinQDix54tBFEgHUlmBtO+HjXECk9jIE0vOzR4As20/s5ta46t1rKMLlnxOtJuT5jKXeUYogBUw==",
       "dependencies": [
         "@sentry-internal/browser-utils",
-        "@sentry/core",
-        "@sentry/types",
-        "@sentry/utils"
+        "@sentry/core@8.36.0",
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0"
       ]
     },
     "@sentry/browser@8.36.0": {
@@ -2013,25 +2014,40 @@
         "@sentry-internal/feedback",
         "@sentry-internal/replay",
         "@sentry-internal/replay-canvas",
-        "@sentry/core",
-        "@sentry/types",
-        "@sentry/utils"
+        "@sentry/core@8.36.0",
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0"
       ]
     },
     "@sentry/core@8.36.0": {
       "integrity": "sha512-cbq1WQyRqc/+YpPhjwQxfniUM3ZxmO3Pm1oisTB8dw6mlbgQfGD6aznEIjXWWJY6k6acewJlMUx09N7DnprtBw==",
       "dependencies": [
-        "@sentry/types",
-        "@sentry/utils"
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0"
+      ]
+    },
+    "@sentry/core@8.37.1": {
+      "integrity": "sha512-82csXby589iDupM3VgCHJeWZagUyEEaDnbFcoZ/Z91QX2Sjq8FcF5OsforoXjw09i0XTFqlkFAnQVpDBmMXcpQ==",
+      "dependencies": [
+        "@sentry/types@8.37.1",
+        "@sentry/utils@8.37.1"
+      ]
+    },
+    "@sentry/deno@8.37.1": {
+      "integrity": "sha512-hXdcglYY0rzctAcqJq6nNmLnnjaJ0dpZTyP8NtCt/GifnFdijz1YaQwXnC+0HGY3uud0s5Cjn8RaKk7GnpqI3A==",
+      "dependencies": [
+        "@sentry/core@8.37.1",
+        "@sentry/types@8.37.1",
+        "@sentry/utils@8.37.1"
       ]
     },
     "@sentry/react@8.36.0_react@18.3.1": {
       "integrity": "sha512-YIJZUx7Q5aulK034cRri0p/7MeP3tdLfdP6vMJMwrVlqoWQI9gKZXikmLIqHUQegZdMRYX5tr03gTWJu3dhYwg==",
       "dependencies": [
         "@sentry/browser",
-        "@sentry/core",
-        "@sentry/types",
-        "@sentry/utils",
+        "@sentry/core@8.36.0",
+        "@sentry/types@8.36.0",
+        "@sentry/utils@8.36.0",
         "hoist-non-react-statics",
         "react"
       ]
@@ -2039,10 +2055,19 @@
     "@sentry/types@8.36.0": {
       "integrity": "sha512-K1pVFfdGHw115RzGHpwSOqoEPeayn4N1F9IfM0kxrYpQSbFT1X29eak88GBfC8gPiLEF0iFGlSaQ4ERmF7oRcA=="
     },
+    "@sentry/types@8.37.1": {
+      "integrity": "sha512-ryMOTROLSLINKFEbHWvi7GigNrsQhsaScw2NddybJGztJQ5UhxIGESnxGxWCufBmWFDwd7+5u0jDPCVUJybp7w=="
+    },
     "@sentry/utils@8.36.0": {
       "integrity": "sha512-oJ3EDPj0I00z+AwC3EWBpSidXYUoKW0Id8MfMQP5Hflniz3gif7UEReblT+FJgPEVo6+6uNzAncY0MuNMxmDKQ==",
       "dependencies": [
-        "@sentry/types"
+        "@sentry/types@8.36.0"
+      ]
+    },
+    "@sentry/utils@8.37.1": {
+      "integrity": "sha512-Qtn2IfpII12K17txG/ZtTci35XYjYi4CxbQ3j7nXY7toGv/+MqPXwV5q2i9g94XaSXlE5Wy9/hoCZoZpZs/djA==",
+      "dependencies": [
+        "@sentry/types@8.37.1"
       ]
     },
     "@supabase/auth-js@2.65.1": {
@@ -4160,6 +4185,7 @@
           "npm:@hono/zod-validator@~0.2.2",
           "npm:@parcnet-js/ticket-spec@^1.1.9",
           "npm:@pcd/pod@0.5",
+          "npm:@sentry/deno@^8.37.1",
           "npm:drizzle-orm@~0.32.1",
           "npm:hono@^4.5.3",
           "npm:postgres@^3.4.4",
