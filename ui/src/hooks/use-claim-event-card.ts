@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { User } from "../types.ts";
-import { ParcnetAPI } from "@parcnet-js/app-connector";
+import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { ticketProofRequest } from "@parcnet-js/ticket-spec";
 import {
   boundConfigToJSON,

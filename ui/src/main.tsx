@@ -7,7 +7,7 @@ import {
   withDefaultColorScheme,
 } from "@chakra-ui/react";
 import { ZAPIProvider } from "./zapi/context.tsx";
-import { Zapp } from "@parcnet-js/app-connector";
+import { type Zapp } from "@parcnet-js/app-connector";
 import { UserProvider } from "./context/user.tsx";
 import { posthog } from "posthog-js";
 import { createClient } from "@supabase/supabase-js";
@@ -17,16 +17,16 @@ import * as Sentry from "@sentry/react";
 
 const config = await fetch("/api/v1/config").then((res) => res.json());
 
+if (config.sentryDSN) {
+  Sentry.init({
+    dsn: config.sentryDSN,
+  });
+}
+
 if (config.posthogToken) {
   posthog.init(config.posthogToken, {
     api_host: "https://eu.i.posthog.com",
     person_profiles: "identified_only",
-  });
-}
-
-if (config.sentryDSN) {
-  Sentry.init({
-    dsn: config.sentryDSN,
   });
 }
 

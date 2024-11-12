@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { UserContext } from "../context/user.tsx";
 import { User } from "../types.ts";
-import { ParcnetAPI } from "@parcnet-js/app-connector";
+import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import {
   TicketProofRequest,
   ticketProofRequest,
@@ -11,6 +11,14 @@ import { classificationTuples } from "./classification-tuples.ts";
 import { POD } from "@pcd/pod";
 import { DevconTicketSpec } from "./ticket-schema.ts";
 import { HTTPError } from "./http-error.ts";
+
+// globalThis.faro.api.pushMeasurement({
+//   type: "internal_framework_measurements",
+//   values: {
+//     root_render_ms: 142.3,
+//     memory_used: 286,
+//   },
+// });
 
 export type UseLoginProps = {
   fieldsToReveal?: TicketProofRequest["fieldsToReveal"] | undefined;
@@ -70,6 +78,7 @@ export function useLogin(props?: UseLoginProps) {
       );
 
       const user = await sendPods(ticketPOD, proofOfIdentityPOD);
+
       setUser(user);
     } catch (error) {
       props?.onError?.(error as Error);

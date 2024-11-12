@@ -15,7 +15,7 @@ import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { minimumFieldsToReveal, useLogin } from "../hooks/use-login.ts";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { usePods } from "../hooks/use-pods.ts";
-import { ParcnetAPI } from "@parcnet-js/app-connector";
+import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { EventPod } from "../types.ts";
 import { useZAPI } from "../zapi/context.tsx";
 

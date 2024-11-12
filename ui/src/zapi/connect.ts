@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { connect, init } from "@parcnet-js/app-connector";
 import { ZAPIContext } from "./context.tsx";
 
 export const useZAPIConnect = () => {
@@ -7,17 +6,23 @@ export const useZAPIConnect = () => {
   const { context, setContext } = useContext(ZAPIContext);
 
   useEffect(() => {
-    if (!context.ref.current || !context.config.zupassUrl) {
-      return;
-    }
+    const effect = async () => {
+      const { init } = await import("@parcnet-js/app-connector");
+      if (!context.ref.current || !context.config.zupassUrl) {
+        return;
+      }
 
-    init(context.ref.current, context.config.zupassUrl);
+      init(context.ref.current, context.config.zupassUrl);
+    };
+    effect();
   }, [context.ref.current, context.config.zupassUrl]);
 
   const connectFn = async () => {
     if (context.zapi || !context.ref.current) {
       return context.zapi;
     }
+
+    const { connect } = await import("@parcnet-js/app-connector");
 
     setIsConnecting(true);
 

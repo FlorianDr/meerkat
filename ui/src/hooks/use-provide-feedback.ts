@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PODEntries } from "@pcd/pod";
 import { useZAPI } from "../zapi/context.tsx";
-import { ParcnetAPI } from "@parcnet-js/app-connector";
+import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { Event } from "../types.ts";
 import { PODData } from "@parcnet-js/podspec";
 
