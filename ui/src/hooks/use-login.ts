@@ -26,9 +26,9 @@ export const minimumFieldsToReveal: TicketProofRequest["fieldsToReveal"] = {
 
 export function useLogin(props?: UseLoginProps) {
   const fieldsToReveal = props?.fieldsToReveal ?? minimumFieldsToReveal;
-  const { setUser } = useContext(UserContext);
+  const { setUser, user } = useContext(UserContext);
   const [isLoading, setLoading] = useState(false);
-  const { connect } = useZAPIConnect();
+  const { connect, isConnected } = useZAPIConnect();
 
   const login = async () => {
     let user: User | undefined;
@@ -73,9 +73,6 @@ export function useLogin(props?: UseLoginProps) {
       const user = await sendPods(ticketPOD, proofOfIdentityPOD);
 
       setUser(user);
-      posthog.identify(user.uid, {
-        name: user.name,
-      });
       posthog.capture("user_logged_in");
     } catch (error) {
       props?.onError?.(error as Error);

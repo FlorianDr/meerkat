@@ -1,9 +1,10 @@
 import useSWR from "swr";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { HTTPError } from "./http-error.ts";
 import { fetcher } from "./fetcher.ts";
 import { User } from "../types.ts";
 import { UserContext } from "../context/user.tsx";
+import { posthog } from "posthog-js";
 
 export const useUser = () => {
   const { user, setUser } = useContext(UserContext);
@@ -17,6 +18,14 @@ export const useUser = () => {
       },
     },
   );
+
+  useEffect(() => {
+    if (user) {
+      posthog.identify(user.uid, {
+        name: user.name,
+      });
+    }
+  }, [user]);
 
   const resolvedUser = data?.data || user;
 
