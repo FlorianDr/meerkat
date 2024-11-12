@@ -31,8 +31,17 @@ export function Footer({
 }: FooterProps) {
   const { primaryPurple } = useThemeColors();
   const [focused, setFocused] = useState(false);
-  const { login, isLoading } = useLogin();
   const toast = useToast();
+  const { login, isLoading } = useLogin({
+    onError: (error) => {
+      toast({
+        title: `Failed to login (${error?.status})`,
+        status: "error",
+        description: error.message,
+        duration: 2000,
+      });
+    },
+  });
   const [question, setQuestion] = useState("");
   const [isTutorialHeartFinished, setIsTutorialHeartFinished] = useLocalStorage(
     "tutorial-heart",

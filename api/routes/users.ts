@@ -307,6 +307,9 @@ app.post(
 
     let publicKey: string | null = null;
     let email: string | null = null;
+    let eventId: string | null = null;
+    let signerPublicKey: string | null = null;
+    let productId: string | null = null;
     let verified = false;
     try {
       const valid = ticketPOD.verifySignature();
@@ -315,16 +318,44 @@ app.post(
         verified = isValid;
       }
       if (verified) {
-        const entries = ticketPOD.content.asEntries();
-        publicKey = entries.owner.value as string;
-        email = entries.attendeeEmail.value as string;
+        publicKey = ticketPOD.content.asEntries().owner.value as string;
+        email = ticketPOD.content.asEntries().attendeeEmail.value as string;
+        eventId = ticketPOD.content.asEntries().eventId.value as string;
+        signerPublicKey = ticketPOD.signerPublicKey;
+        productId = ticketPOD.content.asEntries().productId.value as string;
         verified = proofOfIdentityPOD.signerPublicKey ===
-            publicKey &&
+            ticketPOD.content.asEntries().owner.value &&
           proofOfIdentityPOD.content.asEntries()._UNSAFE_ticketId.value ===
-            entries._UNSAFE_ticketId.value;
+            ticketPOD.content.asEntries().ticketId.value;
       }
     } catch (e) {
       throw new HTTPException(400, { message: "Invalid proof" });
+    }
+
+    if (!publicKey) {
+      throw new HTTPException(400, { message: "Public key not found" });
+    }
+
+    if (!eventId) {
+      throw new HTTPException(400, { message: "Event ID not found" });
+    }
+
+    if (!signerPublicKey) {
+      throw new HTTPException(400, { message: "Signer public key not found" });
+    }
+
+    if (!productId) {
+      throw new HTTPException(400, { message: "Product ID not found" });
+    }
+
+    const result = await getConferenceByTicket(
+      eventId,
+      signerPublicKey,
+      productId,
+    );
+
+    if (!result) {
+      throw new HTTPException(400, { message: "Ticket not found" });
     }
 
     let user = await getUserByProvider(ZUPASS_PROVIDER, publicKey);
