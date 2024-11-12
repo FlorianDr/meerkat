@@ -4,7 +4,7 @@
     "@chakra-ui/react": "npm:@chakra-ui/react@^2.8.2",
     "@emotion/react": "npm:@emotion/react@^11.13.0",
     "@emotion/styled": "npm:@emotion/styled@^11.13.0",
-    "@parcnet-js/app-connector": "npm:@parcnet-js/app-connector@^1.1.9",
+    "@parcnet-js/app-connector": "npm:@parcnet-js/app-connector@^1.1.10",
     "@parcnet-js/podspec": "npm:@parcnet-js/podspec@^1.2.0",
     "@parcnet-js/ticket-spec": "npm:@parcnet-js/ticket-spec@^1.1.9",
     "@pcd/gpc": "npm:@pcd/gpc@^0.4.0",

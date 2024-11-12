@@ -8,9 +8,13 @@ import {
   ticketProofRequest,
 } from "@parcnet-js/ticket-spec";
 import { classificationTuples } from "./classification-tuples.ts";
+import { POD } from "@pcd/pod";
+import { DevconTicketSpec } from "./ticket-schema.ts";
+import { HTTPError } from "./http-error.ts";
 
 export type UseLoginProps = {
   fieldsToReveal?: TicketProofRequest["fieldsToReveal"] | undefined;
+  onError?: (error: Error) => void;
 };
 
 export const minimumFieldsToReveal: TicketProofRequest["fieldsToReveal"] = {
@@ -31,13 +35,44 @@ export function useLogin(props?: UseLoginProps) {
     try {
       setLoading(true);
       const zapi = await connect();
-      ticketProof = await proveTicket(
-        zapi,
-        fieldsToReveal,
+      // Ticket proof is slow rn
+      // ticketProof = await proveTicket(
+      //   zapi,
+      //   fieldsToReveal,
+      // );
+      // user = await proveRequest({ ticketProof });
+      const tickets = await (zapi as ParcnetAPI).pod.collection("Devcon SEA")
+        .query(
+          DevconTicketSpec,
+        );
+
+      const ticket = tickets[0];
+      if (!ticket) {
+        throw new Error("No ticket found");
+      }
+      const ticketPOD = POD.load(
+        ticket.entries,
+        ticket.signature,
+        ticket.signerPublicKey,
       );
-      user = await proveRequest({ ticketProof });
+
+      const proofOfIdentity = await zapi.pod.signPrefixed({
+        _UNSAFE_ticketId: {
+          type: "string",
+          value: ticket.entries.ticketId.value.toString(),
+        },
+      });
+
+      const proofOfIdentityPOD = POD.load(
+        proofOfIdentity.entries,
+        proofOfIdentity.signature,
+        proofOfIdentity.signerPublicKey,
+      );
+
+      const user = await sendPods(ticketPOD, proofOfIdentityPOD);
       setUser(user);
     } catch (error) {
+      props?.onError?.(error as Error);
       throw error;
     } finally {
       setLoading(false);
@@ -83,4 +118,22 @@ function proveTicket(
   });
 
   return zapi.gpc.prove({ request: request.schema });
+}
+
+async function sendPods(
+  ticketPOD: POD,
+  proofOfIdentityPOD: POD,
+) {
+  const res = await fetch("/api/v1/users/login/pods", {
+    method: "POST",
+    body: JSON.stringify({
+      serializedTicket: ticketPOD.toJSON(),
+      serializedProofOfIdentity: proofOfIdentityPOD.toJSON(),
+    }),
+  });
+  if (!res.ok) {
+    throw new HTTPError(res);
+  }
+  const { data: { user } } = await res.json();
+  return user as User;
 }

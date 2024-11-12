@@ -21,13 +21,23 @@ export function EventCard() {
   const [searchParams] = useSearchParams();
   const { data: event } = useEvent(uid);
   const { isAuthenticated } = useUser();
-  const { login, isLoading: isLoggingIn } = useLogin();
+  const toast = useToast();
+  const { login, isLoading: isLoggingIn } = useLogin({
+    onError: (error) => {
+      toast({
+        title: `Failed to login (${error?.status})`,
+        status: "error",
+        description: error.message,
+        duration: 2000,
+      });
+    },
+  });
   const [isCollected, setIsCollected] = useState(false);
   usePageTitle(pageTitle(event));
   const secret = searchParams.get("secret");
   const [isCollecting, setIsCollecting] = useState(false);
   const { collect } = useCollect(event, secret);
-  const toast = useToast();
+
   const { data: roles } = useConferenceRoles();
 
   const hasAnyRoles =

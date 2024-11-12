@@ -21,6 +21,9 @@ import {
 } from "../models/roles.ts";
 import { getConferenceByTicket } from "../models/conferences.ts";
 import { hash } from "../utils/secret.ts";
+import { POD } from "@pcd/pod";
+import { TicketSpec } from "@parcnet-js/ticket-spec";
+
 const app = new Hono();
 
 app.get(
@@ -294,5 +297,141 @@ app.post(
     return c.json({ data: {} });
   },
 );
+
+app.post(
+  "/api/v1/users/login/pods",
+  async (c) => {
+    const { serializedTicket, serializedProofOfIdentity } = await c.req.json();
+    const ticketPOD = POD.fromJSON(serializedTicket);
+    const proofOfIdentityPOD = POD.fromJSON(serializedProofOfIdentity);
+
+    let publicKey: string | null = null;
+    let email: string | null = null;
+    let eventId: string | null = null;
+    let signerPublicKey: string | null = null;
+    let productId: string | null = null;
+    let verified = false;
+    try {
+      const valid = ticketPOD.verifySignature();
+      if (valid) {
+        const { isValid } = DevconTicketSpec.safeParse(ticketPOD);
+        verified = isValid;
+      }
+      if (verified) {
+        publicKey = ticketPOD.content.asEntries().owner.value as string;
+        email = ticketPOD.content.asEntries().attendeeEmail.value as string;
+        eventId = ticketPOD.content.asEntries().eventId.value as string;
+        signerPublicKey = ticketPOD.signerPublicKey;
+        productId = ticketPOD.content.asEntries().productId.value as string;
+        verified = proofOfIdentityPOD.signerPublicKey ===
+            ticketPOD.content.asEntries().owner.value &&
+          proofOfIdentityPOD.content.asEntries()._UNSAFE_ticketId.value ===
+            ticketPOD.content.asEntries().ticketId.value;
+      }
+    } catch (e) {
+      throw new HTTPException(400, { message: "Invalid proof" });
+    }
+
+    if (!publicKey) {
+      throw new HTTPException(400, { message: "Public key not found" });
+    }
+
+    if (!eventId) {
+      throw new HTTPException(400, { message: "Event ID not found" });
+    }
+
+    if (!signerPublicKey) {
+      throw new HTTPException(400, { message: "Signer public key not found" });
+    }
+
+    if (!productId) {
+      throw new HTTPException(400, { message: "Product ID not found" });
+    }
+
+    const result = await getConferenceByTicket(
+      eventId,
+      signerPublicKey,
+      productId,
+    );
+
+    if (!result) {
+      throw new HTTPException(400, { message: "Ticket not found" });
+    }
+
+    let user = await getUserByProvider(ZUPASS_PROVIDER, publicKey);
+    const hashValue = email ? await hash(env.emailSecret, email) : null;
+
+    if (!user) {
+      user = await createUserFromAccount({
+        provider: ZUPASS_PROVIDER,
+        id: publicKey,
+        hash: hashValue,
+      });
+    } else if (hashValue) {
+      await updateUserEmail(user.id, hashValue);
+    }
+
+    const conferenceRoles = await getConferenceRolesForConference(
+      user.id,
+      result.conference_tickets.conferenceId,
+    );
+
+    const conference = result.conferences;
+    const role = result.conference_tickets.role;
+
+    const newRoleIndex = ROLE_HIERARCHY.indexOf(role);
+    const currentRoleIndex = conferenceRoles.reduce((acc, role) => {
+      return Math.max(acc, ROLE_HIERARCHY.indexOf(role.role));
+    }, -1);
+
+    if (newRoleIndex > currentRoleIndex) {
+      await grantRole(user.id, conference.id, role);
+    }
+
+    const origin = c.req.header("origin") ?? env.base;
+    const payload = constructJWTPayload(user);
+    const token = await sign(payload, env.secret);
+
+    const baseUrl = new URL(origin);
+    setCookie(c, "jwt", token, {
+      path: "/",
+      domain: baseUrl.hostname,
+      secure: baseUrl.protocol === "https:",
+      httpOnly: true,
+      maxAge: JWT_EXPIRATION_TIME,
+      sameSite: "Lax",
+    });
+
+    return c.json({ data: { user } });
+  },
+);
+
+export const DevconTicketSpec = TicketSpec.extend((schema, f) => {
+  return f({
+    ...schema,
+    entries: {
+      ...schema.entries,
+      // Make sure the ticket is for the Devcon event
+      eventId: {
+        type: "string",
+        isMemberOf: [
+          { type: "string", value: "5074edf5-f079-4099-b036-22223c0c6995" },
+        ],
+      },
+      // Exclude add-on tickets
+      isAddon: {
+        type: "optional",
+        innerType: {
+          type: "int",
+          isNotMemberOf: [{ type: "int", value: BigInt(1) }],
+        },
+      },
+    },
+    signerPublicKey: {
+      // Must be the public key of the Devcon Podbox pipeline
+      isMemberOf: ["YwahfUdUYehkGMaWh0+q3F8itx2h8mybjPmt8CmTJSs"],
+    },
+  });
+});
 
 export default app;

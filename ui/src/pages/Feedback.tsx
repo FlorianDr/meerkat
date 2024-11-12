@@ -33,14 +33,22 @@ export function Feedback() {
   const { connect, isConnecting } = useZAPIConnect();
   const [text, setText] = useState("");
   const { value, getCheckboxProps, setValue } = useCheckboxGroup();
+  const toast = useToast();
   const { login, isLoading: isLoggingIn } = useLogin({
     fieldsToReveal: {
       ...minimumFieldsToReveal,
       attendeeEmail: value.includes("email") ?? false,
       attendeeName: value.includes("name") ?? false,
     },
+    onError: (error) => {
+      toast({
+        title: `Failed to login (${error?.status})`,
+        status: "error",
+        description: error.message,
+        duration: 2000,
+      });
+    },
   });
-  const toast = useToast();
 
   const { provideFeedback, isLoading: isProvidingFeedback } =
     useProvideFeedback({
