@@ -7,4 +7,6 @@ export const config = {
   supabaseUrl: env.supabaseUrl,
   supabaseAnonKey: env.supabaseAnonKey,
   sentryDSN: env.sentryDSN,
+  environment: env.environment,
+  grafanaUrl: env.grafanaUrl,
 };

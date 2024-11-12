@@ -4,6 +4,8 @@
     "@chakra-ui/react": "npm:@chakra-ui/react@^2.8.2",
     "@emotion/react": "npm:@emotion/react@^11.13.0",
     "@emotion/styled": "npm:@emotion/styled@^11.13.0",
+    "@grafana/faro-react": "npm:@grafana/faro-react@^1.11.0",
+    "@grafana/faro-web-sdk": "npm:@grafana/faro-web-sdk@^1.11.0",
     "@parcnet-js/app-connector": "npm:@parcnet-js/app-connector@^1.1.10",
     "@parcnet-js/podspec": "npm:@parcnet-js/podspec@^1.2.0",
     "@parcnet-js/ticket-spec": "npm:@parcnet-js/ticket-spec@^1.1.9",

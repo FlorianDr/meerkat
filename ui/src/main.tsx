@@ -14,12 +14,35 @@ import { createClient } from "@supabase/supabase-js";
 import { SupabaseProvider } from "./context/supabase.tsx";
 import { uuidv7 } from "uuidv7";
 import * as Sentry from "@sentry/react";
+import { initializeFaro } from "@grafana/faro-react";
 
-const config = await fetch("/api/v1/config").then((res) => res.json());
+type Config = {
+  zupassUrl: string;
+  zappName: string;
+  environment: string;
+  posthogToken: string | undefined;
+  supabaseUrl: string | undefined;
+  supabaseAnonKey: string | undefined;
+  sentryDSN: string | undefined;
+  grafanaUrl: string | undefined;
+};
+
+const config: Config = await fetch("/api/v1/config").then((res) => res.json());
 
 if (config.sentryDSN) {
   Sentry.init({
     dsn: config.sentryDSN,
+    environment: config.environment,
+  });
+}
+
+if (config.grafanaUrl) {
+  initializeFaro({
+    url: config.grafanaUrl,
+    app: {
+      name: "ui",
+      environment: config.environment,
+    },
   });
 }
 
@@ -31,8 +54,8 @@ if (config.posthogToken) {
 }
 
 const supabase = createClient(
-  config.supabaseUrl,
-  config.supabaseAnonKey,
+  config.supabaseUrl!,
+  config.supabaseAnonKey!,
 );
 
 const theme = extendTheme(
