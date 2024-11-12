@@ -101,6 +101,7 @@ export const questions = pgTable(
   },
   (table) => ({
     eventIdx: index("questions_event_id_idx").on(table.eventId),
+    userIdx: index("questions_user_id_idx").on(table.userId),
   }),
 );
 
@@ -160,6 +161,7 @@ export const accounts = pgTable(
   },
   (table) => ({
     providerId: unique("provider_id_uniq").on(table.provider, table.id),
+    userIdx: index("accounts_user_id_idx").on(table.userId),
   }),
 );
 
@@ -188,5 +190,6 @@ export const reactions = pgTable(
   },
   (table) => ({
     eventIdx: index("reactions_event_id_idx").on(table.eventId),
+    userIdx: index("reactions_user_id_idx").on(table.userId),
   }),
 );
