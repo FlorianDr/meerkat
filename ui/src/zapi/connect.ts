@@ -1,10 +1,18 @@
-import { useContext, useState } from "react";
-import { connect } from "@parcnet-js/app-connector";
+import { useContext, useEffect, useState } from "react";
+import { connect, init } from "@parcnet-js/app-connector";
 import { ZAPIContext } from "./context.tsx";
 
 export const useZAPIConnect = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const { context, setContext } = useContext(ZAPIContext);
+
+  useEffect(() => {
+    if (!context.ref.current || !context.config.zupassUrl) {
+      return;
+    }
+
+    init(context.ref.current, context.config.zupassUrl);
+  }, [context.ref.current, context.config.zupassUrl]);
 
   const connectFn = async () => {
     if (context.zapi || !context.ref.current) {
