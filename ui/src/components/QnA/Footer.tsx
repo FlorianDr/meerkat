@@ -129,7 +129,7 @@ export function Footer({
                   size="lg"
                   icon={
                     <div
-                      className={!isTutorialHeartFinished
+                      className={!isTutorialHeartFinished && isAuthenticated
                         ? "pulsate"
                         : undefined}
                     >

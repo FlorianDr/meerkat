@@ -180,7 +180,7 @@ export function EventCard() {
                 >
                   Open Zupass <ExternalLinkIcon />
                 </ChakraLink>{" "}
-                to view your attendance POD.
+                to view your attendance PODs.
               </p>
             )
             : (
