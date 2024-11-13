@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import Card from "../components/Card/Card.tsx";
 import { useEvent } from "../hooks/use-event.ts";
@@ -6,7 +7,7 @@ import { Header } from "../components/Header/Header.tsx";
 import { remote } from "../routes.ts";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { Flex } from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { useCollect } from "../hooks/use-collect.ts";
 import { useToast } from "@chakra-ui/react";
 import { pageTitle } from "../utils/events.ts";
@@ -168,6 +169,19 @@ export function EventCard() {
               >
                 Collect
               </PrimaryButton>
+            )
+            : isCollected
+            ? (
+              <p>
+                <ChakraLink
+                  href="https://zupass.org"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open Zupass <ExternalLinkIcon />
+                </ChakraLink>{" "}
+                to view your attendance POD.
+              </p>
             )
             : (
               <p style={{ marginTop: "auto" }}>
