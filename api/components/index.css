@@ -99,6 +99,11 @@ ul {
   justify-content: flex-start;
   overflow-y: auto;
   max-height: 32rem;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .bubble {
