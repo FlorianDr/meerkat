@@ -41,7 +41,7 @@ export function useProvideFeedback({
         .insert(pod);
       await sendFeedback(event, pod);
       posthog.capture("feedback_provided", {
-        event_uid: pod.event.uid,
+        event_uid: event?.uid,
       });
     } catch (error) {
       onError?.(error as Error);

@@ -3,6 +3,7 @@ import { Event } from "../types.ts";
 import { POD } from "@pcd/pod";
 import { poster } from "./fetcher.ts";
 import { useZAPI } from "../zapi/context.tsx";
+import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { posthog } from "posthog-js";
 
 export function useCollect(event: Event | undefined, secret: string | null) {
