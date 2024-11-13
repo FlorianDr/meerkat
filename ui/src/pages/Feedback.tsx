@@ -42,7 +42,7 @@ export function Feedback() {
     },
     onError: (error) => {
       toast({
-        title: `Failed to login (${error?.status})`,
+        title: `Failed to login (${error?.message})`,
         status: "error",
         description: error.message,
         duration: 2000,

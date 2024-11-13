@@ -49,7 +49,7 @@ export const useZAPIConnect = () => {
 
   return {
     connect: connectFn,
-    isConnected: context.zapi !== null,
+    isConnected: !!context.zapi,
     isConnecting,
   };
 };

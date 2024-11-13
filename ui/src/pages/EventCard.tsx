@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import Card from "../components/Card/Card.tsx";
 import { useEvent } from "../hooks/use-event.ts";
@@ -15,6 +15,10 @@ import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
 import { useLogin } from "../hooks/use-login.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
+import { useZupassPods } from "../hooks/use-zupass-pods.ts";
+import { useZAPIConnect } from "../zapi/connect.ts";
+import { useZAPI } from "../zapi/context.tsx";
+import { attendancePodType } from "../utils/pod.ts";
 
 export function EventCard() {
   const { uid } = useParams();
@@ -25,7 +29,7 @@ export function EventCard() {
   const { login, isLoading: isLoggingIn } = useLogin({
     onError: (error) => {
       toast({
-        title: `Failed to login (${error?.status})`,
+        title: `Failed to login (${error?.message})`,
         status: "error",
         description: error.message,
         duration: 2000,
@@ -36,8 +40,11 @@ export function EventCard() {
   usePageTitle(pageTitle(event));
   const secret = searchParams.get("secret");
   const [isCollecting, setIsCollecting] = useState(false);
+  const { connect } = useZAPIConnect();
   const { collect } = useCollect(event, secret);
-
+  const { isConnected } = useZAPIConnect();
+  const { zapi, collection } = useZAPI();
+  const { getZupassPods } = useZupassPods();
   const { data: roles } = useConferenceRoles();
 
   const hasAnyRoles =
@@ -46,7 +53,28 @@ export function EventCard() {
   const onCollect = async () => {
     setIsCollecting(true);
     try {
-      await collect();
+      const zapi = await connect();
+      const pods = await getZupassPods(
+        zapi,
+        collection,
+        attendancePodType,
+      );
+      const hasEventPods = pods.some((p) =>
+        p.entries.code.value === event?.uid
+      );
+      setIsCollected(hasEventPods);
+
+      if (hasEventPods) {
+        toast({
+          title: "Attendance Already Recorded",
+          description: "Open Zupass to view your attendance POD",
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
+      await collect(zapi);
       toast({
         title: "Attendance Recorded",
         description: "Open Zupass to view your attendance POD",
@@ -67,6 +95,23 @@ export function EventCard() {
       setIsCollecting(false);
     }
   };
+
+  useEffect(() => {
+    const func = async () => {
+      if (isConnected) {
+        const pods = await getZupassPods(
+          zapi,
+          collection,
+          attendancePodType,
+        );
+        const hasEventPods = pods.some((p) =>
+          p.entries.code.value === event?.uid
+        );
+        setIsCollected(hasEventPods);
+      }
+    };
+    func();
+  }, [isConnected]);
 
   const onLogin = async () => {
     await login();

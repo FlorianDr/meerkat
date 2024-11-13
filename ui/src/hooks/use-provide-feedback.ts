@@ -5,6 +5,7 @@ import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { Event } from "../types.ts";
 import { PODData } from "@parcnet-js/podspec";
 import { posthog } from "posthog-js";
+import { feedbackPodType } from "../utils/pod.ts";
 
 export function useProvideFeedback({
   onError,
@@ -67,9 +68,6 @@ function constructPODEntries({
   email: string | undefined;
   name: string | undefined;
 }): PODEntries {
-  const reverseHostname = globalThis.location.hostname.split(".").reverse()
-    .join(".");
-
   return {
     code: {
       type: "string",
@@ -94,7 +92,7 @@ function constructPODEntries({
     },
     type: {
       type: "string",
-      value: `${reverseHostname}/feedback`,
+      value: feedbackPodType,
     },
     version: {
       type: "string",
