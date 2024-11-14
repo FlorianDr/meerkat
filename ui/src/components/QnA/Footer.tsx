@@ -1,5 +1,13 @@
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { Flex, Icon, IconButton, Textarea, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Icon,
+  IconButton,
+  Textarea,
+  useToast,
+} from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useLogin } from "../../hooks/use-login.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
@@ -144,7 +152,19 @@ export function Footer({
               : null}
           </Flex>
           <span className="signin-name">
-            Signed as {user?.name ?? user?.uid ?? "Anonymous"}
+            Signed as {user?.name ?? user?.uid ?? "Anonymous"}{" "}
+            <Button
+              variant="outline"
+              as={Link}
+              size="xs"
+              to={"/leaderboard"}
+              fontWeight="bold"
+              padding="16px 8px"
+              fontSize="16px"
+              borderRadius="999px"
+            >
+              🦄 {user?.points ?? 0}
+            </Button>
           </span>
         </div>
         {!isAuthenticated && !isUserLoading && (
