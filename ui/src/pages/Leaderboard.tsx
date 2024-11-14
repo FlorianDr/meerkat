@@ -77,7 +77,7 @@ export function Leaderboard() {
               Refresh
             </Button>
           </Flex>
-          <Table variant="simple">
+          <Table variant="simple" size="sm">
             <TableCaption>
               Each answered question is 10 points, every vote is 1 point
             </TableCaption>
@@ -85,7 +85,7 @@ export function Leaderboard() {
               <Tr>
                 <Th>#</Th>
                 <Th>Name</Th>
-                <Th isNumeric>Points</Th>
+                <Th isNumeric>🦄</Th>
               </Tr>
             </Thead>
             <Tbody>
