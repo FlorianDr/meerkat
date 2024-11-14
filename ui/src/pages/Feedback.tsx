@@ -152,23 +152,20 @@ export function Feedback() {
               speakers of this event. Find your own feedback in Zupass.
             </FormHelperText>
           </FormControl>
-          <FormControl>
+          {
+            /* <FormControl>
             <Stack spacing={5} direction="row">
-              <CheckboxGroup>
-                {
-                  /*
-                   * Disabled due to confusion over what "full name" is.
+              <CheckboxGroup
                   <Checkbox {...getCheckboxProps({ value: "name" })} size="lg">
                     Share Full Name
                   </Checkbox>
-                  */
-                }
                 <Checkbox {...getCheckboxProps({ value: "email" })} size="lg">
                   Share Email
                 </Checkbox>
               </CheckboxGroup>
             </Stack>
-          </FormControl>
+          </FormControl> */
+          }
 
           <PrimaryButton
             isLoading={isProvidingFeedback || isConnecting || isLoggingIn}
