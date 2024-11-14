@@ -33,11 +33,11 @@ export function Remote() {
           alignItems: "center",
         }}
       >
-        <Skeleton isLoaded={!isLoading} width={260} height={260} rounded="12px">
+        <Skeleton isLoaded={!isLoading} width={240} height={240} rounded="12px">
           {event?.conference.logoUrl
             ? (
               <img
-                style={{ height: 260, margin: "0 auto" }}
+                style={{ height: 240, margin: "0 auto" }}
                 src={event.conference.logoUrl}
                 alt={event.conference.name}
                 onLoad={() => setIsLoading(false)}
