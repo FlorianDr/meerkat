@@ -90,13 +90,13 @@ function constructPODEntries({
       type: "string",
       value: text,
     },
-    type: {
+    pod_type: {
       type: "string",
       value: feedbackPodType,
     },
     version: {
       type: "string",
-      value: "1.0.0",
+      value: "2.0.0",
     },
     created_at: {
       type: "date",

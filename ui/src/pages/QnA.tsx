@@ -29,7 +29,7 @@ import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
 import { useEvent } from "../hooks/use-event.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { useVotes } from "../hooks/use-votes.ts";
-import { card, remote } from "../routes.ts";
+import { card, feedback, remote } from "../routes.ts";
 import { useReact } from "../hooks/use-react.ts";
 import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
@@ -51,6 +51,8 @@ export function QnA() {
   const hasShownEndingModal = useRef(false);
   const [searchParams] = useSearchParams();
   const secret = searchParams.get("secret");
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const hasFeedbackModalShown = useRef(false);
 
   usePageTitle(pageTitle(event));
 
@@ -114,20 +116,28 @@ export function QnA() {
     addReaction(reaction);
   };
 
+  const handleNavigateToFeedback = () => {
+    if (!uid) return;
+    navigate(feedback(uid));
+    setShowFeedbackModal(false);
+  };
+
   useEffect(() => {
-    if (!event?.end || !secret) return;
+    if (!event?.end) return;
 
     const checkEventEnding = () => {
       const now = new Date();
       const end = new Date(event.end);
       const timeUntilEnd = end.getTime() - now.getTime();
 
-      if (
-        timeUntilEnd <= 600000 &&
-        !hasShownEndingModal.current
-      ) {
-        setShowEndingModal(true);
-        hasShownEndingModal.current = true;
+      if (timeUntilEnd <= 600000) {
+        if (secret && !hasShownEndingModal.current) {
+          setShowEndingModal(true);
+          hasShownEndingModal.current = true;
+        } else if (!secret && !hasFeedbackModalShown.current) {
+          setShowFeedbackModal(true);
+          hasFeedbackModalShown.current = true;
+        }
       }
     };
 
@@ -238,6 +248,35 @@ export function QnA() {
               </Button>
               <Button colorScheme="purple" onClick={handleNavigateToCard}>
                 Go to Card Page
+              </Button>
+            </Flex>
+          </ModalFooter>
+        </ModalContent>
+      </ChakraModal>
+      <ChakraModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Event End</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>
+              Event is ending soon. Would you like to provide feedback for the
+              speaker?
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Flex gap="1rem">
+              <Button
+                variant="ghost"
+                onClick={() => setShowFeedbackModal(false)}
+              >
+                Stay Here
+              </Button>
+              <Button colorScheme="purple" onClick={handleNavigateToFeedback}>
+                Give Feedback
               </Button>
             </Flex>
           </ModalFooter>
