@@ -137,6 +137,6 @@ async function sendPods(
   if (!res.ok) {
     throw new HTTPError(res);
   }
-  const { data: { user } } = await res.json();
+  const { data: user } = await res.json();
   return user as User;
 }

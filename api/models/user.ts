@@ -143,4 +143,74 @@ export async function updateUserEmail(userId: number, hash: string) {
     .execute();
 }
 
+export async function getUserContributionRank(
+  userId: number,
+): Promise<{ rank: number; points: number }> {
+  const result = await db
+    .select({
+      rank: sql<number>`
+        RANK() OVER (
+          ORDER BY (
+            COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+            COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
+          ) DESC
+        )
+      `,
+      points: sql<number>`
+        COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+        COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
+      `,
+    })
+    .from(users)
+    .leftJoin(questions, eq(users.id, questions.userId))
+    .groupBy(users.id)
+    .having(eq(users.id, userId))
+    .execute();
+
+  const row = result.length > 0 ? result[0] : null;
+
+  return {
+    rank: row ? Number(row.rank) : 0,
+    points: row ? Number(row.points) : 0,
+  };
+}
+
+export async function getTopContributors(
+  count: number,
+): Promise<Array<{ userId: number; rank: number; points: number }>> {
+  const result = await db
+    .select({
+      uid: users.uid,
+      name: users.name,
+      rank: sql<number>`
+        RANK() OVER (
+          ORDER BY (
+            COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+            COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
+          ) DESC
+        )
+      `,
+      points: sql<number>`
+        COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+        COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
+      `,
+    })
+    .from(users)
+    .leftJoin(questions, eq(users.id, questions.userId))
+    .groupBy(users.id)
+    .orderBy(sql`
+      COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+      COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0) DESC
+    `)
+    .limit(count)
+    .execute();
+
+  return result.map((row) => ({
+    uid: row.uid,
+    name: row.name,
+    rank: Number(row.rank),
+    points: Number(row.points),
+  }));
+}
+
 export type User = typeof users.$inferSelect;

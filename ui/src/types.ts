@@ -4,6 +4,8 @@ export type User = {
   createdAt: Date;
   name?: string | undefined;
   hash?: string | undefined;
+  rank?: 0 | number | undefined;
+  points?: 0 | number | undefined;
 };
 
 export type Conference = {

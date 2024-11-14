@@ -4,8 +4,10 @@ import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import {
+  getTopContributors,
   getUserByProvider,
   getUserByUID,
+  getUserContributionRank,
   updateUserEmail,
   ZUPASS_PROVIDER,
 } from "../models/user.ts";
@@ -41,10 +43,12 @@ app.get(
       throw new HTTPException(403, { message: `User is blocked` });
     }
 
+    const rankAndPoints = await getUserContributionRank(user.id);
+
     const { id: _id, blocked: _blocked, ...rest } = user;
 
     return c.json({
-      data: rest,
+      data: { ...rest, ...rankAndPoints },
     });
   },
 );
@@ -402,9 +406,26 @@ app.post(
       sameSite: "Lax",
     });
 
-    return c.json({ data: { user } });
+    const rankAndPoints = await getUserContributionRank(user.id);
+
+    return c.json({ data: { ...user, ...rankAndPoints } });
   },
 );
+
+app.get("/api/v1/users/leaderboard", async (c) => {
+  const topContributors = await getTopContributors(10);
+
+  // Map the results to only expose necessary information
+  const leaderboard = topContributors.map((user) => ({
+    name: user.name,
+    points: user.points,
+    rank: user.rank,
+  }));
+
+  return c.json({
+    data: leaderboard,
+  });
+});
 
 export const DevconTicketSpec = TicketSpec.extend((schema, f) => {
   return f({

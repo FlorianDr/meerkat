@@ -4,6 +4,7 @@ import { QnA } from "./pages/QnA.tsx";
 import { Remote } from "./pages/Remote.tsx";
 import { Feedback } from "./pages/Feedback.tsx";
 import { Speaker } from "./pages/Speaker.tsx";
+import { Leaderboard } from "./pages/Leaderboard.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "/speaker",
     element: <Speaker />,
+  },
+  {
+    path: "/leaderboard",
+    element: <Leaderboard />,
   },
 ]);
 
