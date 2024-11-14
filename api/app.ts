@@ -22,6 +22,7 @@ app.route("/", home);
 app.route("/", speaker);
 app.route("/", sync);
 
+app.get("/leaderboard", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/speaker", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/e/:uid/*", serveStatic({ path: "./ui/dist/index.html" }));
 app.get("/login", serveStatic({ path: "./ui/dist/index.html" }));
