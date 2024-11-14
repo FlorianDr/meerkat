@@ -8,7 +8,7 @@ import { posthog } from "posthog-js";
 
 export const useUser = () => {
   const { user, setUser } = useContext(UserContext);
-  const { data, error, isLoading, mutate } = useSWR<{ data: User }, HTTPError>(
+  const { data, isLoading, error, ...rest } = useSWR<{ data: User }, HTTPError>(
     "/api/v1/users/me",
     fetcher,
     {
@@ -31,10 +31,10 @@ export const useUser = () => {
 
   return {
     data: resolvedUser,
-    mutate,
-    error,
     isLoading,
+    error,
     isAuthenticated: !!resolvedUser,
     isBlocked: !isLoading && error?.status === 403,
+    ...rest,
   };
 };

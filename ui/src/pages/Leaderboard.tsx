@@ -1,8 +1,9 @@
-import { RepeatIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, RepeatIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Button,
   Flex,
+  Link,
   Table,
   TableCaption,
   TableContainer,
@@ -15,6 +16,7 @@ import {
 import { Header } from "../components/Header/Header.tsx";
 import { useUser } from "../hooks/use-user.ts";
 import { useLeaderboard } from "../hooks/use-leaderboard.ts";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export function Leaderboard() {
   const {
@@ -33,14 +35,33 @@ export function Leaderboard() {
     refreshUser();
   };
 
+  const navigate = useNavigate();
+
   const isLoading = isLeaderboardLoading || isUserLoading;
 
   return (
     <div className="layout">
       <header className="header">
-        <div style={{ paddingBottom: "1rem", paddingTop: "1rem" }}>
-          <Header title="Top Participants" />
-        </div>
+        <nav>
+          <Link
+            as={ReactRouterLink}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(-1);
+            }}
+          >
+            <Flex
+              flexDirection="row"
+              gap="1"
+              alignItems="center"
+              padding="0.5rem 0 0 1rem"
+              minHeight="1rem"
+            >
+              <ArrowBackIcon /> <span>Back</span>
+            </Flex>
+          </Link>
+        </nav>
+        <Header title="Top Participants" />
       </header>
       <main className="content flex">
         <TableContainer>
