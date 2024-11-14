@@ -28,28 +28,40 @@ export function Speaker() {
     },
   });
   const { data: user } = useUser();
-  const { connect, isConnecting } = useZAPIConnect();
+  const { connect } = useZAPIConnect();
   const { collection } = useZAPI();
   const { data: pods, mutate: refreshPods, isLoading: isLoadingPods } =
     usePods();
   const [collected, setCollected] = useState<string[]>([]);
+  const [isCollecting, setIsCollecting] = useState(false);
   const toast = useToast();
 
   const collect = async (pod: EventPod) => {
-    const zapi = await connect();
-    await (zapi as ParcnetAPI).pod.collection(collection)
-      .insert(pod.pod);
+    setIsCollecting(true);
+    try {
+      const zapi = await connect();
+      await (zapi as ParcnetAPI).pod.collection(collection)
+        .insert(pod.pod);
 
-    setCollected([...collected, pod.uid]);
+      setCollected([...collected, pod.uid]);
 
-    toast({
-      title: "Feedback Collected",
-      description: "Open Zupass to view it",
-      status: "success",
-    });
-    posthog.capture("feedback_collected", {
-      event_uid: pod.event.uid,
-    });
+      toast({
+        title: "Feedback Collected",
+        description: "Open Zupass to view it",
+        status: "success",
+      });
+      posthog.capture("feedback_collected", {
+        event_uid: pod.event.uid,
+      });
+    } catch (error) {
+      toast({
+        title: `Error collecting feedback for ${pod.event.title}`,
+        description: `Error: ${error?.message}`,
+        status: "error",
+      });
+    } finally {
+      setIsCollecting(false);
+    }
   };
 
   const handleLogin = async () => {
@@ -72,17 +84,19 @@ export function Speaker() {
         className="content flex"
         style={{ gap: "1rem", marginTop: "1rem", alignItems: "center" }}
       >
-        <ul>
+        <ul style={{ display: "flex", gap: "1rem", flexFlow: "column" }}>
           {isLoadingPods
             ? <Text textAlign="center">Loading...</Text>
             : filteredPods?.length === 0
             ? <Text textAlign="center">No feedback to collect</Text>
             : filteredPods?.map((pod) => (
-              <li key={pod.uid}>
+              <li
+                key={pod.uid}
+              >
                 <Pod
                   pod={pod}
                   collect={collect}
-                  isConnecting={isConnecting}
+                  isConnecting={isCollecting}
                 />
               </li>
             ))}
