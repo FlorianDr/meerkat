@@ -177,7 +177,7 @@ export async function getUserContributionRank(
 
 export async function getTopContributors(
   count: number,
-): Promise<Array<{ userId: number; rank: number; points: number }>> {
+) {
   const result = await db
     .select({
       uid: users.uid,
