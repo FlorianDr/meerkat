@@ -17,10 +17,13 @@ import { useUser } from "../hooks/use-user.ts";
 import { useLeaderboard } from "../hooks/use-leaderboard.ts";
 
 export function Leaderboard() {
-  const { data, mutate: refreshLeaderboard, isLoading: isLeaderboardLoading } =
-    useLeaderboard();
+  const {
+    data,
+    mutate: refreshLeaderboard,
+    isValidating: isLeaderboardLoading,
+  } = useLeaderboard();
 
-  const { data: user, mutate: refreshUser, isLoading: isUserLoading } =
+  const { data: user, mutate: refreshUser, isValidating: isUserLoading } =
     useUser();
 
   const isUserInLeaderboard = data?.some((p) => p.name === user?.name);
@@ -47,6 +50,8 @@ export function Leaderboard() {
               onClick={refresh}
               variant="outline"
               disabled={isLoading}
+              isLoading={isLoading}
+              loadingText="Refreshing..."
             >
               Refresh
             </Button>
