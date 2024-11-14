@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -42,17 +42,19 @@ import { usePageTitle } from "../hooks/use-page-title.ts";
 import { pageTitle } from "../utils/events.ts";
 import throttle from "lodash.throttle";
 import { AttendancePod } from "../components/AttendancePod.tsx";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 export function QnA() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
   const navigate = useNavigate();
   const [showEndingModal, setShowEndingModal] = useState(false);
-  const hasShownEndingModal = useRef(false);
+  const [acknowledgedModals, setAcknowledgedModals] = useLocalStorage<
+    Record<string, boolean>
+  >("acknowledged-modals", {});
   const [searchParams] = useSearchParams();
   const secret = searchParams.get("secret");
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const hasFeedbackModalShown = useRef(false);
 
   usePageTitle(pageTitle(event));
 
@@ -123,20 +125,27 @@ export function QnA() {
   };
 
   useEffect(() => {
-    if (!event?.end) return;
+    if (!event?.end || !event?.uid) return;
 
     const checkEventEnding = () => {
       const now = new Date();
       const end = new Date(event.end);
       const timeUntilEnd = end.getTime() - now.getTime();
+      const twoMinutesInMs = 180000; // 3 minutes in milliseconds
 
-      if (timeUntilEnd <= 600000) {
-        if (secret && !hasShownEndingModal.current) {
+      if (timeUntilEnd <= twoMinutesInMs) {
+        if (secret && !acknowledgedModals[`ending-${event.uid}`]) {
           setShowEndingModal(true);
-          hasShownEndingModal.current = true;
-        } else if (!secret && !hasFeedbackModalShown.current) {
+          setAcknowledgedModals((prev) => ({
+            ...prev,
+            [`ending-${event.uid}`]: true,
+          }));
+        } else if (!secret && !acknowledgedModals[`feedback-${event.uid}`]) {
           setShowFeedbackModal(true);
-          hasFeedbackModalShown.current = true;
+          setAcknowledgedModals((prev) => ({
+            ...prev,
+            [`feedback-${event.uid}`]: true,
+          }));
         }
       }
     };
@@ -145,7 +154,13 @@ export function QnA() {
     checkEventEnding();
 
     return () => clearInterval(interval);
-  }, [event?.end, secret]);
+  }, [
+    event?.end,
+    event?.uid,
+    secret,
+    acknowledgedModals,
+    setAcknowledgedModals,
+  ]);
 
   const handleNavigateToCard = () => {
     if (!uid) return;
