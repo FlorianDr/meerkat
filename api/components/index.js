@@ -103,4 +103,4 @@ setTimeout(() => {
   channelQuestions.unsubscribe();
   channelVotes.unsubscribe();
   globalThis.location.reload();
-}, 60_000);
+}, 30_000);

@@ -30,7 +30,8 @@ export function Speaker() {
   const { data: user } = useUser();
   const { connect, isConnecting } = useZAPIConnect();
   const { collection } = useZAPI();
-  const { data: pods, mutate: refreshPods } = usePods();
+  const { data: pods, mutate: refreshPods, isLoading: isLoadingPods } =
+    usePods();
   const [collected, setCollected] = useState<string[]>([]);
   const toast = useToast();
 
@@ -71,19 +72,20 @@ export function Speaker() {
         className="content flex"
         style={{ gap: "1rem", marginTop: "1rem", alignItems: "center" }}
       >
-        <ul style={{}}>
-          {filteredPods?.map((pod) => (
-            <li key={pod.uid}>
-              <Pod
-                pod={pod}
-                collect={collect}
-                isConnecting={isConnecting}
-              />
-            </li>
-          ))}
-          {filteredPods?.length === 0 && (
-            <Text textAlign="center">No feedback to collect</Text>
-          )}
+        <ul>
+          {isLoadingPods
+            ? <Text textAlign="center">Loading...</Text>
+            : filteredPods?.length === 0
+            ? <Text textAlign="center">No feedback to collect</Text>
+            : filteredPods?.map((pod) => (
+              <li key={pod.uid}>
+                <Pod
+                  pod={pod}
+                  collect={collect}
+                  isConnecting={isConnecting}
+                />
+              </li>
+            ))}
         </ul>
         {!isEmailVerified && (
           <PrimaryButton

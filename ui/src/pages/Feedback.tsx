@@ -179,6 +179,17 @@ export function Feedback() {
           >
             Sign & Submit
           </PrimaryButton>
+          <p style={{ marginTop: "auto", marginBottom: "1rem" }}>
+            Are you a speaker? Check your feedback{" "}
+            <Link
+              as={ReactRouterLink}
+              to="/speaker"
+              style={{ textDecoration: "underline" }}
+            >
+              here
+            </Link>
+            .
+          </p>
         </Flex>
       </main>
     </div>
