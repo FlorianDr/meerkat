@@ -1,7 +1,25 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Flex, Link, Select } from "@chakra-ui/react";
-import { Link as ReactRouterLink, useParams } from "react-router-dom";
+import {
+  Button,
+  Flex,
+  Link,
+  Modal as ChakraModal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  Text,
+} from "@chakra-ui/react";
+import {
+  Link as ReactRouterLink,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { Header } from "../components/Header/Header.tsx";
 import { Modal } from "../components/Modal/Modal.tsx";
 import { CooldownModal } from "../components/QnA/CooldownModal.tsx";
@@ -11,7 +29,7 @@ import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
 import { useEvent } from "../hooks/use-event.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { useVotes } from "../hooks/use-votes.ts";
-import { remote } from "../routes.ts";
+import { card, remote } from "../routes.ts";
 import { useReact } from "../hooks/use-react.ts";
 import { Reaction } from "../components/QnA/Reaction.tsx";
 import { HeartIcon } from "../components/QnA/HeartIcon.tsx";
@@ -23,10 +41,17 @@ import { useAnonymousUser } from "../hooks/use-anonymous-user.ts";
 import { usePageTitle } from "../hooks/use-page-title.ts";
 import { pageTitle } from "../utils/events.ts";
 import throttle from "lodash.throttle";
+import { AttendancePod } from "../components/AttendancePod.tsx";
 
 export function QnA() {
   const { uid } = useParams();
   const { data: event } = useEvent(uid);
+  const navigate = useNavigate();
+  const [showEndingModal, setShowEndingModal] = useState(false);
+  const hasShownEndingModal = useRef(false);
+  const [searchParams] = useSearchParams();
+  const secret = searchParams.get("secret");
+
   usePageTitle(pageTitle(event));
 
   const [isSortByPopularity, setIsSortByPopularity] = useState(false);
@@ -87,6 +112,35 @@ export function QnA() {
     };
     trigger(reaction);
     addReaction(reaction);
+  };
+
+  useEffect(() => {
+    if (!event?.end || !secret) return;
+
+    const checkEventEnding = () => {
+      const now = new Date();
+      const end = new Date(event.end);
+      const timeUntilEnd = end.getTime() - now.getTime();
+
+      if (
+        timeUntilEnd <= 600000 &&
+        !hasShownEndingModal.current
+      ) {
+        setShowEndingModal(true);
+        hasShownEndingModal.current = true;
+      }
+    };
+
+    const interval = setInterval(checkEventEnding, 30000);
+    checkEventEnding();
+
+    return () => clearInterval(interval);
+  }, [event?.end, secret]);
+
+  const handleNavigateToCard = () => {
+    if (!uid) return;
+    navigate(card(uid));
+    setShowEndingModal(false);
   };
 
   return (
@@ -162,6 +216,33 @@ export function QnA() {
         </Modal>
       )}
       <CooldownModal />
+      <ChakraModal
+        isOpen={showEndingModal}
+        onClose={() => setShowEndingModal(false)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Event End</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <AttendancePod event={event} />
+            <Text mt="1rem">
+              Event is ending soon. It's time to get your attendance
+              collectable. Would you like to navigate there?
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Flex gap="1rem">
+              <Button variant="ghost" onClick={() => setShowEndingModal(false)}>
+                Stay Here
+              </Button>
+              <Button colorScheme="purple" onClick={handleNavigateToCard}>
+                Go to Card Page
+              </Button>
+            </Flex>
+          </ModalFooter>
+        </ModalContent>
+      </ChakraModal>
     </>
   );
 }

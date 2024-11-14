@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { Flex, Heading, Skeleton } from "@chakra-ui/react";
 import { Event } from "../../types.ts";
+import { AttendancePod } from "../AttendancePod.tsx";
 
 export type CardProps = {
   event: Event | undefined;
@@ -9,23 +9,10 @@ export type CardProps = {
 export const Card = (
   { event }: CardProps,
 ) => {
-  const [isLoading, setIsLoading] = useState(true);
-
   return (
     <>
-      <div className="collect-card-image">
-        <Skeleton isLoaded={!isLoading} width={260} height={260}>
-          {event?.cover
-            ? (
-              <img
-                src={event?.cover}
-                alt="Ordinary Card"
-                style={{ height: 260, margin: "0 auto" }}
-                onLoad={() => setIsLoading(false)}
-              />
-            )
-            : null}
-        </Skeleton>
+      <div style={{ marginBottom: "1rem", marginTop: "2rem" }}>
+        <AttendancePod event={event} />
       </div>
       <Flex direction="column" align="center" gap="12px">
         <Skeleton isLoaded={!!event} width="fit-content">
