@@ -106,7 +106,7 @@ export function Leaderboard() {
               ))}
               {!isUserInLeaderboard && user && (
                 <Tr key={user.names}>
-                  <Td>{user.rank}</Td>
+                  <Td></Td>
                   <Td>
                     {user.name}&nbsp;
                     <Badge colorScheme="purple" variant="solid">You!</Badge>
