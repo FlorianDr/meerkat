@@ -56,7 +56,7 @@ export function Speaker() {
     } catch (error) {
       toast({
         title: `Error collecting feedback for ${pod.event.title}`,
-        description: `Error: ${error?.message}`,
+        description: `Error: ${(error as Error)?.message ?? "Unknown error"}`,
         status: "error",
       });
     } finally {

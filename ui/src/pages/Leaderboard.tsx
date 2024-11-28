@@ -1,43 +1,135 @@
-import { ArrowBackIcon, RepeatIcon } from "@chakra-ui/icons";
+import { useEffect, useState } from "react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Badge,
-  Button,
   Flex,
+  Heading,
   Link,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { Header } from "../components/Header/Header.tsx";
 import { useUser } from "../hooks/use-user.ts";
 import { useLeaderboard } from "../hooks/use-leaderboard.ts";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
+import { StarIcon } from "@chakra-ui/icons";
+import { minimumFieldsToReveal, useLogin } from "../hooks/use-login.ts";
+import { useZAPIConnect } from "../zapi/connect.ts";
+import { useZAPI } from "../zapi/context.tsx";
+import { posthog } from "posthog-js";
+import { useZupassPods } from "../hooks/use-zupass-pods.ts";
+import { summaryPodType } from "../utils/pod.ts";
+import { useUserStats } from "../hooks/use-user-stats.ts";
+import { useSummaryPOD } from "../hooks/use-summary-pod.ts";
+import { POD } from "@pcd/pod";
 
 export function Leaderboard() {
   const {
     data,
-    mutate: refreshLeaderboard,
-    isValidating: isLeaderboardLoading,
+    // mutate: refreshLeaderboard,
+    // isValidating: isLeaderboardLoading,
   } = useLeaderboard();
+  const { data: userStats } = useUserStats();
 
-  const { data: user, mutate: refreshUser, isValidating: isUserLoading } =
-    useUser();
+  const {
+    data: user,
+    // mutate: refreshUser,
+    // isValidating: isUserLoading,
+    isAuthenticated,
+  } = useUser();
 
   const isUserInLeaderboard = data?.some((p) => p.name === user?.name);
 
-  const refresh = () => {
-    refreshLeaderboard();
-    refreshUser();
-  };
+  // const refresh = () => {
+  //   refreshLeaderboard();
+  //   refreshUser();
+  // };
 
   const navigate = useNavigate();
 
-  const isLoading = isLeaderboardLoading || isUserLoading;
+  // const isLoading = isLeaderboardLoading || isUserLoading;
+
+  const { login } = useLogin({
+    fieldsToReveal: {
+      ...minimumFieldsToReveal,
+    },
+  });
+  const { connect, isConnected } = useZAPIConnect();
+  const { zapi, collection } = useZAPI();
+  const [isCollected, setIsCollected] = useState(false);
+  const [isCollecting, setIsCollecting] = useState(false);
+  const toast = useToast();
+  const { getZupassPods } = useZupassPods();
+  const { trigger: fetchSummaryPod } = useSummaryPOD();
+
+  useEffect(() => {
+    if (!zapi || !isConnected) return;
+
+    const func = async () => {
+      const pods = await getZupassPods(zapi, collection, summaryPodType);
+      setIsCollected(pods.length > 0);
+    };
+
+    func();
+  }, [isConnected, zapi, collection]);
+
+  const collect = async () => {
+    setIsCollecting(true);
+    try {
+      if (!isAuthenticated) {
+        await login();
+      }
+
+      const zapi = await connect();
+
+      const pods = await getZupassPods(zapi, collection, summaryPodType);
+      const hasSummaryPod = pods.length > 0;
+
+      if (hasSummaryPod) {
+        toast({
+          title: "Summary Already Claimed",
+          description: "Open Zupass to view it",
+          status: "info",
+        });
+        return;
+      }
+
+      const { data } = await fetchSummaryPod();
+      const pod = POD.fromJSON(data);
+
+      await (zapi as ParcnetAPI).pod.collection(collection)
+        .insert({
+          entries: pod.content.asEntries(),
+          signature: pod.signature,
+          signerPublicKey: pod.signerPublicKey,
+        });
+
+      toast({
+        title: "Summary Claimed",
+        description: "Open Zupass to view it",
+        status: "success",
+      });
+      posthog.capture("summary_claimed");
+      setIsCollected(true);
+    } catch (error) {
+      toast({
+        title: "Error claiming summary",
+        description: `Error: ${error?.message}`,
+        status: "error",
+      });
+    } finally {
+      setIsCollecting(false);
+    }
+  };
 
   return (
     <div className="layout">
@@ -64,9 +156,73 @@ export function Leaderboard() {
         <Header title="Top Participants" />
       </header>
       <main className="content flex">
+        <Flex gap={4} flexDirection="column" alignItems="center">
+          <Heading as="h3" size="md" mt={4} color="white" textAlign="center">
+            Devcon 7 SEA 🦄 was awesome! Thanks to your contribution 💜:
+          </Heading>
+          <Flex color="white">
+            {userStats?.answeredQuestions
+              ? (
+                <>
+                  {userStats?.answeredQuestions} questions answered
+                  <br />
+                </>
+              )
+              : null}
+            {userStats?.receivedVotes
+              ? (
+                <>
+                  {userStats?.receivedVotes} votes received
+                  <br />
+                </>
+              )
+              : null}
+            {userStats?.questions
+              ? (
+                <>
+                  {userStats?.questions} questions asked
+                  <br />
+                </>
+              )
+              : null}
+            {userStats?.votes
+              ? (
+                <>
+                  {userStats?.votes} votes given
+                  <br />
+                </>
+              )
+              : null}
+            {userStats?.reactions
+              ? (
+                <>
+                  {userStats?.reactions} heart reactions
+                  <br />
+                </>
+              )
+              : null}
+          </Flex>
+          {!isCollected && (
+            <>
+              <PrimaryButton
+                leftIcon={<StarIcon />}
+                onClick={collect}
+                isLoading={isCollecting}
+                loadingText="Claiming..."
+                className={!isCollecting ? "pulsating" : ""}
+              >
+                Claim your Reward
+              </PrimaryButton>
+              <Text>
+                Claiming your reward stores a contribution summary into Zupass.
+              </Text>
+            </>
+          )}
+        </Flex>
         <TableContainer>
           <Flex justifyContent="flex-end" margin="1rem 0">
-            <Button
+            {
+              /* <Button
               leftIcon={<RepeatIcon />}
               onClick={refresh}
               variant="outline"
@@ -75,7 +231,8 @@ export function Leaderboard() {
               loadingText="Refreshing..."
             >
               Refresh
-            </Button>
+            </Button> */
+            }
           </Flex>
           <Table variant="simple" size="sm">
             <TableCaption>

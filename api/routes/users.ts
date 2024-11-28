@@ -4,6 +4,12 @@ import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
 import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import {
+  countAnsweredQuestions,
+  countQuestions,
+  countReactions,
+  countReceivedVotes,
+  countVotes,
+  getAccounts,
   getTopContributors,
   getUserByProvider,
   getUserByUID,
@@ -21,10 +27,15 @@ import {
   getConferenceRolesForConference,
   grantRole,
 } from "../models/roles.ts";
-import { getConferenceByTicket } from "../models/conferences.ts";
+import {
+  getConferenceById,
+  getConferenceByTicket,
+} from "../models/conferences.ts";
 import { hash } from "../utils/secret.ts";
 import { POD } from "@pcd/pod";
 import { TicketSpec } from "@parcnet-js/ticket-spec";
+import { createSummaryPOD } from "../zupass.ts";
+import { conferences } from "../schema.ts";
 
 const app = new Hono();
 
@@ -129,6 +140,37 @@ app.get(
 
     return c.json({
       data: apiRoles,
+    });
+  },
+);
+
+app.get(
+  "/api/v1/users/me/stats",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const payload = c.get("jwtPayload");
+    const user = await getUserByUID(payload.sub);
+    if (!user) {
+      throw new HTTPException(401, { message: `User not found` });
+    }
+
+    const [votes, questions, answeredQuestions, reactions, receivedVotes] =
+      await Promise.all([
+        countVotes(user.id),
+        countQuestions(user.id),
+        countAnsweredQuestions(user.id),
+        countReactions(user.id),
+        countReceivedVotes(user.id),
+      ]);
+
+    return c.json({
+      data: {
+        votes,
+        questions,
+        answeredQuestions,
+        reactions,
+        receivedVotes,
+      },
     });
   },
 );
@@ -454,5 +496,73 @@ export const DevconTicketSpec = TicketSpec.extend((schema, f) => {
     },
   });
 });
+
+// TODO: It should not rely on id in different tables. fix me please.
+const DEVCON_ID = 1;
+
+app.post(
+  "/api/v1/users/me/summary-pod",
+  jwt({ secret: env.secret, cookie: "jwt" }),
+  async (c) => {
+    const payload = c.get("jwtPayload");
+    const user = await getUserByUID(payload.sub);
+
+    if (!user) {
+      throw new HTTPException(401, { message: "User not found" });
+    }
+
+    const zupassAccount = await getAccounts(user.id);
+    const zupassId = zupassAccount?.find((a) => a.provider === ZUPASS_PROVIDER)
+      ?.id;
+
+    if (!zupassId) {
+      throw new HTTPException(400, {
+        message: `User ${user.uid} does not have a Zupass account`,
+      });
+    }
+
+    const conference = await getConferenceById(DEVCON_ID);
+
+    if (!conference) {
+      throw new HTTPException(400, { message: "Conference not found" });
+    }
+
+    const roles = await getConferenceRolesForConference(
+      user.id,
+      conference.id,
+    );
+
+    if (roles.length === 0) {
+      throw new HTTPException(403, { message: "User has no conference roles" });
+    }
+
+    const [
+      votes,
+      questions,
+      answeredQuestions,
+      reactions,
+      receivedVotes,
+    ] = await Promise.all([
+      countVotes(user.id),
+      countQuestions(user.id),
+      countAnsweredQuestions(user.id),
+      countReactions(user.id),
+      countReceivedVotes(user.id),
+    ]);
+
+    const pod = createSummaryPOD(conference, zupassId, {
+      username: user.name ?? "Anonymous",
+      givenVotes: votes,
+      receivedVotes,
+      questions,
+      answeredQuestions,
+      reactions,
+    });
+
+    return c.json({
+      data: pod.toJSON(),
+    });
+  },
+);
 
 export default app;

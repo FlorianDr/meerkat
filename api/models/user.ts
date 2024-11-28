@@ -1,7 +1,7 @@
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt, isNotNull, sql } from "drizzle-orm";
 import { uuidv7 } from "uuidv7";
 import db from "../db.ts";
-import { accounts, questions, users } from "../schema.ts";
+import { accounts, questions, reactions, users, votes } from "../schema.ts";
 import { generateUsername } from "../usernames.ts";
 
 export const ZUPASS_PROVIDER = "zupass";
@@ -211,6 +211,44 @@ export async function getTopContributors(
     rank: Number(row.rank),
     points: Number(row.points),
   }));
+}
+
+export async function countQuestions(userId: number) {
+  const result = await db.select({ count: sql<number>`count(*)` }).from(
+    questions,
+  ).where(eq(questions.userId, userId)).execute();
+  return Number(result[0].count);
+}
+
+export async function countAnsweredQuestions(userId: number) {
+  const result = await db.select({ count: sql<number>`count(*)` }).from(
+    questions,
+  ).where(and(eq(questions.userId, userId), isNotNull(questions.answeredAt)))
+    .execute();
+  return Number(result[0].count);
+}
+
+export async function countVotes(userId: number) {
+  const result = await db.select({ count: sql<number>`count(*)` }).from(
+    votes,
+  ).where(eq(votes.userId, userId)).execute();
+  return Number(result[0].count);
+}
+
+export async function countReceivedVotes(userId: number) {
+  const result = await db.select({ count: sql<number>`count(*)` }).from(
+    votes,
+  ).innerJoin(questions, eq(votes.questionId, questions.id))
+    .where(eq(questions.userId, userId))
+    .execute();
+  return Number(result[0].count);
+}
+
+export async function countReactions(userId: number) {
+  const result = await db.select({ count: sql<number>`count(*)` }).from(
+    reactions,
+  ).where(eq(reactions.userId, userId)).execute();
+  return Number(result[0].count);
 }
 
 export type User = typeof users.$inferSelect;
