@@ -29,6 +29,7 @@
     "npm:drizzle-orm@~0.32.1": "0.32.2_postgres@3.4.4",
     "npm:framer-motion@^11.3.28": "11.3.31_react@18.3.1_react-dom@18.3.1__react@18.3.1",
     "npm:hono@^4.5.3": "4.5.6",
+    "npm:js-confetti@0.12": "0.12.0",
     "npm:lodash.throttle@^4.1.1": "4.1.1",
     "npm:lodash@^4.17.21": "4.17.21",
     "npm:postgres@^3.4.4": "3.4.4",
@@ -3171,6 +3172,9 @@
         "minimatch@3.1.2"
       ]
     },
+    "js-confetti@0.12.0": {
+      "integrity": "sha512-1R0Akxn3Zn82pMqW65N1V2NwKkZJ75bvBN/VAb36Ya0YHwbaSiAJZVRr/19HBxH/O8x2x01UFAbYI18VqlDN6g=="
+    },
     "js-sha256@0.10.1": {
       "integrity": "sha512-5obBtsz9301ULlsgggLg542s/jqtddfOpV5KJc4hajc9JV8GeY2gZHSVpYBn4nWqAUTJ9v+xwtbJ1mIBgIH5Vw=="
     },
@@ -4210,6 +4214,7 @@
           "npm:@sentry/react@^8.36.0",
           "npm:@supabase/supabase-js@^2.45.6",
           "npm:framer-motion@^11.3.28",
+          "npm:js-confetti@0.12",
           "npm:lodash.throttle@^4.1.1",
           "npm:posthog-js@^1.176.0",
           "npm:react-dom@^18.3.1",

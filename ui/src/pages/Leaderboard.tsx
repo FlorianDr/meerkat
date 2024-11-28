@@ -31,6 +31,9 @@ import { summaryPodType } from "../utils/pod.ts";
 import { useUserStats } from "../hooks/use-user-stats.ts";
 import { useSummaryPOD } from "../hooks/use-summary-pod.ts";
 import { POD } from "@pcd/pod";
+import JSConfetti from "js-confetti";
+
+const jsConfetti = new JSConfetti();
 
 export function Leaderboard() {
   const {
@@ -118,8 +121,9 @@ export function Leaderboard() {
         description: "Open Zupass to view it",
         status: "success",
       });
-      posthog.capture("summary_claimed");
+      jsConfetti.addConfetti();
       setIsCollected(true);
+      posthog.capture("summary_claimed");
     } catch (error) {
       toast({
         title: "Error claiming summary",
