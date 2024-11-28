@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Flex,
@@ -206,22 +206,36 @@ export function Leaderboard() {
               )
               : null}
           </Flex>
-          {!isCollected && (
-            <>
-              <PrimaryButton
-                leftIcon={<StarIcon />}
-                onClick={collect}
-                isLoading={isCollecting}
-                loadingText="Claiming..."
-                className={!isCollecting ? "pulsating" : ""}
-              >
-                Claim your Reward
-              </PrimaryButton>
-              <Text>
-                Claiming your reward stores a contribution summary into Zupass.
-              </Text>
-            </>
-          )}
+          {isCollected
+            ? (
+              <p>
+                <Link
+                  href="https://zupass.org"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open Zupass <ExternalLinkIcon />
+                </Link>{" "}
+                to view your summary POD.
+              </p>
+            )
+            : (
+              <>
+                <PrimaryButton
+                  leftIcon={<StarIcon />}
+                  onClick={collect}
+                  isLoading={isCollecting}
+                  loadingText="Claiming..."
+                  className={!isCollecting ? "pulsating" : ""}
+                >
+                  Claim your Reward
+                </PrimaryButton>
+                <Text>
+                  Claiming your reward stores a contribution summary into
+                  Zupass.
+                </Text>
+              </>
+            )}
         </Flex>
         <TableContainer>
           <Flex justifyContent="flex-end" margin="1rem 0">
