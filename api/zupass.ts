@@ -70,6 +70,7 @@ export function createSummaryPOD(
   conference: Conference,
   owner: string,
   stats: {
+    rank: number;
     username: string;
     givenVotes: number;
     receivedVotes: number;
@@ -100,7 +101,7 @@ export function createSummaryPOD(
     "zupass_image_url": {
       type: "string",
       value:
-        "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/global/logo.png",
+        "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/images/devcon_summary.png",
     },
     "zupass_title": {
       type: "string",
@@ -137,6 +138,10 @@ export function createSummaryPOD(
     "reactions": {
       type: "int",
       value: BigInt(stats.reactions),
+    },
+    "rank": {
+      type: "int",
+      value: BigInt(stats.rank),
     },
   };
 
