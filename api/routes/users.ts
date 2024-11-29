@@ -542,12 +542,14 @@ app.post(
       answeredQuestions,
       reactions,
       receivedVotes,
+      rank,
     ] = await Promise.all([
       countVotes(user.id),
       countQuestions(user.id),
       countAnsweredQuestions(user.id),
       countReactions(user.id),
       countReceivedVotes(user.id),
+      getUserContributionRank(user.id),
     ]);
 
     const pod = createSummaryPOD(conference, zupassId, {
@@ -557,6 +559,7 @@ app.post(
       questions,
       answeredQuestions,
       reactions,
+      rank: rank.rank,
     });
 
     return c.json({

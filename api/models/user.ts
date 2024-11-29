@@ -148,23 +148,28 @@ export async function getUserContributionRank(
 ): Promise<{ rank: number; points: number }> {
   const result = await db
     .select({
-      rank: sql<number>`
-        RANK() OVER (
-          ORDER BY (
-            COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
-            COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
-          ) DESC
-        )
-      `,
-      points: sql<number>`
-        COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
-        COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
-      `,
+      rank: sql<number>`rank`,
+      points: sql<number>`points`,
     })
-    .from(users)
-    .leftJoin(questions, eq(users.id, questions.userId))
-    .groupBy(users.id)
-    .having(eq(users.id, userId))
+    .from(
+      sql`(
+        SELECT 
+          users.id,
+          RANK() OVER (
+            ORDER BY (
+              COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+              COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0)
+            ) DESC
+          ) as rank,
+          COUNT(CASE WHEN ${questions.answeredAt} IS NOT NULL THEN 1 END) * 10 + 
+          COALESCE(SUM(${sql`(SELECT COUNT(*) FROM votes WHERE votes.question_id = ${questions.id})`}), 0) as points
+        FROM ${users}
+        LEFT JOIN ${questions} ON ${eq(users.id, questions.userId)}
+        GROUP BY users.id
+      ) ranks`,
+    )
+    .where(sql`ranks.id = ${userId}`)
+    .limit(1)
     .execute();
 
   const row = result.length > 0 ? result[0] : null;
