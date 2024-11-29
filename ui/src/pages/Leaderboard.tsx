@@ -280,8 +280,8 @@ export function Leaderboard() {
                 </Tr>
               ))}
               {!isUserInLeaderboard && user && (
-                <Tr key={user.names}>
-                  <Td></Td>
+                <Tr key={user.name}>
+                  <Td>{user.rank ?? "-"}</Td>
                   <Td>
                     {user.name}&nbsp;
                     <Badge colorScheme="purple" variant="solid">You!</Badge>
