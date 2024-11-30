@@ -259,6 +259,8 @@ const createQuestionSchema = zod.object({
   question: zod.string().max(MAX_CHARS_PER_QUESTION).min(1),
 });
 
+const endBuffer = 1000 * 60 * 60 * 24; // 1 day
+
 app.post(
   "/api/v1/events/:uid/questions",
   jwt({ secret: env.secret, cookie: "jwt" }),
@@ -285,6 +287,12 @@ app.post(
 
     if (conferenceRoles.length === 0) {
       throw new HTTPException(403, { message: "User has no conference roles" });
+    }
+
+    if (event.end && event.end < new Date(Date.now() + endBuffer)) {
+      throw new HTTPException(403, {
+        message: "Event has ended",
+      });
     }
 
     const minuteAgo = dateDeductedMinutes(1);
@@ -348,6 +356,12 @@ app.post(
 
     if (conferenceRoles.length === 0) {
       throw new HTTPException(403, { message: "User has no conference roles" });
+    }
+
+    if (event.end && event.end < new Date(Date.now() + endBuffer)) {
+      throw new HTTPException(403, {
+        message: "Event has ended",
+      });
     }
 
     const thirtySecondsAgo = dateDeductedMinutes(0.5);

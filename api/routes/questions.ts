@@ -21,6 +21,8 @@ import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
 
 const app = new Hono();
 
+const endBuffer = 1000 * 60 * 60 * 24; // 1 day
+
 app.post(
   "/api/v1/questions/:uid/upvote",
   jwt({ secret: env.secret, cookie: "jwt" }),
@@ -55,6 +57,12 @@ app.post(
     if (!event) {
       throw new HTTPException(404, {
         message: `Event ${question.eventId} not found`,
+      });
+    }
+
+    if (event.end && event.end < new Date(Date.now() + endBuffer)) {
+      throw new HTTPException(403, {
+        message: "Event has ended",
       });
     }
 
