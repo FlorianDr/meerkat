@@ -71,6 +71,7 @@ export function createSummaryPOD(
   owner: string,
   stats: {
     rank: number;
+    points: number;
     username: string;
     givenVotes: number;
     receivedVotes: number;
@@ -142,6 +143,10 @@ export function createSummaryPOD(
     "rank": {
       type: "int",
       value: BigInt(stats.rank),
+    },
+    "points": {
+      type: "int",
+      value: BigInt(stats.points),
     },
   };
 

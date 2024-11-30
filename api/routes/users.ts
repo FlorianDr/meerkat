@@ -560,6 +560,7 @@ app.post(
       answeredQuestions,
       reactions,
       rank: rank.rank,
+      points: rank.points,
     });
 
     return c.json({
