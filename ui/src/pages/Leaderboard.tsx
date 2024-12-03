@@ -159,7 +159,7 @@ export function Leaderboard() {
         </nav>
         <Header title="Top Participants" />
       </header>
-      <main className="content flex">
+      <main className="content flex" style={{ overflowY: "auto" }}>
         <Flex gap={4} flexDirection="column" alignItems="center">
           <Heading as="h3" size="md" mt={4} color="white" textAlign="center">
             Devcon 7 SEA 🦄 was awesome! Thanks to your contribution 💜:
@@ -237,7 +237,7 @@ export function Leaderboard() {
               </>
             )}
         </Flex>
-        <TableContainer>
+        <TableContainer style={{ overflow: "unset" }}>
           <Flex justifyContent="flex-end" margin="1rem 0">
             {
               /* <Button
