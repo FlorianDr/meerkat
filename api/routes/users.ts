@@ -2,7 +2,8 @@ import { z } from "zod";
 import { Hono } from "@hono/hono";
 import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
-import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
+import { constructJWTPayload } from "../utils/jwt.ts";
+import { setJWTCookie } from "../utils/cookie.ts";
 import {
   countAnsweredQuestions,
   countQuestions,
@@ -20,7 +21,7 @@ import {
 import { HTTPException } from "@hono/hono/http-exception";
 import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
-import { deleteCookie, setCookie } from "@hono/hono/cookie";
+import { deleteCookie } from "@hono/hono/cookie";
 import { createUserFromAccount, markUserAsBlocked } from "../models/user.ts";
 import {
   getConferenceRoles,
@@ -289,19 +290,9 @@ app.post(
       await grantRole(user.id, conference.id, role);
     }
 
-    const origin = c.req.header("origin") ?? env.base;
     const payload = constructJWTPayload(user);
-    const token = await sign(payload, env.secret);
-
-    const baseUrl = new URL(origin);
-    setCookie(c, "jwt", token, {
-      path: "/",
-      domain: baseUrl.hostname,
-      secure: baseUrl.protocol === "https:",
-      httpOnly: true,
-      maxAge: JWT_EXPIRATION_TIME,
-      sameSite: "Lax",
-    });
+    const jwtString = await sign(payload, env.secret);
+    setJWTCookie(c, jwtString);
 
     return c.json({ data: { user } });
   },
@@ -433,19 +424,9 @@ app.post(
       await grantRole(user.id, conference.id, role);
     }
 
-    const origin = c.req.header("origin") ?? env.base;
     const payload = constructJWTPayload(user);
-    const token = await sign(payload, env.secret);
-
-    const baseUrl = new URL(origin);
-    setCookie(c, "jwt", token, {
-      path: "/",
-      domain: baseUrl.hostname,
-      secure: baseUrl.protocol === "https:",
-      httpOnly: true,
-      maxAge: JWT_EXPIRATION_TIME,
-      sameSite: "Lax",
-    });
+    const jwtString = await sign(payload, env.secret);
+    setJWTCookie(c, jwtString);
 
     const rankAndPoints = await getUserContributionRank(user.id);
 
