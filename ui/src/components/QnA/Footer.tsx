@@ -1,10 +1,13 @@
+import { useRef } from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Button,
   Flex,
   Icon,
   IconButton,
+  Link as ChakraLink,
   Textarea,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -17,7 +20,15 @@ import { HeartIcon } from "./HeartIcon.tsx";
 import { Event } from "../../types.ts";
 import { useState } from "react";
 import { useAskQuestion } from "../../hooks/use-ask-question.ts";
-
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+} from "@chakra-ui/react";
+import { useLogout } from "../../hooks/use-logout.ts";
 const MAX_QUESTION_LENGTH = 200;
 
 export type FooterProps = {
@@ -75,6 +86,11 @@ export function Footer({
     },
   });
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
+
+  const { trigger: logout } = useLogout();
+
   const submitQuestion = () => {
     if (question) {
       trigger({
@@ -84,6 +100,11 @@ export function Footer({
   };
 
   const isQuestionMode = focused || question;
+
+  const onLogout = async () => {
+    await logout({});
+    globalThis.location.reload();
+  };
 
   return (
     <>
@@ -152,7 +173,10 @@ export function Footer({
               : null}
           </Flex>
           <span className="signin-name">
-            Signed as {user?.name ?? user?.uid ?? "Anonymous"}{" "}
+            Signed as{" "}
+            <ChakraLink onClick={onOpen}>
+              {user?.name ?? user?.uid ?? "Anonymous"}
+            </ChakraLink>{" "}
             <Button
               variant="outline"
               as={Link}
@@ -179,6 +203,32 @@ export function Footer({
           </LoginOverlay>
         )}
       </div>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Logout
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to logout?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} colorScheme="gray" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={onLogout} ml={3}>
+                Logout
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }

@@ -20,7 +20,7 @@ import {
 import { HTTPException } from "@hono/hono/http-exception";
 import { getVotesByUserId } from "../models/votes.ts";
 import { zValidator } from "@hono/zod-validator";
-import { setCookie } from "@hono/hono/cookie";
+import { deleteCookie, setCookie } from "@hono/hono/cookie";
 import { createUserFromAccount, markUserAsBlocked } from "../models/user.ts";
 import {
   getConferenceRoles,
@@ -35,7 +35,6 @@ import { hash } from "../utils/secret.ts";
 import { POD } from "@pcd/pod";
 import { TicketSpec } from "@parcnet-js/ticket-spec";
 import { createSummaryPOD } from "../zupass.ts";
-import { conferences } from "../schema.ts";
 
 const app = new Hono();
 
@@ -568,5 +567,21 @@ app.post(
     });
   },
 );
+
+app.post("/api/v1/users/logout", async (c) => {
+  const origin = c.req.header("origin") ?? env.base;
+  const baseUrl = new URL(origin);
+
+  deleteCookie(c, "jwt", {
+    path: "/",
+    domain: baseUrl.hostname,
+    secure: baseUrl.protocol === "https:",
+    httpOnly: true,
+    maxAge: JWT_EXPIRATION_TIME,
+    sameSite: "strict",
+  });
+
+  return c.json({ data: {} });
+});
 
 export default app;
