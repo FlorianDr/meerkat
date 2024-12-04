@@ -8,7 +8,10 @@ export type UseReactReturnType = {
   trigger: (obj: { uid: string }) => void;
 };
 
-export function useReact(uid: string): UseReactReturnType {
+export function useReact(
+  uid: string,
+  { onError }: { onError?: (error: HTTPError) => void },
+): UseReactReturnType {
   const { setIsOnCooldown } = useContext(UserContext);
   const { trigger } = useSWRMutation(`/api/v1/events/${uid}/react`, poster, {
     onSuccess: () => {
@@ -19,6 +22,8 @@ export function useReact(uid: string): UseReactReturnType {
     onError: (error) => {
       if (error.status === 429) {
         setIsOnCooldown(true);
+      } else {
+        onError?.(error);
       }
     },
   });

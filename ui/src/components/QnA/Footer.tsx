@@ -54,7 +54,7 @@ export function Footer({
   const { login, isLoading } = useLogin({
     onError: (error) => {
       toast({
-        title: `Failed to login (${error?.status})`,
+        title: `Failed to login`,
         status: "error",
         description: error.message,
         duration: 2000,
@@ -78,7 +78,7 @@ export function Footer({
     },
     onError: (error) => {
       toast({
-        title: `Failed to create question (${error.status})`,
+        title: `Failed to create question`,
         status: "error",
         description: error.message,
         duration: 2000,

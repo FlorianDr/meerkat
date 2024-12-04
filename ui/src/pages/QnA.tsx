@@ -43,6 +43,7 @@ import { pageTitle } from "../utils/events.ts";
 import throttle from "lodash.throttle";
 import { AttendancePod } from "../components/AttendancePod.tsx";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import { useToast } from "@chakra-ui/react";
 
 export function QnA() {
   const { uid } = useParams();
@@ -77,8 +78,18 @@ export function QnA() {
     [refreshQuestions, refreshVotes],
   );
 
+  const toast = useToast();
   const { trigger } = useReact(
     event?.uid ?? "",
+    {
+      onError: (error) => {
+        toast({
+          title: `Failed to react`,
+          description: error.message,
+          status: "error",
+        });
+      },
+    },
   );
 
   const [reactions, setReactions] = useState<{ uid: string }[]>([]);

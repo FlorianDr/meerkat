@@ -47,7 +47,7 @@ export function Question(
     },
     onError: (error) => {
       toast({
-        title: `Failed to vote (${error.status})`,
+        title: `Failed to vote`,
         status: "error",
         description: error.message,
       });
