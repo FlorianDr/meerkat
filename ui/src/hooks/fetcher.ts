@@ -28,7 +28,13 @@ export const poster = async (
       : {}),
   });
   if (!res.ok) {
-    throw new HTTPError(res);
+    let error: string | undefined;
+    try {
+      error = await res.text();
+    } catch (e) {
+      error = undefined;
+    }
+    throw new HTTPError(res, error);
   }
   return res.json();
 };
