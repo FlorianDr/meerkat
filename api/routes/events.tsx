@@ -48,6 +48,7 @@ import { bearerAuth } from "@hono/hono/bearer-auth";
 import { createSigner } from "../utils/secret.ts";
 import { generateQRCodePNG } from "../code.ts";
 import { bodyLimit } from "@hono/hono/body-limit";
+import { checkEventEnded } from "./errors.ts";
 
 const app = new Hono();
 
@@ -270,14 +271,15 @@ app.post(
     const questionData = c.req.valid("json");
     const event = c.get("event");
     const payload = c.get("jwtPayload");
-    const user = await getUserByUID(payload.sub);
+    const uid = payload.sub as string;
+    const user = await getUserByUID(uid);
 
     if (!user) {
-      throw new HTTPException(401, { message: "User not found" });
+      throw new HTTPException(401, { message: `User ${uid} not found` });
     }
 
     if (user.blocked) {
-      throw new HTTPException(403, { message: "User is blocked" });
+      throw new HTTPException(403, { message: `User ${uid} is blocked` });
     }
 
     const conferenceRoles = await getConferenceRolesForConference(
@@ -286,14 +288,12 @@ app.post(
     );
 
     if (conferenceRoles.length === 0) {
-      throw new HTTPException(403, { message: "User has no conference roles" });
-    }
-
-    if (event.end && event.end < new Date(Date.now() + endBuffer)) {
       throw new HTTPException(403, {
-        message: "Event has ended",
+        message: `User ${uid} has no conference roles`,
       });
     }
+
+    checkEventEnded(event);
 
     const minuteAgo = dateDeductedMinutes(1);
     const lastMinuteActivityPromise = getUserPostCountAfterDate(
@@ -358,11 +358,7 @@ app.post(
       throw new HTTPException(403, { message: "User has no conference roles" });
     }
 
-    if (event.end && event.end < new Date(Date.now() + endBuffer)) {
-      throw new HTTPException(403, {
-        message: "Event has ended",
-      });
-    }
+    checkEventEnded(event);
 
     const thirtySecondsAgo = dateDeductedMinutes(0.5);
     const thirtySecondsActivity = await getUserReactionCountAfterDate(

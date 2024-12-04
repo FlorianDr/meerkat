@@ -18,10 +18,9 @@ import {
   getVotesByQuestionIdAndUserId,
 } from "../models/votes.ts";
 import { dateDeductedMinutes } from "../utils/date-deducted-minutes.ts";
+import { checkEventEnded } from "./errors.ts";
 
 const app = new Hono();
-
-const endBuffer = 1000 * 60 * 60 * 24; // 1 day
 
 app.post(
   "/api/v1/questions/:uid/upvote",
@@ -56,15 +55,11 @@ app.post(
 
     if (!event) {
       throw new HTTPException(404, {
-        message: `Event ${question.eventId} not found`,
+        message: `Event not found`,
       });
     }
 
-    if (event.end && event.end < new Date(Date.now() + endBuffer)) {
-      throw new HTTPException(403, {
-        message: "Event has ended",
-      });
-    }
+    checkEventEnded(event);
 
     const conferenceRoles = await getConferenceRolesForConference(
       user.id,
