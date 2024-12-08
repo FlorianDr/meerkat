@@ -101,8 +101,7 @@ export function createSummaryPOD(
     },
     "zupass_image_url": {
       type: "string",
-      value:
-        "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/images/devcon_summary.png",
+      value: getImageUrl(stats.rank),
     },
     "zupass_title": {
       type: "string",
@@ -151,4 +150,17 @@ export function createSummaryPOD(
   };
 
   return POD.sign(entries, env.privateKey);
+}
+
+function getImageUrl(rank: number) {
+  switch (rank) {
+    case 1:
+      return "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/images/winner-1stplace.png";
+    case 2:
+      return "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/images/winner-2ndplace.png";
+    case 3:
+      return "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/images/winner-3rdplace.png";
+    default:
+      return "https://icnyvghgspgzemdudsrd.supabase.co/storage/v1/object/public/images/naga-meerkat-devcon-leaderboard.png";
+  }
 }
