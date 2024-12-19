@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
-  Checkbox,
-  CheckboxGroup,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
   Link,
-  Stack,
   Textarea,
-  useCheckboxGroup,
   useToast,
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
@@ -21,9 +17,12 @@ import { useEvent } from "../hooks/use-event.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { remote } from "../routes.ts";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
-import { minimumFieldsToReveal, useLogin } from "../hooks/use-login.ts";
+import { useTicketProof } from "../hooks/use-ticket-proof.ts";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { useProvideFeedback } from "../hooks/use-provide-feedback.ts";
+import { constructPODZapp } from "../zapi/zapps.ts";
+import { collectionName } from "../zapi/collections.ts";
+import { useZAPI } from "../zapi/context.tsx";
 
 export function Feedback() {
   const { uid } = useParams();
@@ -32,14 +31,10 @@ export function Feedback() {
   const { isAuthenticated } = useUser();
   const { connect, isConnecting } = useZAPIConnect();
   const [text, setText] = useState("");
-  const { value, getCheckboxProps, setValue } = useCheckboxGroup();
+  const { config } = useZAPI();
   const toast = useToast();
-  const { login, isLoading: isLoggingIn } = useLogin({
-    fieldsToReveal: {
-      ...minimumFieldsToReveal,
-      attendeeEmail: value.includes("email") ?? false,
-      attendeeName: value.includes("name") ?? false,
-    },
+  const { login, isLoading: isLoggingIn } = useTicketProof({
+    conferenceId: event?.conference.id,
     onError: (error) => {
       toast({
         title: `Failed to login (${error?.message})`,
@@ -82,11 +77,15 @@ export function Feedback() {
     }
 
     let ticketProof: any;
-    if (!isAuthenticated || value.length > 0) {
+    if (!isAuthenticated) {
       ({ ticketProof } = await login());
     }
 
-    const zapi = await connect();
+    const zapi = await connect(
+      constructPODZapp(config.zappName, [
+        collectionName(config.zappName, event.conference.name),
+      ]),
+    );
     let email: string | undefined;
     if (ticketProof) {
       email = ticketProof.revealedClaims.pods.ticket.entries.attendeeEmail
@@ -105,7 +104,6 @@ export function Feedback() {
 
     await provideFeedback({ zapi, event, text: textValue, email, name });
     setText("");
-    setValue([]);
     toast({
       title: "Feedback Submitted",
       description: "Open Zupass to view.",
@@ -152,20 +150,6 @@ export function Feedback() {
               speakers of this event. Find your own feedback in Zupass.
             </FormHelperText>
           </FormControl>
-          {
-            /* <FormControl>
-            <Stack spacing={5} direction="row">
-              <CheckboxGroup
-                  <Checkbox {...getCheckboxProps({ value: "name" })} size="lg">
-                    Share Full Name
-                  </Checkbox>
-                <Checkbox {...getCheckboxProps({ value: "email" })} size="lg">
-                  Share Email
-                </Checkbox>
-              </CheckboxGroup>
-            </Stack>
-          </FormControl> */
-          }
 
           <PrimaryButton
             isLoading={isProvidingFeedback || isConnecting || isLoggingIn}

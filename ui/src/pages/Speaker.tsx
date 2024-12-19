@@ -12,24 +12,23 @@ import { useState } from "react";
 import { Header } from "../components/Header/Header.tsx";
 import { useUser } from "../hooks/use-user.ts";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
-import { minimumFieldsToReveal, useLogin } from "../hooks/use-login.ts";
+import { useTicketProof } from "../hooks/use-ticket-proof.ts";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { usePods } from "../hooks/use-pods.ts";
 import { type ParcnetAPI } from "@parcnet-js/app-connector";
 import { EventPod } from "../types.ts";
 import { useZAPI } from "../zapi/context.tsx";
+import { constructPODZapp } from "../zapi/zapps.ts";
+import { collectionName } from "../zapi/collections.ts";
 import { posthog } from "posthog-js";
 
 export function Speaker() {
-  const { login, isLoading } = useLogin({
-    fieldsToReveal: {
-      ...minimumFieldsToReveal,
-      attendeeEmail: true,
-    },
+  const { login, isLoading } = useTicketProof({
+    conferenceId: 1,
   });
   const { data: user } = useUser();
   const { connect } = useZAPIConnect();
-  const { collection } = useZAPI();
+  const { config } = useZAPI();
   const { data: pods, mutate: refreshPods, isLoading: isLoadingPods } =
     usePods();
   const [collected, setCollected] = useState<string[]>([]);
@@ -39,8 +38,10 @@ export function Speaker() {
   const collect = async (pod: EventPod) => {
     setIsCollecting(true);
     try {
-      const zapi = await connect();
-      await (zapi as ParcnetAPI).pod.collection(collection)
+      const zapi = await connect(constructPODZapp(config.zappName, [
+        collectionName(config.zappName, "Devcon SEA"),
+      ]));
+      await zapi.pod.collection(collection)
         .insert(pod.pod);
 
       setCollected([...collected, pod.uid]);

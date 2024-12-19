@@ -183,6 +183,13 @@
       "when": 1731387713048,
       "tag": "0025_new_blazing_skull",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1734622180277,
+      "tag": "0026_lonely_wasp",
+      "breakpoints": true
     }
   ]
 }

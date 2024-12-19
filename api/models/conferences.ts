@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import { conferences, conferenceTickets } from "../schema.ts";
 import db from "../db.ts";
 
@@ -51,6 +51,13 @@ export async function getConferenceByTicket(
   ).limit(1).orderBy(conferenceTickets.productId).execute();
 
   return result.length === 1 ? result[0] : null;
+}
+
+export async function getTickets(conferenceId: number) {
+  const result = await db.select().from(conferenceTickets).where(
+    eq(conferenceTickets.conferenceId, conferenceId),
+  ).execute();
+  return result;
 }
 
 export type Conference = typeof conferences.$inferSelect;

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ZAPIContext } from "./context.tsx";
+import { type ParcnetAPI, type Zapp } from "@parcnet-js/app-connector";
 
 export const useZAPIConnect = () => {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -17,7 +18,7 @@ export const useZAPIConnect = () => {
     effect();
   }, [context.ref.current, context.config.zupassUrl]);
 
-  const connectFn = async () => {
+  const connectFn: (zapp: Zapp) => Promise<ParcnetAPI> = async (zapp) => {
     if (context.zapi || !context.ref.current) {
       return context.zapi;
     }
@@ -29,7 +30,7 @@ export const useZAPIConnect = () => {
     let zapi;
     try {
       zapi = await connect(
-        context.config.zapp,
+        zapp,
         context.ref.current,
         context.config.zupassUrl,
       );

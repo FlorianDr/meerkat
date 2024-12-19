@@ -22,7 +22,7 @@ import { useLeaderboard } from "../hooks/use-leaderboard.ts";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { StarIcon } from "@chakra-ui/icons";
-import { minimumFieldsToReveal, useLogin } from "../hooks/use-login.ts";
+import { useTicketProof } from "../hooks/use-ticket-proof.ts";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { useZAPI } from "../zapi/context.tsx";
 import { posthog } from "posthog-js";
@@ -32,6 +32,8 @@ import { useUserStats } from "../hooks/use-user-stats.ts";
 import { useSummaryPOD } from "../hooks/use-summary-pod.ts";
 import { POD } from "@pcd/pod";
 import JSConfetti from "js-confetti";
+import { constructPODZapp } from "../zapi/zapps.ts";
+import { collectionName } from "../zapi/collections.ts";
 
 const jsConfetti = new JSConfetti();
 
@@ -61,18 +63,21 @@ export function Leaderboard() {
 
   // const isLoading = isLeaderboardLoading || isUserLoading;
 
-  const { login } = useLogin({
-    fieldsToReveal: {
-      ...minimumFieldsToReveal,
-    },
+  const { login } = useTicketProof({
+    conferenceId: 1,
   });
   const { connect, isConnected } = useZAPIConnect();
-  const { zapi, collection } = useZAPI();
+  const { zapi, config } = useZAPI();
   const [isCollected, setIsCollected] = useState(false);
   const [isCollecting, setIsCollecting] = useState(false);
   const toast = useToast();
   const { getZupassPods } = useZupassPods();
   const { trigger: fetchSummaryPod } = useSummaryPOD();
+  const collection = collectionName(config.zappName, "Devcon SEA");
+  const podZapp = constructPODZapp(
+    config.zappName,
+    [collection],
+  );
 
   useEffect(() => {
     if (!zapi || !isConnected) return;
@@ -92,7 +97,7 @@ export function Leaderboard() {
         await login();
       }
 
-      const zapi = await connect();
+      const zapi = await connect(podZapp);
 
       const pods = await getZupassPods(zapi, collection, summaryPodType);
       const hasSummaryPod = pods.length > 0;
@@ -109,7 +114,7 @@ export function Leaderboard() {
       const { data } = await fetchSummaryPod();
       const pod = POD.fromJSON(data);
 
-      await (zapi as ParcnetAPI).pod.collection(collection)
+      await zapi.pod.collection(collection)
         .insert({
           entries: pod.content.asEntries(),
           signature: pod.signature,

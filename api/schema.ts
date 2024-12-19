@@ -25,6 +25,7 @@ export const conferenceTickets = pgTable("conference_tickets", {
   conferenceId: integer("conference_id")
     .notNull()
     .references(() => conferences.id, { onDelete: "cascade" }),
+  collectionName: text("collection_name").notNull(),
   eventId: text("event_id").notNull(),
   signerPublicKey: text("signer_public_key").notNull(),
   productId: text("product_id"),
@@ -164,6 +165,14 @@ export const accounts = pgTable(
     userIdx: index("accounts_user_id_idx").on(table.userId),
   }),
 );
+
+export const nonces = pgTable("nonces", {
+  nonce: text("nonce").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 
 export const features = pgTable("features", {
   conferenceId: integer("conference_id").notNull().references(

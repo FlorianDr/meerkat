@@ -15,7 +15,7 @@ export function useZupassPods() {
         },
       },
     });
-    return (zapi as ParcnetAPI).pod.collection(collectionName).query(query);
+    return zapi.pod.collection(collectionName).query(query);
   };
 
   return {

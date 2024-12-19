@@ -1,7 +1,14 @@
 import { and, eq, gt, isNotNull, sql } from "drizzle-orm";
 import { uuidv7 } from "uuidv7";
 import db from "../db.ts";
-import { accounts, questions, reactions, users, votes } from "../schema.ts";
+import {
+  accounts,
+  nonces,
+  questions,
+  reactions,
+  users,
+  votes,
+} from "../schema.ts";
 import { generateUsername } from "../usernames.ts";
 
 export const ZUPASS_PROVIDER = "zupass";
@@ -256,4 +263,12 @@ export async function countReactions(userId: number) {
   return Number(result[0].count);
 }
 
-export type User = typeof users.$inferSelect;
+export async function createNonce(insert: typeof nonces.$inferInsert) {
+  await db.insert(nonces).values(insert).execute();
+}
+
+export async function getNonce(nonce: string) {
+  const result = await db.select().from(nonces).where(eq(nonces.nonce, nonce))
+    .limit(1).execute();
+  return result.length === 1 ? result[0] : null;
+}

@@ -7,14 +7,13 @@ import {
   withDefaultColorScheme,
 } from "@chakra-ui/react";
 import { ZAPIProvider } from "./zapi/context.tsx";
-import { type Zapp } from "@parcnet-js/app-connector";
 import { UserProvider } from "./context/user.tsx";
 import { posthog } from "posthog-js";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseProvider } from "./context/supabase.tsx";
-import { uuidv7 } from "uuidv7";
 import * as Sentry from "@sentry/react";
 import { initializeFaro } from "@grafana/faro-react";
+import "./fingerprint.ts";
 
 type Config = {
   zupassUrl: string;
@@ -76,48 +75,13 @@ const theme = extendTheme(
   },
 );
 
-const ticketCollection = `Devcon SEA`;
-const zupassCollection = `${config.zappName}: ${ticketCollection}`;
-
-const zapp: Zapp = {
-  name: config.zappName,
-  permissions: {
-    READ_PUBLIC_IDENTIFIERS: {},
-    REQUEST_PROOF: { collections: [ticketCollection] },
-    INSERT_POD: { collections: [zupassCollection] },
-    SIGN_POD: {},
-    READ_POD: { collections: [zupassCollection, ticketCollection] },
-  },
-};
-
-// Check if cookie exists
-function getCookie(name: string) {
-  const cookies = document.cookie.split(";");
-  for (const cookie of cookies) {
-    const [cookieName, cookieValue] = cookie.split("=");
-    if (cookieName.trim() === name) {
-      return cookieValue;
-    }
-  }
-  return null;
-}
-
-const cookieName = "deviceId";
-// Set cookie if it doesn't exist
-if (!getCookie(cookieName)) {
-  document.cookie = `deviceId=${uuidv7()}; expires=${
-    new Date(Date.now() + 86400000).toUTCString()
-  }; path=/`;
-}
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <SupabaseProvider client={supabase}>
       <ChakraProvider theme={theme}>
         <ZAPIProvider
-          zapp={zapp}
+          zappName={config.zappName}
           zupassUrl={config.zupassUrl}
-          collection={zupassCollection}
         >
           <UserProvider>
             <App />

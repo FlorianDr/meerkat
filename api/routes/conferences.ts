@@ -6,6 +6,7 @@ import {
   createConference,
   getConferenceById,
   getConferences,
+  getTickets,
 } from "../models/conferences.ts";
 import { Event, getEvents, upsertEvents } from "../models/events.ts";
 import { zValidator } from "@hono/zod-validator";
@@ -18,6 +19,29 @@ const app = new Hono();
 app.get("/api/v1/conferences", async (c) => {
   const conferences = await getConferences();
   return c.json({ data: conferences });
+});
+
+app.get("/api/v1/conferences/:id/tickets", async (c) => {
+  const conferenceId = parseInt(c.req.param("id"));
+  if (Number.isInteger(conferenceId) === false) {
+    throw new HTTPException(400, {
+      message: `Invalid conference id ${conferenceId}`,
+    });
+  }
+
+  const tickets = await getTickets(conferenceId);
+
+  const clientTickets = tickets.map((ticket) => {
+    return {
+      collectionName: ticket.collectionName,
+      signerPublicKey: ticket.signerPublicKey,
+      eventId: ticket.eventId,
+      productId: ticket.productId,
+      role: ticket.role,
+    };
+  });
+
+  return c.json({ data: clientTickets });
 });
 
 const conferenceCreateSchema = zod.object({

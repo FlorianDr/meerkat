@@ -1,4 +1,5 @@
 import { HTTPError } from "./http-error.ts";
+import { extractHTTPError } from "./request.ts";
 
 export const fetcher = async (endpoint: string) => {
   const res = await fetch(endpoint, {
@@ -28,13 +29,7 @@ export const poster = async (
       : {}),
   });
   if (!res.ok) {
-    let error: string | undefined;
-    try {
-      error = await res.text();
-    } catch (e) {
-      error = undefined;
-    }
-    throw new HTTPError(res, error);
+    throw await extractHTTPError(res);
   }
   return res.json();
 };

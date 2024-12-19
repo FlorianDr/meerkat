@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Hono } from "@hono/hono";
 import { jwt, sign } from "@hono/hono/jwt";
 import env from "../env.ts";
-import { constructJWTPayload } from "../utils/jwt.ts";
+import { constructJWTPayload, JWT_EXPIRATION_TIME } from "../utils/jwt.ts";
 import { setJWTCookie } from "../utils/cookie.ts";
 import {
   countAnsweredQuestions,
@@ -10,7 +10,9 @@ import {
   countReactions,
   countReceivedVotes,
   countVotes,
+  createNonce,
   getAccounts,
+  getNonce,
   getTopContributors,
   getUserByProvider,
   getUserByUID,
@@ -64,41 +66,6 @@ app.get(
   },
 );
 
-// TOOO: Disallow creating new anonymous users for now
-// app.post("/api/v1/users", async (c) => {
-//   const deviceId = getCookie(c, "deviceId");
-
-//   if (!deviceId) {
-//     throw new HTTPException(400, { message: "Device ID is required" });
-//   }
-
-//   const maybeUser: User | null = deviceId ? await getUserByUID(deviceId) : null;
-//   const user = maybeUser ?? await createUser(deviceId);
-
-//   const origin = c.req.header("origin") ?? env.base;
-//   const payload = constructJWTPayload(user);
-//   const token = await sign(payload, env.secret);
-
-//   const baseUrl = new URL(origin);
-//   setCookie(c, "jwt", token, {
-//     path: "/",
-//     domain: baseUrl.hostname,
-//     secure: baseUrl.protocol === "https:",
-//     httpOnly: true,
-//     maxAge: JWT_EXPIRATION_TIME,
-//     sameSite: "strict",
-//   });
-
-//   const { id: _id, blocked: _blocked, name, ...rest } = user;
-
-//   return c.json({
-//     data: {
-//       ...rest,
-//       name: name ?? undefined,
-//     },
-//   });
-// });
-
 app.get(
   "/api/v1/users/me/votes",
   jwt({ secret: env.secret, cookie: "jwt" }),
@@ -111,13 +78,11 @@ app.get(
     }
 
     const votes = await getVotesByUserId(user.id);
-    const apiVotes = votes.map((vote) => {
-      return {
-        questionUid: vote.question.uid,
-        userUid: user.uid,
-        createdAt: vote.createdAt,
-      };
-    });
+    const apiVotes = votes.map((vote) => ({
+      questionUid: vote.question.uid,
+      userUid: user.uid,
+      createdAt: vote.createdAt,
+    }));
 
     return c.json({ data: apiVotes });
   },
@@ -175,47 +140,75 @@ app.get(
   },
 );
 
-// TODO: Deactivate public key login for now
-// const usersLoginScheme = z.object({
-//   publicKey: z.string(),
-// });
+const loginPodEntriesSchema = z.object({
+  nonce: z.string(),
+  time: z.object({
+    date: z.string(),
+  }),
+});
 
-// app.post(
-//   "/api/v1/users/login",
-//   zValidator("json", usersLoginScheme),
-//   async (c) => {
-//     const { publicKey } = c.req.valid("json");
+const loginScheme = z.object({
+  pod: z.object({
+    entries: loginPodEntriesSchema,
+    signature: z.string(),
+    signerPublicKey: z.string(),
+  }),
+});
 
-//     let user = await getUserByProvider("zupass", publicKey);
+const NONCE_LIFETIME = 1000 * 60 * 15;
 
-//     if (!user) {
-//       user = await createUserFromAccount({
-//         provider: "zupass",
-//         id: publicKey,
-//       });
-//     }
+app.post("/api/v1/users/login", zValidator("json", loginScheme), async (c) => {
+  const { pod } = c.req.valid("json");
+  const signedPOD = POD.fromJSON(pod);
 
-//     const origin = c.req.header("origin") ?? env.base;
-//     const payload = constructJWTPayload(user);
-//     const token = await sign(payload, env.secret);
+  const valid = signedPOD.verifySignature();
+  if (!valid) {
+    throw new HTTPException(400, { message: `POD signature is invalid` });
+  }
 
-//     const baseUrl = new URL(origin);
-//     setCookie(c, "jwt", token, {
-//       path: "/",
-//       domain: baseUrl.hostname,
-//       secure: baseUrl.protocol === "https:",
-//       httpOnly: true,
-//       maxAge: JWT_EXPIRATION_TIME,
-//       sameSite: "Lax",
-//     });
+  const entries = signedPOD.content.asEntries();
+  const nonce = entries.nonce?.value as string;
+  const time = entries.time?.value as Date;
+  const publicKey = signedPOD.signerPublicKey;
 
-//     return c.json({ data: { user } });
-//   },
-// );
+  if (time.getTime() < Date.now() - NONCE_LIFETIME) {
+    throw new HTTPException(400, {
+      message: `Nonce ${nonce} has expired at ${time.toISOString()}`,
+    });
+  }
+
+  const existingNonce = await getNonce(nonce);
+
+  if (existingNonce) {
+    throw new HTTPException(400, {
+      message: `Nonce ${nonce} has already been used`,
+    });
+  }
+
+  let user = await getUserByProvider(ZUPASS_PROVIDER, publicKey);
+
+  if (!user) {
+    user = await createUserFromAccount({
+      provider: ZUPASS_PROVIDER,
+      id: publicKey,
+      hash: null,
+    });
+  }
+
+  await createNonce({
+    userId: user.id,
+    nonce,
+  });
+
+  const payload = constructJWTPayload(user);
+  const jwtString = await sign(payload, env.secret);
+  setJWTCookie(c, jwtString);
+
+  return c.json({ data: { user } });
+});
 
 // TODO: Use correct ticket proof scheme
 const proofScheme = z.any();
-
 const ROLE_HIERARCHY = ["attendee", "speaker", "organizer"];
 
 app.post(
@@ -334,106 +327,6 @@ app.post(
   },
 );
 
-app.post(
-  "/api/v1/users/login/pods",
-  async (c) => {
-    const { serializedTicket, serializedProofOfIdentity } = await c.req.json();
-    const ticketPOD = POD.fromJSON(serializedTicket);
-    const proofOfIdentityPOD = POD.fromJSON(serializedProofOfIdentity);
-
-    let publicKey: string | null = null;
-    let email: string | null = null;
-    let eventId: string | null = null;
-    let signerPublicKey: string | null = null;
-    let productId: string | null = null;
-    let verified = false;
-    try {
-      const valid = ticketPOD.verifySignature();
-      if (valid) {
-        const { isValid } = DevconTicketSpec.safeParse(ticketPOD);
-        verified = isValid;
-      }
-      if (verified) {
-        publicKey = ticketPOD.content.asEntries().owner.value as string;
-        email = ticketPOD.content.asEntries().attendeeEmail.value as string;
-        eventId = ticketPOD.content.asEntries().eventId.value as string;
-        signerPublicKey = ticketPOD.signerPublicKey;
-        productId = ticketPOD.content.asEntries().productId.value as string;
-        verified = proofOfIdentityPOD.signerPublicKey ===
-            ticketPOD.content.asEntries().owner.value &&
-          proofOfIdentityPOD.content.asEntries()._UNSAFE_ticketId.value ===
-            ticketPOD.content.asEntries().ticketId.value;
-      }
-    } catch (e) {
-      throw new HTTPException(400, { message: "Invalid proof" });
-    }
-
-    if (!publicKey) {
-      throw new HTTPException(400, { message: "Public key not found" });
-    }
-
-    if (!eventId) {
-      throw new HTTPException(400, { message: "Event ID not found" });
-    }
-
-    if (!signerPublicKey) {
-      throw new HTTPException(400, { message: "Signer public key not found" });
-    }
-
-    if (!productId) {
-      throw new HTTPException(400, { message: "Product ID not found" });
-    }
-
-    const result = await getConferenceByTicket(
-      eventId,
-      signerPublicKey,
-      productId,
-    );
-
-    if (!result) {
-      throw new HTTPException(400, { message: "Ticket not found" });
-    }
-
-    let user = await getUserByProvider(ZUPASS_PROVIDER, publicKey);
-    const hashValue = email ? await hash(env.emailSecret, email) : null;
-
-    if (!user) {
-      user = await createUserFromAccount({
-        provider: ZUPASS_PROVIDER,
-        id: publicKey,
-        hash: hashValue,
-      });
-    } else if (hashValue) {
-      await updateUserEmail(user.id, hashValue);
-    }
-
-    const conferenceRoles = await getConferenceRolesForConference(
-      user.id,
-      result.conference_tickets.conferenceId,
-    );
-
-    const conference = result.conferences;
-    const role = result.conference_tickets.role;
-
-    const newRoleIndex = ROLE_HIERARCHY.indexOf(role);
-    const currentRoleIndex = conferenceRoles.reduce((acc, role) => {
-      return Math.max(acc, ROLE_HIERARCHY.indexOf(role.role));
-    }, -1);
-
-    if (newRoleIndex > currentRoleIndex) {
-      await grantRole(user.id, conference.id, role);
-    }
-
-    const payload = constructJWTPayload(user);
-    const jwtString = await sign(payload, env.secret);
-    setJWTCookie(c, jwtString);
-
-    const rankAndPoints = await getUserContributionRank(user.id);
-
-    return c.json({ data: { ...user, ...rankAndPoints } });
-  },
-);
-
 app.get("/api/v1/users/leaderboard", async (c) => {
   const topContributors = await getTopContributors(10);
 
@@ -549,7 +442,7 @@ app.post(
   },
 );
 
-app.post("/api/v1/users/logout", async (c) => {
+app.post("/api/v1/users/logout", (c) => {
   const origin = c.req.header("origin") ?? env.base;
   const baseUrl = new URL(origin);
 

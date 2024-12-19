@@ -13,13 +13,15 @@ import { useToast } from "@chakra-ui/react";
 import { pageTitle } from "../utils/events.ts";
 import { usePageTitle } from "../hooks/use-page-title.ts";
 import { useConferenceRoles } from "../hooks/use-conference-roles.ts";
-import { useLogin } from "../hooks/use-login.ts";
 import { useUser } from "../hooks/use-user.ts";
 import { PrimaryButton } from "../components/Buttons/PrimaryButton.tsx";
 import { useZupassPods } from "../hooks/use-zupass-pods.ts";
 import { useZAPIConnect } from "../zapi/connect.ts";
 import { useZAPI } from "../zapi/context.tsx";
 import { attendancePodType } from "../utils/pod.ts";
+import { useTicketProof } from "../hooks/use-ticket-proof.ts";
+import { constructPODZapp } from "../zapi/zapps.ts";
+import { collectionName } from "../zapi/collections.ts";
 
 export function EventCard() {
   const { uid } = useParams();
@@ -27,7 +29,8 @@ export function EventCard() {
   const { data: event } = useEvent(uid);
   const { isAuthenticated } = useUser();
   const toast = useToast();
-  const { login, isLoading: isLoggingIn } = useLogin({
+  const { login, isLoading: isLoggingIn } = useTicketProof({
+    conferenceId: event?.conferenceId,
     onError: (error) => {
       toast({
         title: `Failed to login (${error?.message})`,
@@ -41,10 +44,9 @@ export function EventCard() {
   usePageTitle(pageTitle(event));
   const secret = searchParams.get("secret");
   const [isCollecting, setIsCollecting] = useState(false);
-  const { connect } = useZAPIConnect();
+  const { connect, isConnected } = useZAPIConnect();
+  const { config, zapi } = useZAPI();
   const { collect } = useCollect(event, secret);
-  const { isConnected } = useZAPIConnect();
-  const { zapi, collection } = useZAPI();
   const { getZupassPods } = useZupassPods();
   const { data: roles } = useConferenceRoles();
 
@@ -52,9 +54,18 @@ export function EventCard() {
     roles?.some((r) => r.conferenceId === event?.conferenceId) ?? false;
 
   const onCollect = async () => {
+    if (!event?.conference) {
+      return;
+    }
     setIsCollecting(true);
     try {
-      const zapi = await connect();
+      const collection = collectionName(
+        config.zappName,
+        event?.conference.name,
+      );
+      const zapi = await connect(
+        constructPODZapp(config.zappName, [collection]),
+      );
       const pods = await getZupassPods(
         zapi,
         collection,
@@ -99,7 +110,11 @@ export function EventCard() {
 
   useEffect(() => {
     const func = async () => {
-      if (isConnected) {
+      if (isConnected && zapi && event?.conference) {
+        const collection = collectionName(
+          config.zappName,
+          event?.conference.name,
+        );
         const pods = await getZupassPods(
           zapi,
           collection,
@@ -112,7 +127,7 @@ export function EventCard() {
       }
     };
     func();
-  }, [isConnected]);
+  }, [isConnected, zapi, event?.conference]);
 
   const onLogin = async () => {
     await login();

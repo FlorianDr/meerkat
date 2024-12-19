@@ -3,34 +3,35 @@ import { type ParcnetAPI, type Zapp } from "@parcnet-js/app-connector";
 
 export type ZAPIProviderProps = {
   children: React.ReactNode;
-  zapp: Zapp;
-  collection?: string | undefined;
+  zappName: string;
   zupassUrl?: string | undefined;
 };
 
 export type ZAPIContext = {
   ref: React.MutableRefObject<HTMLElement | null>;
   config: {
-    zapp: Zapp;
+    zappName: string;
     zupassUrl?: string | undefined;
   };
-  collection: string | undefined;
+  zapp: Zapp | null;
   zapi: ParcnetAPI | null;
 };
 
 export const ZAPIContext = createContext<ZAPIContext>(null);
 
-export function ZAPIProvider(
-  { children, zapp, zupassUrl, collection }: ZAPIProviderProps,
-) {
+export function ZAPIProvider({
+  children,
+  zappName,
+  zupassUrl,
+}: ZAPIProviderProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [context, setContext] = useState<ZAPIContext>({
     ref,
     config: {
-      zapp,
+      zappName,
       zupassUrl,
     },
-    collection,
+    zapp: null,
     zapi: null,
   });
 
@@ -44,7 +45,7 @@ export function ZAPIProvider(
   );
 }
 
-export function useZAPI() {
+export function useZAPI(): ZAPIContext {
   const { context } = useContext(ZAPIContext);
   return context;
 }

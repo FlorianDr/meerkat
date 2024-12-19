@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useLogin } from "../../hooks/use-login.ts";
+import { useTicketProof } from "../../hooks/use-ticket-proof.ts";
 import { useThemeColors } from "../../hooks/use-theme-colors.ts";
 import { User } from "../../types.ts";
 import { PrimaryButton } from "../Buttons/PrimaryButton.tsx";
@@ -51,7 +51,8 @@ export function Footer({
   const { primaryPurple } = useThemeColors();
   const [focused, setFocused] = useState(false);
   const toast = useToast();
-  const { login, isLoading } = useLogin({
+  const { login, isLoading } = useTicketProof({
+    conferenceId: event?.id,
     onError: (error) => {
       toast({
         title: `Failed to login`,

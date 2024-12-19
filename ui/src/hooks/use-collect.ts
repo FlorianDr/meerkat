@@ -14,7 +14,7 @@ export function useCollect(event: Event | undefined, secret: string | null) {
     const { data } = await trigger({ secret });
     const pod = POD.fromJSON(data);
     await zapi.pod
-      .collection(`${config.zapp.name}: Devcon SEA`)
+      .collection(`${config.zappName}: ${event?.conference.name}`)
       .insert({
         entries: pod.content.asEntries(),
         signature: pod.signature,
