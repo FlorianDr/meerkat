@@ -18,11 +18,9 @@
     "api"
   ],
   "imports": {
-    "@sentry/react": "npm:@sentry/react@^8.36.0",
-    "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
-    "@uidotdev/usehooks": "npm:@uidotdev/usehooks@^2.4.1",
-    "drizzle-kit": "npm:drizzle-kit@^0.24.0",
-    "postgres": "npm:postgres@^3.4.4"
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "drizzle-kit": "npm:drizzle-kit@^0.24.2",
+    "postgres": "npm:postgres@^3.4.5"
   },
   "compilerOptions": {
     "lib": [
